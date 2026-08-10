@@ -76,16 +76,15 @@ export const AKwanAgent: React.FC = () => {
 
     // Dynamic Extraction for Smart AI Agent Buttons
     const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
-    const professionId = portfolioData.profile.professionalField?.id || 'profesional ini';
-    const professionEn = portfolioData.profile.professionalField?.en || 'this professional';
+    const professionEn = portfolioData.profile.professionalField?.en || 'position';
 
     const publicQuickReplies = [
-        language === 'id' ? `Berikan ringkasan eksekutif profil ${firstName}` : `Give an executive summary of ${firstName}`,
-        language === 'id' ? `Menurut AI, apa pencapaian ${firstName} yang paling memukau?` : `According to AI, what is ${firstName}'s most impressive achievement?`,
-        language === 'id' ? `Mengapa ${firstName} cocok direkrut sebagai ${professionId}?` : `Why hire ${firstName} as a ${professionEn}?`,
-        language === 'id' ? `Apa penguasaan software teknis & khusus miliknya?` : `What are ${firstName}'s technical software skills?`,
-        language === 'id' ? `Analisis kecocokan ${firstName} dengan Loker (JD) saya` : `Match ${firstName} qualifications with my JD`,
-        language === 'id' ? `Tampilkan karya terbaik & dampaknya` : `Show best projects & their impact`
+        language === 'id' ? `Ringkasan Eksekutif ${firstName}` : `${firstName}'s Executive Summary`,
+        language === 'id' ? `Pencapaian Paling Memukau (Pilihan AI)` : `Top Achievement (AI Pick)`,
+        language === 'id' ? `Alasan Harus Rekrut ${firstName}` : `Why Hire as ${professionEn}`,
+        language === 'id' ? `Keahlian Software & Teknis` : `Software & Tech Skills`,
+        language === 'id' ? `Cek Kecocokan Job Description` : `JD Match Analysis`,
+        language === 'id' ? `Portofolio Karya Terbaik` : `Best Portfolio Projects`
     ];
 
     const ownerQuickReplies = [
