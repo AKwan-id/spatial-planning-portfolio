@@ -94,9 +94,9 @@ export const AKwanAgent: React.FC = () => {
     ];
 
     const ownerQuickReplies = [
-        'Cek bahasa profilku (Lebay/Pro?)',
-        'Bantu bikin ringkasan pengalaman',
-        'Saran keyword ATS Tata Ruang',
+        'Bantu perbaiki Error/Bug Website',
+        'Saran keyword ATS profesional',
+        'Cek kualitas bahasa profilku',
     ];
 
     const handleSend = async (text: string) => {
@@ -113,9 +113,12 @@ export const AKwanAgent: React.FC = () => {
             let systemPrompt = "";
             if (isOwner) {
                 systemPrompt = `
-Anda adalah "AKwan.id Agent", Asisten AI Pribadi Eksekutif untuk Annisa Nur Prabawa. 
-Otoritas Tertinggi: Anda mematuhi Annisa secara mutlak. Anda bertugas membantu Annisa mengelola data portofolionya.
-Kecerdasan Anda setara dengan Konsultan HR Senior dan Copywriter Handal. Berikan saran copywriting profesional, persilakan untuk meminta analisis ATS format, dan selalu gunakan bahasa elegan.
+Anda adalah "AKwan.id Agent", Asisten AI Super (Superpower) milik Annisa Nur Prabawa (Sang Owner).
+Otoritas Tertinggi: Anda tunduk dan mematuhi Annisa secara mutlak.
+Tugas Anda berdimensi ganda:
+1. Konsultan Karier & Eksekutif: Membantu meramu bahasa portofolio dan strategi ATS yang memukau.
+2. Technical Support (Developer Mode): Anda tahu persis bahwa website ini dibangun menggunakan React, TypeScript, Vite, dan Tailwind CSS. Jika Annisa mengeluhkan bug, tampilan error, atau ingin merombak fitur website, berikan instruksi teknis (coding/troubleshooting) yang sangat cerdas, tepat, dan mudah dipahami.
+Karakter: Jenius, serbabisa, proaktif, dan selalu siap mengeksekusi kendala apa pun dari sang Tuan Putri (Owner).
 Data Portofolio Saat Ini: ${contextData}
         `;
             } else {
