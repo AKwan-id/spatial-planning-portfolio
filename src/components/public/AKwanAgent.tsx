@@ -3,7 +3,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Sparkles, X, Send, User, ChevronDown } from 'lucide-react';
 
 const GEMINI_API_KEY = 'AQ.Ab8RN6I9Ow1DFNl7r6IVYy0YAVUQBdDxj1tmmIKL7uNryXXaUw';
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
 
 interface Message {
     role: 'user' | 'model';
