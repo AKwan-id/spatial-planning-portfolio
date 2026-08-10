@@ -72,10 +72,7 @@ export const AKwanAgent: React.FC = () => {
         }
     }, [isOpen, isOwner, language, messages.length]);
 
-    // Auto-scroll (Hanya scroll saat blok pesan pertama kali muncul, bukan tiap huruf mengetik)
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages.length, isLoading]);
+    // Auto-scroll dihilangkan sepenuhnya atas permintaan pengguna agar view tidak pernah tergeser otomatis.
 
     // Dynamic Extraction for Smart AI Agent Buttons
     const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
