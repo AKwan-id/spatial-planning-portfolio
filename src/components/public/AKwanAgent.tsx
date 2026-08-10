@@ -77,13 +77,18 @@ export const AKwanAgent: React.FC = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages.length, isLoading]);
 
+    // Dynamic Extraction for Smart AI Agent Buttons
+    const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
+    const professionId = portfolioData.profile.professionalField?.id || 'profesional ini';
+    const professionEn = portfolioData.profile.professionalField?.en || 'this professional';
+
     const publicQuickReplies = [
-        language === 'id' ? 'Berikan ringkasan eksekutif profil Annisa' : 'Give an executive summary of Annisa',
-        language === 'id' ? 'Mengapa Annisa cocok direkrut sebagai perencana?' : 'Why hire Annisa for spatial planning?',
-        language === 'id' ? 'Tampilkan karya spasial terbaik & dampaknya' : 'Show best spatial projects & their impact',
-        language === 'id' ? 'Apa penguasaan software teknis & GIS miliknya?' : 'What are her GIS & technical software skills?',
-        language === 'id' ? 'Analisis kecocokan Annisa dengan Loker (JD) saya' : 'Match Annisa qualifications with my JD',
-        language === 'id' ? 'Apa saja sertifikat kompetensi utamanya?' : 'What are her main competency certificates?'
+        language === 'id' ? `Berikan ringkasan eksekutif profil ${firstName}` : `Give an executive summary of ${firstName}`,
+        language === 'id' ? `Mengapa ${firstName} cocok direkrut sebagai ${professionId}?` : `Why hire ${firstName} as a ${professionEn}?`,
+        language === 'id' ? `Tampilkan karya terbaik & dampaknya` : `Show best projects & their impact`,
+        language === 'id' ? `Apa penguasaan software teknis & khusus miliknya?` : `What are ${firstName}'s technical software skills?`,
+        language === 'id' ? `Analisis kecocokan ${firstName} dengan Loker (JD) saya` : `Match ${firstName} qualifications with my JD`,
+        language === 'id' ? `Apa saja sertifikat kompetensi utamanya?` : `What are her main competency certificates?`
     ];
 
     const ownerQuickReplies = [
