@@ -78,10 +78,12 @@ export const AKwanAgent: React.FC = () => {
     }, [messages.length, isLoading]);
 
     const publicQuickReplies = [
-        language === 'id' ? 'Ringkas profil Annisa' : 'Summarize Annisa profile',
-        language === 'id' ? 'Tampilkan karya terbaik' : 'Show best projects',
-        language === 'id' ? 'Apa keahlian utamanya?' : 'What are her core skills?',
-        language === 'id' ? 'Analisis spesifikasi JD' : 'Analyze JD specification'
+        language === 'id' ? 'Berikan ringkasan eksekutif profil Annisa' : 'Give an executive summary of Annisa',
+        language === 'id' ? 'Mengapa Annisa cocok direkrut sebagai perencana?' : 'Why hire Annisa for spatial planning?',
+        language === 'id' ? 'Tampilkan karya spasial terbaik & dampaknya' : 'Show best spatial projects & their impact',
+        language === 'id' ? 'Apa penguasaan software teknis & GIS miliknya?' : 'What are her GIS & technical software skills?',
+        language === 'id' ? 'Analisis kecocokan Annisa dengan Loker (JD) saya' : 'Match Annisa qualifications with my JD',
+        language === 'id' ? 'Apa saja sertifikat kompetensi utamanya?' : 'What are her main competency certificates?'
     ];
 
     const ownerQuickReplies = [
