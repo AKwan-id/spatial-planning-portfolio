@@ -3,6 +3,8 @@ import { useLanguage } from '../../context/LanguageContext';
 import { ProfileData } from '../../types/portfolio';
 import { Save, RefreshCw, User, Image, MapPin, GraduationCap, Sparkles } from 'lucide-react';
 
+import { GoogleDriveWarning } from './GoogleDriveWarning';
+
 export const AboutEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
   const profile = portfolioData.profile;
@@ -74,6 +76,7 @@ export const AboutEditor: React.FC = () => {
               onChange={(e) => handleChange('portraitUrl', e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-sm text-[#2D292B] focus:outline-none focus:border-[#D99AAF]"
             />
+            <GoogleDriveWarning />
           </div>
         </div>
 

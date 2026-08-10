@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { ProjectItem, ProjectCategoryConfig, PublicationStatus } from '../../types/portfolio';
+import { GoogleDriveWarning } from './GoogleDriveWarning';
 import {
   Plus,
   Trash2,
@@ -10,7 +11,7 @@ import {
   Star,
   Eye,
   EyeOff,
-  Image,
+  Image as ImageIcon,
   Upload,
   X,
   Check,
@@ -299,11 +300,10 @@ export const ProjectsEditor: React.FC = () => {
           return (
             <div
               key={proj.id}
-              className={`rounded-2xl border transition-all ${
-                isEditing
-                  ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-6'
-                  : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
-              }`}
+              className={`rounded-2xl border transition-all ${isEditing
+                ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-6'
+                : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
+                }`}
             >
               {/* ITEM SUMMARY VIEW */}
               {!isEditing ? (
@@ -324,13 +324,12 @@ export const ProjectsEditor: React.FC = () => {
                           </span>
                         )}
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                            proj.status === 'PUBLISHED' || !proj.status
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : proj.status === 'DRAFT'
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${proj.status === 'PUBLISHED' || !proj.status
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : proj.status === 'DRAFT'
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-slate-100 text-slate-800'
-                          }`}
+                            }`}
                         >
                           {proj.status || 'PUBLISHED'}
                         </span>
@@ -345,11 +344,10 @@ export const ProjectsEditor: React.FC = () => {
                   <div className="flex items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-[#F3C6D3]/30 shrink-0">
                     <button
                       onClick={() => handleToggleFeatured(proj.id)}
-                      className={`p-2 rounded-xl border text-xs font-semibold cursor-pointer ${
-                        proj.featured
-                          ? 'bg-[#D99AAF] text-[#FFF9F7] border-[#D99AAF]'
-                          : 'bg-[#F8F1F2] text-[#2D292B]/70 border-[#F3C6D3] hover:text-[#2D292B]'
-                      }`}
+                      className={`p-2 rounded-xl border text-xs font-semibold cursor-pointer ${proj.featured
+                        ? 'bg-[#D99AAF] text-[#FFF9F7] border-[#D99AAF]'
+                        : 'bg-[#F8F1F2] text-[#2D292B]/70 border-[#F3C6D3] hover:text-[#2D292B]'
+                        }`}
                       title="Toggle Featured State (Selected Work)"
                     >
                       <Star className="w-4 h-4 fill-current" />
@@ -596,6 +594,7 @@ export const ProjectsEditor: React.FC = () => {
                           <span>Unggah File Foto Lokal</span>
                           <input type="file" accept="image/*" onChange={handleCoverUpload} className="hidden" />
                         </label>
+                        <GoogleDriveWarning />
                       </div>
                     </div>
                   </div>

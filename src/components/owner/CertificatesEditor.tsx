@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { CertificateItem, PublicationStatus } from '../../types/portfolio';
+import { GoogleDriveWarning } from './GoogleDriveWarning';
 import {
   Plus,
   Trash2,
@@ -142,11 +143,10 @@ export const CertificatesEditor: React.FC = () => {
           return (
             <div
               key={cert.id}
-              className={`rounded-2xl border transition-all ${
-                isEditing
+              className={`rounded-2xl border transition-all ${isEditing
                   ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-6'
                   : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
-              }`}
+                }`}
             >
               {!isEditing ? (
                 <>
@@ -161,11 +161,10 @@ export const CertificatesEditor: React.FC = () => {
                           0{idx + 1} &bull; {cert.year}
                         </span>
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                            cert.status === 'PUBLISHED' || !cert.status
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${cert.status === 'PUBLISHED' || !cert.status
                               ? 'bg-emerald-100 text-emerald-800'
                               : 'bg-amber-100 text-amber-800'
-                          }`}
+                            }`}
                         >
                           {cert.status || 'PUBLISHED'}
                         </span>
@@ -326,6 +325,7 @@ export const CertificatesEditor: React.FC = () => {
                           <span>Unggah Gambar Sertifikat</span>
                           <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                         </label>
+                        <GoogleDriveWarning />
                       </div>
                     </div>
                   </div>
