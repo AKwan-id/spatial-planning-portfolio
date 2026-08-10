@@ -124,10 +124,13 @@ export function PortfolioContent() {
   );
 }
 
+import { AKwanAgent } from './components/public/AKwanAgent';
+
 export default function App() {
   return (
     <LanguageProvider>
       <PortfolioContent />
+      <AKwanAgent />
     </LanguageProvider>
   );
 }
