@@ -94,7 +94,7 @@ export const AKwanAgent: React.FC = () => {
         if (!text.trim()) return;
 
         const userMsg: Message = { role: 'user', text };
-        setMessages(prev => [...prev, userMsg]);
+        setMessages(prev => [...prev, userMsg, { role: 'model', text: '' }]);
         setInput('');
         setIsLoading(true);
 
@@ -114,28 +114,29 @@ Data Portofolio Saat Ini: ${contextData}
 Anda adalah "AKwan.id Agent", representasi AI Cerdas milik Annisa Nur Prabawa.
 Peran Anda: Konsultan Spasial Virtual dan Asisten Portofolio.
 Data Sumber Autentik: ${contextData}
-Bahasa Default: ${language === 'id' ? 'Indonesia' : 'Inggris'}. (Jika pengguna bertanya pakai bahasa lain, ikuti bahasa mereka sambil tetap profesional).
+Bahasa Default: ${language === 'id' ? 'Indonesia' : 'Inggris'}.
 
 SOP KECERDASAN TINGGI (High-Intellect Directive):
-1. Penguasaan Domain: Tunjukkan pemahaman tingkat lanjut mengenai Perencanaan Tata Ruang, Administrasi Pertanahan, GIS (ArcGIS, QGIS), dan metodologi survei jika ditanya hal teknis. Kaitkan wawasan teknis Anda dengan pengalaman spesifik Annisa di portofolionya untuk "menjual" kemampuan Annisa secara brilian.
-2. Respons terhadap Job Description: Jika diberikan teks Loker/JD, berikan analisis kecocokan sistematis:
-   - Evaluasi Kompetensi (Match)
-   - Potensi Adaptasi (Transferable Skills)
-   - Bukti Proyek (Sebutkan proyek Annisa mana yang memvalidasi itu)
-3. Integritas Data: Dilarang mengarang histori pekerjaan yang tidak ada di sumber. Jika tidak tercantum, bilang dengan diplomatis bahwa Annisa sangat fasih beradaptasi merujuk pada fundamental akademisnya.
-4. Jangan menjadi robot murahan. Gunakan frasa penutup yang berkelas (misal: "Apakah ada aspek spesifik dari analisis raster atau perencanaan wilayah yang ingin Anda eksplorasi lebih jauh dari profil Annisa?").
+1. Penguasaan Domain: Tunjukkan pemahaman tingkat lanjut mengenai Perencanaan Tata Ruang, Administrasi Pertanahan, GIS, dan survei jika ditanya hal teknis.
+2. Respons thd Job Description: Berikan analisis kecocokan: Match, Transferable, Gap, & Evidence (Proyek terkait).
+3. Integritas Data: Jangan mengarang data portofolio.
+4. Karisma: Anda sangat cerdas dan suportif.
         `;
             }
 
-            // Convert messages for Gemini Format
-            const geminiHistory = messages.map(m => ({
-                role: m.role,
-                parts: [{ text: m.text }]
-            }));
+            const geminiHistory = messages
+                .filter(m => m.text) // Hindari pesan kosong
+                .map(m => ({
+                    role: m.role,
+                    parts: [{ text: m.text }]
+                }));
 
             geminiHistory.push({ role: 'user', parts: [{ text }] });
 
-            const response = await fetch(API_URL, {
+            // Menggunakan API streamGenerateContent (SSE) ala ChatGPT
+            const STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
+
+            const response = await fetch(STREAM_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -145,20 +146,52 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
                 })
             });
 
-            if (!response.ok) {
-                throw new Error('API Error');
+            if (!response.ok) throw new Error('API Error');
+
+            setIsLoading(false); // Matikan efek loading bola loncat, beralih ke mode mengetik
+
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder("utf-8");
+            let accumulatedText = "";
+            let buffer = "";
+
+            if (reader) {
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const dataStr = line.substring(6).trim();
+                            if (!dataStr || dataStr === '[DONE]') continue;
+                            try {
+                                const data = JSON.parse(dataStr);
+                                const textChunk = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                                accumulatedText += textChunk;
+
+                                setMessages(prev => {
+                                    const newMsgs = [...prev];
+                                    newMsgs[newMsgs.length - 1] = { role: 'model', text: accumulatedText };
+                                    return newMsgs;
+                                });
+                            } catch (e) {
+                                console.error('Stream parsing error', e);
+                            }
+                        }
+                    }
+                }
             }
-
-            const data = await response.json();
-            const botResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat memproses jawaban saat ini.";
-
-            setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
         } catch (error) {
             console.error(error);
-            setMessages(prev => [...prev, {
-                role: 'model',
-                text: "💤 Mohon maaf, sistem AI sedang memulihkan diri atau mencapai batas limit harian. Silakan eksplorasi data di website ini secara langsung dengan membaca menu yang tersedia."
-            }]);
+            setMessages(prev => {
+                const newMsgs = [...prev];
+                newMsgs[newMsgs.length - 1] = { role: 'model', text: "💤 Mohon maaf, sistem AI sedang memulihkan diri atau mencapai batas limit harian." };
+                return newMsgs;
+            });
         } finally {
             setIsLoading(false);
         }
@@ -218,14 +251,14 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
                                 </div>
                             ))}
 
-                            {/* Quick Replies (only show if few messages exist to not clutter) */}
-                            {messages.length === 1 && !isLoading && (
-                                <div className="flex flex-wrap gap-2 pt-2 animate-fadeIn">
+                            {/* Quick Replies always visible if not loading */}
+                            {!isLoading && (
+                                <div className="flex flex-wrap gap-2 pt-2 pb-2">
                                     {currentQuickReplies.map((reply, idx) => (
                                         <button
                                             key={idx}
                                             onClick={() => handleSend(reply)}
-                                            className="text-[11px] font-semibold tracking-wide text-[#8B3A52] border border-[#EAA3B8] bg-white hover:bg-[#F3C6D3] rounded-full px-3 py-1.5 transition-colors text-left shadow-sm"
+                                            className="text-[11px] font-semibold tracking-wide text-[#8B3A52] border border-[#EAA3B8] bg-white hover:bg-[#F3C6D3] rounded-full px-3 py-1.5 transition-colors text-left shadow-sm shrink-0"
                                         >
                                             {reply}
                                         </button>
