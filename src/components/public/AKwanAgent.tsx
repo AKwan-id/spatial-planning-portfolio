@@ -72,10 +72,12 @@ export const AKwanAgent: React.FC = () => {
         }
     }, [isOpen, isOwner, language, messages.length]);
 
-    // Auto-scroll hanya menyala SEKALI saat pertanyaan baru dikirim (saat jumlah pesan bertambah).
-    // Layar tidak akan terseret saat AI sedang mengetik (streaming).
+    // Auto-scroll hanya menyala SEKALI saat pertanyaan baru dikirim (yaitu, kalau pesan > 1).
+    // Layar tidak akan terseret saat AI baru perkenalan atau sedang mengetik.
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messages.length > 1) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
     }, [messages.length]);
 
     // Dynamic Extraction for Smart AI Agent Buttons
