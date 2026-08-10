@@ -84,11 +84,11 @@ export const AKwanAgent: React.FC = () => {
 
     const publicQuickReplies = [
         language === 'id' ? `Berikan ringkasan eksekutif profil ${firstName}` : `Give an executive summary of ${firstName}`,
+        language === 'id' ? `Menurut AI, apa pencapaian ${firstName} yang paling memukau?` : `According to AI, what is ${firstName}'s most impressive achievement?`,
         language === 'id' ? `Mengapa ${firstName} cocok direkrut sebagai ${professionId}?` : `Why hire ${firstName} as a ${professionEn}?`,
-        language === 'id' ? `Tampilkan karya terbaik & dampaknya` : `Show best projects & their impact`,
         language === 'id' ? `Apa penguasaan software teknis & khusus miliknya?` : `What are ${firstName}'s technical software skills?`,
         language === 'id' ? `Analisis kecocokan ${firstName} dengan Loker (JD) saya` : `Match ${firstName} qualifications with my JD`,
-        language === 'id' ? `Apa saja sertifikat kompetensi utamanya?` : `What are her main competency certificates?`
+        language === 'id' ? `Tampilkan karya terbaik & dampaknya` : `Show best projects & their impact`
     ];
 
     const ownerQuickReplies = [
