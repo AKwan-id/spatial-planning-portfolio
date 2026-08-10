@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-sakura: #F3C6D3;
+    --color-sakura-canvas: #F8E4EA;
+    --color-muted-rose: #D99AAF;
+    --color-deep-rose: #8B3A52;
+    --color-blush: #FCEDF1;
+    --color-charcoal: #2D292B;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: #2D292B;
+    background-color: transparent;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Custom utilities for editorial surfaces over Sakura Pink canvas */
+
+/* Primary surface — readable, clearly pink-tinted, allows cinematic depth */
+.glass-surface {
+  background: rgba(252, 237, 241, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(217, 154, 175, 0.40);
+}
+
+/* Subtle surface — used for inner cards / low-emphasis blocks */
+.glass-surface-subtle {
+  background: rgba(248, 228, 234, 0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(217, 154, 175, 0.30);
+}
+
+/* Dark contrasting surface — used in Contact section closing banner */
+.glass-surface-dark {
+  background: rgba(45, 41, 43, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(217, 154, 175, 0.20);
+}
+
+/* Headline text shadow — subtle depth for readability over cinematic */
+.headline-shadow {
+  text-shadow: 0 1px 8px rgba(139, 58, 82, 0.08), 0 2px 16px rgba(45, 41, 43, 0.06);
+}
+
+/* Stronger headline shadow for section titles that sit directly above landscape */
+.headline-shadow-md {
+  text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 4px 20px rgba(139, 58, 82, 0.10);
+}
+
+/* ✨ Efek Berpijar (Glow Pulse) yang Halus & Profesional */
+.glow-pijar {
+  animation: text-pulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes text-pulse {
+  0% {
+    text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 0 0px rgba(217, 154, 175, 0);
+  }
+
+  100% {
+    text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 0 16px rgba(234, 163, 184, 0.55);
+  }
+}
+
+/* ✨ Bintang Animasi Dinamis (Kling Kling) */
+.animate-sparkle {
+  animation: sparkle-anim 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sparkle-anim {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1) rotate(60deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(217, 154, 175, 0.8));
+  }
+
+  100% {
+    transform: scale(0) rotate(120deg);
+    opacity: 0;
+  }
+}
+
+
+
+.sakura-border-glow {
+  box-shadow: 0 0 20px -5px rgba(234, 163, 184, 0.45);
+}
+
+/* Smooth custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(248, 228, 234, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D99AAF;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8B3A52;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #8B3A52;
+  outline-offset: 2px;
+}
