@@ -72,10 +72,10 @@ export const AKwanAgent: React.FC = () => {
         }
     }, [isOpen, isOwner, language, messages.length]);
 
-    // Auto-scroll
+    // Auto-scroll (Hanya scroll saat blok pesan pertama kali muncul, bukan tiap huruf mengetik)
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, isLoading]);
+    }, [messages.length, isLoading]);
 
     const publicQuickReplies = [
         language === 'id' ? 'Ringkas profil Annisa' : 'Summarize Annisa profile',
