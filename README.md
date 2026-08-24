@@ -6,7 +6,7 @@ Portofolio web bilingual untuk menyajikan profil, kompetensi, proyek, pengalaman
 
 ## Ringkasan
 
-Spatial Planning Portfolio merupakan single-page application berbasis React dan TypeScript. Aplikasi terdiri dari halaman portofolio publik, asisten portofolio berbasis Gemini, serta dashboard pengelola untuk memperbarui konten langsung dari browser.
+Spatial Planning Portfolio merupakan single-page application berbasis React dan TypeScript. Aplikasi terdiri dari halaman portofolio publik, asisten portofolio berbasis Gemini, serta modul pengelolaan konten internal.
 
 Konten menggunakan struktur data terpusat dan mendukung Bahasa Indonesia serta Inggris. Koleksi proyek, keahlian, pengalaman, dan sertifikat dapat diurutkan serta dikendalikan melalui status publikasi sebelum ditampilkan pada halaman publik.
 
@@ -56,7 +56,7 @@ Field `visible`, `order`, `featured`, dan `featuredOrder` digunakan untuk mengen
 
 ## Asisten Portofolio
 
-`AKwan.id Agent` tersedia sebagai floating chat widget pada halaman publik dan dashboard pengelola.
+`AKwan.id Agent` tersedia sebagai floating chat widget pada halaman publik dan modul pengelolaan internal.
 
 ### Mode Publik
 
@@ -66,7 +66,7 @@ Field `visible`, `order`, `featured`, dan `featuredOrder` digunakan untuk mengen
 - Analisis Job Description diarahkan pada `Match`, `Transferable`, `Gap`, dan `Evidence` berdasarkan data portofolio.
 - Fokus respons mencakup perencanaan tata ruang, administrasi pertanahan, GIS, dan informasi profesional yang tersedia.
 
-### Mode Pengelola
+### Dukungan Internal
 
 - Menyediakan quick replies untuk pemeriksaan bahasa profil, saran keyword ATS, serta bantuan teknis website.
 - Menggunakan konteks data yang sama dengan halaman publik sehingga jawaban mengikuti perubahan konten terbaru pada browser.
@@ -79,15 +79,7 @@ Field `visible`, `order`, `featured`, dan `featuredOrder` digunakan untuk mengen
 - Riwayat percakapan dikirim bersama pertanyaan berikutnya.
 - Antarmuka menyediakan loading state, quick replies, input bebas, auto-scroll, dan pesan fallback ketika layanan tidak tersedia.
 
-## Dashboard Pengelola
-
-Dashboard dapat dibuka melalui:
-
-~~~text
-http://localhost:3000/#owner
-~~~
-
-Path `/owner` juga dikenali oleh aplikasi. Mode ini ditentukan dari pathname atau hash browser.
+## Modul Pengelolaan Konten
 
 | Editor | Data dan operasi yang tersedia |
 | --- | --- |
@@ -104,7 +96,7 @@ Path `/owner` juga dikenali oleh aplikasi. Mode ini ditentukan dari pathname ata
 
 Jenis pengalaman yang didukung meliputi `work`, `internship`, `organization`, `volunteering`, `kkn`, `field_activity`, dan `other`.
 
-Kategori proyek bawaan meliputi `maps`, `planning`, `research`, dan `other`. Kategori keahlian bawaan meliputi `spatial_planning`, `technical_design`, `productivity`, dan `other`. Keduanya dapat ditambah melalui dashboard.
+Kategori proyek bawaan meliputi `maps`, `planning`, `research`, dan `other`. Kategori keahlian bawaan meliputi `spatial_planning`, `technical_design`, `productivity`, dan `other`. Keduanya dapat ditambah melalui modul pengelolaan.
 
 ## Arsitektur
 
@@ -113,7 +105,7 @@ Kategori proyek bawaan meliputi `maps`, `planning`, `research`, dan `other`. Kat
 | Lapisan | Tanggung jawab |
 | --- | --- |
 | Public components | Merender seluruh section portofolio dan interaksi pengunjung |
-| Owner components | Menyediakan editor konten dan operasi pengelolaan data |
+| Content management components | Menangani pemeliharaan data secara terpisah dari komponen publik |
 | Language context | Menyimpan bahasa aktif, menyediakan data global, dan memilih teks terlokalisasi |
 | Data repository | Membaca, menyimpan, mereset, mengimpor, dan mengekspor data |
 | Type definitions | Mendefinisikan kontrak data portofolio menggunakan TypeScript |
@@ -127,13 +119,13 @@ Kategori proyek bawaan meliputi `maps`, `planning`, `research`, dan `other`. Kat
 2. `portfolioRepository` memeriksa data yang tersimpan pada `localStorage`.
 3. `LanguageProvider` memuat data dan mendistribusikannya melalui React Context.
 4. Komponen publik memfilter data berdasarkan bahasa, status, visibilitas, dan urutan.
-5. Dashboard mengirim perubahan kembali ke repository.
+5. Modul pengelolaan mengirim perubahan kembali ke repository.
 6. Event `portfolioDataUpdated` menyinkronkan perubahan ke komponen yang sedang aktif.
 7. Asisten portofolio menyusun konteks dari `portfolioData` terbaru.
 
 ### Penyimpanan Konten
 
-Data dashboard disimpan menggunakan browser `localStorage` dengan key:
+Data aplikasi disimpan menggunakan browser `localStorage` dengan key:
 
 ~~~text
 annisa_portfolio_content_v1
@@ -206,7 +198,6 @@ spatial-planning-portfolio/
 │   └── frames/                     # Frame cinematic background
 ├── src/
 │   ├── components/
-│   │   ├── owner/                  # Dashboard dan editor konten
 │   │   └── public/                 # Section publik, modal, canvas, dan AI assistant
 │   ├── context/
 │   │   └── LanguageContext.tsx     # Bahasa, data global, dan sinkronisasi
@@ -216,7 +207,7 @@ spatial-planning-portfolio/
 │   │   └── portfolioRepository.ts  # Persistence dan transfer JSON
 │   ├── types/
 │   │   └── portfolio.ts            # Kontrak data TypeScript
-│   ├── App.tsx                     # Komposisi halaman dan mode owner
+│   ├── App.tsx                     # Komposisi aplikasi
 │   ├── index.css                   # Design tokens dan gaya global
 │   └── main.tsx                    # Entry point React
 ├── index.html                      # Root HTML dan metadata
