@@ -56,8 +56,8 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
       setSession(sess);
       if (sess?.user?.id) {
         // Verify if user is in admin_users table
-        const { data } = await supabaseClient.from('admin_users').select('id').eq('id', sess.user.id).single();
-        if (data) setIsAdmin(true);
+        const { data, error } = await supabase!.from('admin_users').select('id').eq('id', sess.user.id).maybeSingle();
+        if (data && !error) setIsAdmin(true);
       }
       setAuthLoading(false);
     };
@@ -66,8 +66,8 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
     const { data: { subscription } } = authService.onAuthStateChange(async (_event, sess) => {
       setSession(sess);
       if (sess?.user?.id) {
-        const { data } = await supabaseClient.from('admin_users').select('id').eq('id', sess.user.id).single();
-        setIsAdmin(!!data);
+        const { data, error } = await supabase!.from('admin_users').select('id').eq('id', sess.user.id).maybeSingle();
+        setIsAdmin(!!data && !error);
       } else {
         setIsAdmin(false);
       }
