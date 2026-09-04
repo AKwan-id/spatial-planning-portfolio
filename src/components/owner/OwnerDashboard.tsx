@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { portfolioRepository } from '../../services/portfolioRepository';
 import { authService } from '../../services/AuthService';
+import { supabase } from '../../services/SupabaseClient';
 import { AboutEditor } from './AboutEditor';
 import { BrandingEditor } from './BrandingEditor';
 import { SelectedWorkEditor } from './SelectedWorkEditor';
@@ -47,14 +48,29 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
 
   const [session, setSession] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    authService.getCurrentSession().then((sess) => {
+    const initializeAuth = async () => {
+      const sess = await authService.getCurrentSession();
       setSession(sess);
+      if (sess?.user?.id) {
+        // Verify if user is in admin_users table
+        const { data } = await supabaseClient.from('admin_users').select('id').eq('id', sess.user.id).single();
+        if (data) setIsAdmin(true);
+      }
       setAuthLoading(false);
-    });
-    const { data: { subscription } } = authService.onAuthStateChange((_event, sess) => {
+    };
+    initializeAuth();
+
+    const { data: { subscription } } = authService.onAuthStateChange(async (_event, sess) => {
       setSession(sess);
+      if (sess?.user?.id) {
+        const { data } = await supabaseClient.from('admin_users').select('id').eq('id', sess.user.id).single();
+        setIsAdmin(!!data);
+      } else {
+        setIsAdmin(false);
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -160,6 +176,37 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
           >
             Kembali ke Publik
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (session && !isAdmin) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#2D292B]/90 backdrop-blur-md flex flex-col items-center justify-center px-4 animate-fadeIn">
+        <div className="glass-surface p-8 max-w-sm w-full rounded-2xl flex flex-col items-center text-center shadow-2xl border border-rose-500/50 mx-auto bg-[#1A1819]">
+          <div className="w-16 h-16 rounded-full bg-rose-950 border border-rose-500 flex items-center justify-center text-rose-500 mb-6">
+            <X className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-serif font-bold text-rose-500 mb-2 tracking-wide uppercase">AKSES DITOLAK</h2>
+          <p className="text-[11px] text-[#FDF2F5]/80 mb-6 font-medium leading-relaxed">
+            Sistem mengenali kredensial Google Anda ({session.user?.email}), namun Anda tidak terdaftar sebagai Administrator.
+          </p>
+          <div className="space-y-3 w-full">
+            <button
+              onClick={() => authService.signOut()}
+              className="w-full flex items-center justify-center gap-2 bg-rose-950/40 hover:bg-rose-900/60 transition-all px-6 py-3 rounded-xl border border-rose-900 font-bold tracking-wide text-xs text-rose-300 cursor-pointer"
+            >
+              <LogIn className="w-4 h-4" />
+              Ganti Akun Email
+            </button>
+            <button
+              onClick={onClose}
+              className="w-full text-[#FDF2F5]/50 hover:text-[#FDF2F5] font-semibold text-[10px] tracking-wider transition-colors uppercase cursor-pointer py-2"
+            >
+              Kembali ke Publik
+            </button>
+          </div>
         </div>
       </div>
     );
