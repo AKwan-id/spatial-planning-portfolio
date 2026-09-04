@@ -30,7 +30,10 @@ import {
   Eye,
   X,
   Check,
-  LogIn
+  LogIn,
+  ShieldAlert,
+  EyeOff,
+  Lock
 } from 'lucide-react';
 
 interface OwnerDashboardProps {
@@ -157,27 +160,27 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
 
   if (!session) {
     return (
-      <div className="fixed inset-0 z-50 bg-[#2D292B]/90 backdrop-blur-md flex flex-col items-center justify-center px-4 animate-fadeIn">
-        <div className="glass-surface p-8 max-w-sm w-full rounded-2xl flex flex-col items-center text-center shadow-2xl border border-[#F3C6D3]/40 mx-auto">
-          <div className="w-16 h-16 rounded-full bg-[#8B3A52] flex items-center justify-center text-[#FDF2F5] mb-6 shadow-inner">
-            <User className="w-8 h-8" />
+      <div className="fixed inset-0 z-50 bg-[#1A1819]/95 backdrop-blur-xl flex flex-col items-center justify-center px-4 animate-fadeIn">
+        <div className="bg-gradient-to-b from-[#2D292B] to-[#1A1819] p-10 max-w-sm w-full rounded-3xl flex flex-col items-center text-center shadow-2xl border border-[#3E3A3C] mx-auto">
+          <div className="w-14 h-14 bg-[#1A1819] rounded-2xl border border-[#3E3A3C] flex items-center justify-center mb-6 shadow-inner">
+            <Lock className="w-6 h-6 text-[#D99AAF]" strokeWidth={1.5} />
           </div>
-          <h2 className="text-2xl font-serif font-bold text-[#2D292B] mb-2 tracking-wide uppercase">RESTRICTED ZONE</h2>
-          <p className="text-[11px] text-[#2D292B]/80 mb-8 font-medium leading-relaxed">
-            Modul Manajemen Portofolio dilindungi oleh autentikasi Supabase dan Row Level Security (RLS). Silakan masuk sebagai Administrator.
+          <h2 className="text-xl font-serif font-bold text-[#FFF9F7] mb-2 tracking-widest uppercase">SECURITY GATEWAY</h2>
+          <p className="text-[11px] text-[#A69C9F] mb-10 font-medium leading-relaxed px-2">
+            Modul manajemen terenkripsi (Supabase RLS). Sistem mewajibkan otorisasi akses tingkat administrator untuk memasuki zona ini.
           </p>
           <button
             onClick={() => authService.signInWithGoogle()}
-            className="w-full flex items-center justify-center gap-3 bg-[#2D292B] hover:bg-[#8B3A52] text-[#FDF2F5] transition-all px-6 py-3.5 rounded-full font-bold tracking-wide text-xs cursor-pointer shadow-md"
+            className="w-full flex items-center justify-center gap-3 bg-[#FFF9F7] hover:bg-[#F3C6D3] text-[#2D292B] transition-all px-6 py-3.5 rounded-xl font-bold tracking-widest text-[10px] cursor-pointer shadow-md uppercase"
           >
-            <LogIn className="w-4 h-4" />
-            CONTINUE WITH GOOGLE
+            <LogIn className="w-4 h-4" strokeWidth={2.5} />
+            Authenticate via Google
           </button>
           <button
             onClick={onClose}
-            className="mt-6 text-[#2D292B]/50 hover:text-[#2D292B] font-semibold text-[10px] tracking-wider transition-colors uppercase cursor-pointer"
+            className="mt-8 text-[#A69C9F] hover:text-[#FFF9F7] font-bold text-[9px] tracking-widest transition-colors uppercase cursor-pointer flex items-center gap-2"
           >
-            Kembali ke Publik
+            Return to Interface
           </button>
         </div>
       </div>
@@ -186,32 +189,32 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
 
   if (session && !isAdmin) {
     return (
-      <div className="fixed inset-0 z-50 bg-[#2D292B]/90 backdrop-blur-md flex flex-col items-center justify-center px-4 animate-fadeIn">
-        <div className="glass-surface p-8 max-w-sm w-full rounded-2xl flex flex-col items-center text-center shadow-2xl border border-rose-500/50 mx-auto bg-[#1A1819]">
-          <div className="w-16 h-16 rounded-full bg-rose-950 border border-rose-500 flex items-center justify-center text-rose-500 mb-6">
-            <X className="w-8 h-8" />
+      <div className="fixed inset-0 z-50 bg-[#1A1819]/95 backdrop-blur-xl flex flex-col items-center justify-center px-4 animate-fadeIn">
+        <div className="bg-gradient-to-b from-[#2D292B] to-[#1A1819] p-10 max-w-sm w-full rounded-3xl flex flex-col items-center text-center shadow-2xl border border-[#3E3A3C] mx-auto">
+          <div className="w-14 h-14 bg-[#1A1819] rounded-2xl border border-[#3E3A3C] flex items-center justify-center mb-6 shadow-inner">
+            <ShieldAlert className="w-6 h-6 text-amber-500" strokeWidth={1.5} />
           </div>
-          <h2 className="text-xl font-serif font-bold text-rose-500 mb-2 tracking-wide uppercase">AKSES DITOLAK</h2>
-          <p className="text-[11px] text-[#FDF2F5]/80 mb-6 font-medium leading-relaxed">
-            Sistem mengenali kredensial Google Anda ({session.user?.email}), namun Anda tidak terdaftar sebagai Administrator.
+          <h2 className="text-xl font-serif font-bold text-[#FFF9F7] mb-2 tracking-widest uppercase">ACCESS DENIED</h2>
+          <p className="text-[11px] text-[#A69C9F] mb-6 font-medium leading-relaxed px-2">
+            Kredensial identitas <span className="text-[#D99AAF] font-mono">{session.user?.email}</span> dikenali, namun gagal melewati otorisasi Administrator (UID Mismatch).
             <br /><br />
-            <span className="text-[9px] font-mono text-rose-300/80 bg-rose-950/50 p-2 rounded block break-all text-left uppercase whitespace-pre-wrap">
+            <span className="text-[9px] font-mono text-[#A69C9F]/50 bg-[#1A1819] p-2 rounded-lg block break-all text-left uppercase whitespace-pre-wrap border border-[#3E3A3C]/50">
               DIAGNOSTIC LOG:<br />{debugLog}
             </span>
           </p>
-          <div className="space-y-3 w-full">
+          <div className="space-y-3 w-full mt-4">
             <button
               onClick={() => authService.signOut()}
-              className="w-full flex items-center justify-center gap-2 bg-rose-950/40 hover:bg-rose-900/60 transition-all px-6 py-3 rounded-xl border border-rose-900 font-bold tracking-wide text-xs text-rose-300 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 bg-[#FFF9F7] hover:bg-[#F3C6D3] transition-all px-6 py-3.5 rounded-xl text-[#2D292B] font-bold tracking-widest text-[10px] cursor-pointer shadow-md uppercase"
             >
-              <LogIn className="w-4 h-4" />
-              Ganti Akun Email
+              <RotateCcw className="w-3.5 h-3.5" strokeWidth={2.5} />
+              Re-Authenticate
             </button>
             <button
               onClick={onClose}
-              className="w-full text-[#FDF2F5]/50 hover:text-[#FDF2F5] font-semibold text-[10px] tracking-wider transition-colors uppercase cursor-pointer py-2"
+              className="w-full text-[#A69C9F] hover:text-[#FFF9F7] font-bold text-[9px] tracking-widest transition-colors uppercase cursor-pointer py-3 flex items-center justify-center"
             >
-              Kembali ke Publik
+              Return to Interface
             </button>
           </div>
         </div>
