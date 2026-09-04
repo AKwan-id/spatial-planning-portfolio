@@ -341,7 +341,7 @@ export const ProjectsEditor: React.FC = () => {
                   </div>
 
                   {/* Actions Toolbar */}
-                  <div className="flex items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-[#F3C6D3]/30 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-[#F3C6D3]/30 shrink-0">
                     <button
                       onClick={() => handleToggleFeatured(proj.id)}
                       className={`p-2 rounded-xl border text-xs font-semibold cursor-pointer ${proj.featured

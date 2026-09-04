@@ -1,63 +1,91 @@
 import { PortfolioData } from '../types/portfolio';
 import { initialPortfolioData } from '../data/initialPortfolioData';
-
-const STORAGE_KEY = 'annisa_portfolio_content_v1';
+import { supabase } from './SupabaseClient';
 
 export const portfolioRepository = {
+  // Sync fallback for immediate render (gets overridden by async load)
   getPortfolioData(): PortfolioData {
+    return initialPortfolioData;
+  },
+
+  async getPortfolioDataAsync(): Promise<PortfolioData> {
+    if (!supabase) {
+      console.warn('Supabase not configured. Using dummy initial data.');
+      return initialPortfolioData;
+    }
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        // Basic validation to ensure required fields exist
-        if (parsed && parsed.profile && parsed.profile.fullName) {
-          if (parsed.profile.shortIntro?.id?.includes('akan ditambahkan') || parsed.profile.shortIntro?.en?.includes('will be added')) {
-            parsed.profile.shortIntro = initialPortfolioData.profile.shortIntro;
-          }
-          if (parsed.profile.education?.id?.includes('akan ditambahkan') || parsed.profile.education?.en?.includes('will be added')) {
-            parsed.profile.education = initialPortfolioData.profile.education;
-          }
-          return parsed;
+      // Determine if the current user has session (Admin)
+      const { data: { session } } = await supabase.auth.getSession();
+      const table = session ? 'portfolio_data' : 'public_portfolio_data';
+
+      const { data, error } = await supabase.from(table).select('content').eq('id', 1).single();
+
+      if (error) {
+        // If row doesn't exist, fallback silently
+        if (error.code === 'PGRST116') return initialPortfolioData;
+        console.error('Database fetch error:', error);
+        // Try fallback to public data if admin fetch failed unexpectedly
+        if (session) {
+          const fallback = await supabase.from('public_portfolio_data').select('content').eq('id', 1).single();
+          if (fallback.data) return fallback.data.content as PortfolioData;
         }
+        return initialPortfolioData;
+      }
+
+      if (data && data.content) {
+        return data.content as PortfolioData;
       }
     } catch (e) {
-      console.warn('Could not read portfolio data from localStorage, using defaults.', e);
+      console.error('Supabase fetch error:', e);
     }
     return initialPortfolioData;
   },
 
-  savePortfolioData(data: PortfolioData): boolean {
+  async savePortfolioDataAsync(data: PortfolioData): Promise<boolean> {
+    if (!supabase) {
+      console.error('Cannot save. Supabase is not configured.');
+      return false;
+    }
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      // Dispatch custom event so UI can sync in real-time
+      // Filter for public view (strict removal of non-published items)
+      const publicData = {
+        ...data,
+        projects: data.projects.filter(p => p.status === 'PUBLISHED'),
+        skills: data.skills.filter(s => s.status === 'PUBLISHED'),
+        experience: data.experience.filter(e => e.status === 'PUBLISHED'),
+        certificates: data.certificates.filter(c => c.status === 'PUBLISHED')
+      };
+
+      // Upload full draft context. RLS protects this.
+      const { error: err1 } = await supabase.from('portfolio_data').upsert({ id: 1, content: data });
+      if (err1) throw err1;
+
+      // Upload strictly published content for public visitors
+      const { error: err2 } = await supabase.from('public_portfolio_data').upsert({ id: 1, content: publicData });
+      if (err2) throw err2;
+
       window.dispatchEvent(new CustomEvent('portfolioDataUpdated', { detail: data }));
       return true;
     } catch (e) {
-      console.error('Failed to save portfolio data:', e);
+      console.error('Failed to save to Supabase:', e);
       return false;
     }
   },
 
   resetPortfolioData(): PortfolioData {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-      window.dispatchEvent(new CustomEvent('portfolioDataUpdated', { detail: initialPortfolioData }));
-    } catch (e) {
-      console.error('Failed to reset portfolio data:', e);
-    }
+    window.dispatchEvent(new CustomEvent('portfolioDataUpdated', { detail: initialPortfolioData }));
     return initialPortfolioData;
   },
 
-  exportAsJson(): string {
-    const data = this.getPortfolioData();
-    return JSON.stringify(data, null, 2);
+  exportAsJson(currentData: PortfolioData): string {
+    return JSON.stringify(currentData, null, 2);
   },
 
-  importFromJson(jsonString: string): boolean {
+  async importFromJson(jsonString: string): Promise<boolean> {
     try {
       const parsed = JSON.parse(jsonString);
       if (parsed && parsed.profile && parsed.profile.fullName) {
-        return this.savePortfolioData(parsed);
+        return await this.savePortfolioDataAsync(parsed);
       }
     } catch (e) {
       console.error('Invalid JSON import:', e);

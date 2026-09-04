@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Language, LocalizedText, PortfolioData } from '../types/portfolio';
 import { portfolioRepository } from '../services/portfolioRepository';
+import { initialPortfolioData } from '../data/initialPortfolioData';
 
 interface LanguageContextType {
   language: Language;
@@ -16,22 +17,27 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('id');
-  const [portfolioData, setPortfolioData] = useState<PortfolioData>(() => portfolioRepository.getPortfolioData());
+  const [portfolioData, setPortfolioData] = useState<PortfolioData>(initialPortfolioData);
+  const [isLoading, setIsLoading] = useState(true); // Hydration state
 
   useEffect(() => {
+    const initializeData = async () => {
+      setIsLoading(true);
+      const data = await portfolioRepository.getPortfolioDataAsync();
+      setPortfolioData(data);
+      setIsLoading(false);
+    };
+    initializeData();
+
     const handleSync = (e: Event) => {
       const customEvent = e as CustomEvent<PortfolioData>;
       if (customEvent.detail) {
         setPortfolioData(customEvent.detail);
-      } else {
-        setPortfolioData(portfolioRepository.getPortfolioData());
       }
     };
 
     window.addEventListener('portfolioDataUpdated', handleSync);
-    return () => {
-      window.removeEventListener('portfolioDataUpdated', handleSync);
-    };
+    return () => window.removeEventListener('portfolioDataUpdated', handleSync);
   }, []);
 
   const t = (textObj: LocalizedText | undefined | null, fallback: string = ''): string => {
@@ -39,9 +45,11 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     return textObj[language] || textObj['en'] || textObj['id'] || fallback;
   };
 
-  const updateData = (newData: PortfolioData) => {
-    portfolioRepository.savePortfolioData(newData);
+  const updateData = async (newData: PortfolioData) => {
+    // Optimistic UI update
     setPortfolioData(newData);
+    // Background save
+    await portfolioRepository.savePortfolioDataAsync(newData);
   };
 
   const resetData = () => {

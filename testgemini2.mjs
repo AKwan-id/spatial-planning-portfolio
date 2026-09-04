@@ -1,1 +1,0 @@
-console.log(await (await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=AQ.Ab8RN6I9Ow1DFNl7r6IVYy0YAVUQBdDxj1tmmIKL7uNryXXaUw', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{ parts: [{ text: 'Halo' }] }] }) })).json())  

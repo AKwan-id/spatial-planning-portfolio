@@ -144,11 +144,10 @@ export const ExperienceEditor: React.FC = () => {
           return (
             <div
               key={exp.id}
-              className={`rounded-2xl border transition-all ${
-                isEditing
+              className={`rounded-2xl border transition-all ${isEditing
                   ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-6'
                   : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
-              }`}
+                }`}
             >
               {!isEditing ? (
                 <>
@@ -158,11 +157,10 @@ export const ExperienceEditor: React.FC = () => {
                         0{idx + 1} &bull; {exp.type}
                       </span>
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                          exp.status === 'PUBLISHED' || !exp.status
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${exp.status === 'PUBLISHED' || !exp.status
                             ? 'bg-emerald-100 text-emerald-800'
                             : 'bg-amber-100 text-amber-800'
-                        }`}
+                          }`}
                       >
                         {exp.status || 'PUBLISHED'}
                       </span>
@@ -173,7 +171,7 @@ export const ExperienceEditor: React.FC = () => {
                     </h4>
                   </div>
 
-                  <div className="flex items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-[#F3C6D3]/30 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-[#F3C6D3]/30 shrink-0">
                     <button
                       onClick={() => handleMoveOrder(idx, 'up')}
                       disabled={idx === 0}

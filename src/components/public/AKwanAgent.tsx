@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Sparkles, X, Send, User, ChevronDown } from 'lucide-react';
 
-const GEMINI_API_KEY = 'AQ.Ab8RN6I9Ow1DFNl7r6IVYy0YAVUQBdDxj1tmmIKL7uNryXXaUw';
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+// Security Revision: Hardcoded keys moved to secure backend environment variables.
 
 interface Message {
     role: 'user' | 'model';
@@ -108,7 +107,15 @@ export const AKwanAgent: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const contextData = JSON.stringify(portfolioData, null, 2);
+            // Security Revision: Only send PUBLISHED data to AI Provider
+            const publicContext = {
+                ...portfolioData,
+                projects: portfolioData.projects.filter(p => p.status === 'PUBLISHED'),
+                skills: portfolioData.skills.filter(s => s.status === 'PUBLISHED'),
+                experience: portfolioData.experience.filter(e => e.status === 'PUBLISHED'),
+                certificates: portfolioData.certificates.filter(c => c.status === 'PUBLISHED'),
+            };
+            const contextData = JSON.stringify(publicContext, null, 2);
 
             let systemPrompt = "";
             if (isOwner) {
@@ -148,8 +155,8 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
 
             geminiHistory.push({ role: 'user', parts: [{ text }] });
 
-            // Menggunakan API streamGenerateContent (SSE) ala ChatGPT
-            const STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
+            // Calling internal proxy Vercel Serverless Function
+            const STREAM_URL = '/api/chat';
 
             const response = await fetch(STREAM_URL, {
                 method: 'POST',

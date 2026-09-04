@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { portfolioRepository } from '../../services/portfolioRepository';
+import { authService } from '../../services/AuthService';
 import { AboutEditor } from './AboutEditor';
 import { BrandingEditor } from './BrandingEditor';
 import { SelectedWorkEditor } from './SelectedWorkEditor';
@@ -26,7 +28,8 @@ import {
   RotateCcw,
   Eye,
   X,
-  Check
+  Check,
+  LogIn
 } from 'lucide-react';
 
 interface OwnerDashboardProps {
@@ -42,8 +45,22 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
   const [importJson, setImportJson] = useState('');
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
+  const [session, setSession] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    authService.getCurrentSession().then((sess) => {
+      setSession(sess);
+      setAuthLoading(false);
+    });
+    const { data: { subscription } } = authService.onAuthStateChange((_event, sess) => {
+      setSession(sess);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleExport = () => {
-    const jsonStr = portfolioRepository.exportAsJson();
+    const jsonStr = portfolioRepository.exportAsJson(portfolioData);
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -54,12 +71,12 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
     showStatus('Data portfolio berhasil diexport dalam format JSON.', 'success');
   };
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (!importJson.trim()) {
       showStatus('Harap masukkan string JSON yang valid.', 'error');
       return;
     }
-    const success = portfolioRepository.importFromJson(importJson);
+    const success = await portfolioRepository.importFromJson(importJson);
     if (success) {
       showStatus('Data portfolio berhasil diimport!', 'success');
       setImportJson('');
@@ -110,6 +127,43 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
     { id: 'contact', label: '9. Contact Info', icon: Mail },
     { id: 'backup', label: 'Backup / Export', icon: Settings },
   ];
+
+  if (authLoading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#2D292B]/90 backdrop-blur-md flex flex-col items-center justify-center animate-pulse">
+        <p className="text-[#FFF9F7] font-serif tracking-widest uppercase text-sm font-semibold">Memverifikasi Otoritas. . .</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#2D292B]/90 backdrop-blur-md flex flex-col items-center justify-center px-4 animate-fadeIn">
+        <div className="glass-surface p-8 max-w-sm w-full rounded-2xl flex flex-col items-center text-center shadow-2xl border border-[#F3C6D3]/40 mx-auto">
+          <div className="w-16 h-16 rounded-full bg-[#8B3A52] flex items-center justify-center text-[#FDF2F5] mb-6 shadow-inner">
+            <User className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-serif font-bold text-[#2D292B] mb-2 tracking-wide uppercase">RESTRICTED ZONE</h2>
+          <p className="text-[11px] text-[#2D292B]/80 mb-8 font-medium leading-relaxed">
+            Modul Manajemen Portofolio dilindungi oleh autentikasi Supabase dan Row Level Security (RLS). Silakan masuk sebagai Administrator.
+          </p>
+          <button
+            onClick={() => authService.signInWithGoogle()}
+            className="w-full flex items-center justify-center gap-3 bg-[#2D292B] hover:bg-[#8B3A52] text-[#FDF2F5] transition-all px-6 py-3.5 rounded-full font-bold tracking-wide text-xs cursor-pointer shadow-md"
+          >
+            <LogIn className="w-4 h-4" />
+            CONTINUE WITH GOOGLE
+          </button>
+          <button
+            onClick={onClose}
+            className="mt-6 text-[#2D292B]/50 hover:text-[#2D292B] font-semibold text-[10px] tracking-wider transition-colors uppercase cursor-pointer"
+          >
+            Kembali ke Publik
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-[#2D292B]/80 backdrop-blur-md flex flex-col animate-fadeIn">
@@ -162,8 +216,8 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#F8F1F2]">
 
         {/* Sidebar Nav */}
-        <div className="w-full md:w-64 bg-[#2D292B] p-4 border-r border-[#D99AAF]/20 space-y-1 overflow-y-auto shrink-0">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#D99AAF] px-3 py-2 font-bold">
+        <div className="w-full md:w-64 bg-[#2D292B] p-3 md:p-4 border-b md:border-b-0 md:border-r border-[#D99AAF]/20 overflow-x-auto md:overflow-y-auto shrink-0 flex flex-row md:flex-col gap-2 md:gap-1 scrollbar-hide items-center md:items-stretch">
+          <div className="hidden md:block text-[10px] font-mono uppercase tracking-widest text-[#D99AAF] px-3 py-2 font-bold shrink-0">
             MODUL MANAJEMEN
           </div>
 
@@ -174,32 +228,38 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all text-left cursor-pointer ${isActive
-                    ? 'bg-[#D99AAF] text-[#FFF9F7] shadow-sm'
-                    : 'text-[#FFF9F7]/70 hover:bg-[#FFF9F7]/10 hover:text-[#FFF9F7]'
+                className={`shrink-0 md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-4 py-2.5 md:py-2.5 rounded-full md:rounded-xl text-xs md:text-sm font-semibold tracking-wide transition-all text-center md:text-left cursor-pointer whitespace-nowrap ${isActive
+                  ? 'bg-[#D99AAF] text-[#FFF9F7] shadow-sm'
+                  : 'bg-[#FFF9F7]/5 md:bg-transparent text-[#FFF9F7]/70 hover:bg-[#FFF9F7]/10 hover:text-[#FFF9F7]'
                   }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-4 h-4 hidden md:block" />
                 <span>{tab.label}</span>
               </button>
             );
           })}
 
-          <div className="pt-6 border-t border-[#D99AAF]/20 space-y-2 px-1">
+          <div className="shrink-0 hidden md:flex pt-6 border-t border-[#D99AAF]/20 flex-col space-y-2 px-1">
+            <button
+              onClick={() => authService.signOut()}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-orange-950/40 hover:bg-orange-800/60 text-orange-200 text-xs font-medium cursor-pointer mb-2"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign Out Session</span>
+            </button>
             <button
               onClick={handleExport}
               className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#FFF9F7]/10 hover:bg-[#FFF9F7]/20 text-[#FFF9F7] text-xs font-medium cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Export Data JSON</span>
+              <span>Export JSON</span>
             </button>
-
             <button
               onClick={handleReset}
               className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-200 text-xs font-medium cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Ke Default</span>
+              <span>Reset Default</span>
             </button>
           </div>
         </div>
