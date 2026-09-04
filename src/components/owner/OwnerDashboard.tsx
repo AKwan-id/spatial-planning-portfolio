@@ -49,6 +49,7 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
   const [session, setSession] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [debugLog, setDebugLog] = useState<string>('');
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -57,6 +58,7 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
       if (sess?.user?.id) {
         // Verify if user is in admin_users table
         const { data, error } = await supabase!.from('admin_users').select('id').eq('id', sess.user.id).maybeSingle();
+        setDebugLog(JSON.stringify({ data, error }, null, 2));
         if (data && !error) setIsAdmin(true);
       }
       setAuthLoading(false);
@@ -67,6 +69,7 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
       setSession(sess);
       if (sess?.user?.id) {
         const { data, error } = await supabase!.from('admin_users').select('id').eq('id', sess.user.id).maybeSingle();
+        setDebugLog(JSON.stringify({ data, error }, null, 2));
         setIsAdmin(!!data && !error);
       } else {
         setIsAdmin(false);
@@ -191,6 +194,10 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
           <h2 className="text-xl font-serif font-bold text-rose-500 mb-2 tracking-wide uppercase">AKSES DITOLAK</h2>
           <p className="text-[11px] text-[#FDF2F5]/80 mb-6 font-medium leading-relaxed">
             Sistem mengenali kredensial Google Anda ({session.user?.email}), namun Anda tidak terdaftar sebagai Administrator.
+            <br /><br />
+            <span className="text-[9px] font-mono text-rose-300/80 bg-rose-950/50 p-2 rounded block break-all text-left uppercase whitespace-pre-wrap">
+              DIAGNOSTIC LOG:<br />{debugLog}
+            </span>
           </p>
           <div className="space-y-3 w-full">
             <button
