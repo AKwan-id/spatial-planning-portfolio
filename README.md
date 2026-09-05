@@ -1,4 +1,4 @@
-# 🌍 Portofolio Perencanaan Tata Ruang & Agen AI Cerdas
+# 🌍 Autonomous AI-Powered Executive Portfolio
 
 Aplikasi web portofolio interaktif ultra-premium yang dibangun khusus untuk Perencana Tata Ruang, Analis GIS, dan Ahli Kebijakan Perkotaan. Repositori ini berisi kode sumber untuk *frontend* yang sangat dinamis yang dipadukan dengan *backend serverless* yang aman.
 
