@@ -2,6 +2,8 @@ export const config = {
     runtime: 'edge',
 };
 
+import { GoogleGenAI } from '@google/genai';
+
 export default async function handler(req: Request) {
     if (req.method !== 'POST') {
         return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
@@ -13,14 +15,9 @@ export default async function handler(req: Request) {
             return new Response(JSON.stringify({ error: 'AI Gateway not configured (missing GEMINI_API_KEY)' }), { status: 503 });
         }
 
-        // Rate Limiting (Vercel Serverless free tier without KV)
-        // Production integration with Upstash Redis or Vercel Edge Config should be inserted here
-        // const clientIp = req.headers.get('x-forwarded-for') || '127.0.0.1';
-
         const body = await req.json();
         const { contents } = body;
 
-        // Reject inputs > 50kb
         const rawBodySize = new TextEncoder().encode(JSON.stringify(body)).length;
         if (rawBodySize > 50000) {
             return new Response(JSON.stringify({ error: 'Payload too large' }), { status: 413 });
@@ -30,36 +27,37 @@ export default async function handler(req: Request) {
             return new Response(JSON.stringify({ error: 'Invalid input payload' }), { status: 400 });
         }
 
-        // Proxy securely to Google's REST API for SSE Streaming
-        const GEMINI_MODEL = 'gemini-1.5-flash-latest';
+        const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
         const isStream = req.headers.get('accept') === 'text/event-stream';
 
-        // We append the key to URL securely server-side
-        const endpoint = isStream ? 'streamGenerateContent?alt=sse' : 'generateContent';
-        const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:${endpoint}&key=${apiKey}`;
-
-        // Workaround for URL parsing issue with ampersand insertion, we must use ?key=
-        const GOOGLE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:${isStream ? 'streamGenerateContent?alt=sse&key=' : 'generateContent?key='
-            }${apiKey}`;
-
-        const googleRes = await fetch(GOOGLE_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents,
-                generationConfig: body.generationConfig,
-                systemInstruction: body.systemInstruction
-            })
-        });
-
-        if (!googleRes.ok) {
-            const text = await googleRes.text();
-            console.error('Google API Error:', text);
-            return new Response(JSON.stringify({ error: 'upstream_error', details: text }), { status: 502 });
-        }
-
         if (isStream) {
-            return new Response(googleRes.body, {
+            const stream = await ai.models.generateContentStream({
+                model: 'gemini-1.5-flash',
+                contents: contents,
+                config: {
+                    systemInstruction: body.systemInstruction?.parts?.text,
+                    temperature: body.generationConfig?.temperature || 0.3
+                }
+            });
+
+            // Convert async iterable to ReadableStream for Edge
+            const readable = new ReadableStream({
+                async start(controller) {
+                    try {
+                        for await (const chunk of stream) {
+                            const data = `data: ${JSON.stringify({ candidates: [{ content: { parts: [{ text: chunk.text }] } }] })}\n\n`;
+                            controller.enqueue(new TextEncoder().encode(data));
+                        }
+                        controller.enqueue(new TextEncoder().encode('data: [DONE]\n\n'));
+                        controller.close();
+                    } catch (error) {
+                        console.error('Stream error:', error);
+                        controller.error(error);
+                    }
+                }
+            });
+
+            return new Response(readable, {
                 headers: {
                     'Content-Type': 'text/event-stream',
                     'Cache-Control': 'no-cache',
@@ -69,14 +67,23 @@ export default async function handler(req: Request) {
             });
         }
 
-        // Non-stream fallback (e.g. initial quick sync checks)
-        const jsonRes = await googleRes.json();
-        return new Response(JSON.stringify(jsonRes), {
+        const response = await ai.models.generateContent({
+            model: 'gemini-1.5-flash',
+            contents: contents,
+            config: {
+                systemInstruction: body.systemInstruction?.parts?.text,
+                temperature: body.generationConfig?.temperature || 0.3
+            }
+        });
+
+        return new Response(JSON.stringify({
+            candidates: [{ content: { parts: [{ text: response.text }] } }]
+        }), {
             headers: { 'Content-Type': 'application/json' }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Chat Gateway Error:', error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
+        return new Response(JSON.stringify({ error: 'Internal Server Error', details: error?.message }), { status: 500 });
     }
 }
