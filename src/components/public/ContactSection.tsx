@@ -123,8 +123,14 @@ export const ContactSection: React.FC = () => {
 
         {/* Minimal Footer with Dynamic Year */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-[#EAA3B8]/40 text-xs text-[#2D292B]/70 font-medium">
-          <div>
-            <span>© {new Date().getFullYear()} Annisa Nur Prabawa</span>
+          <div className="text-center sm:text-left">
+            <span>© {new Date().getFullYear()} {siteSettings?.title || 'Annisa Nur Prabawa'}</span>
+            {siteSettings?.footerText && (
+              <>
+                <span className="hidden sm:inline mx-2">—</span>
+                <span className="block sm:inline mt-1 sm:mt-0">{t(siteSettings.footerText)}</span>
+              </>
+            )}
           </div>
 
           <button

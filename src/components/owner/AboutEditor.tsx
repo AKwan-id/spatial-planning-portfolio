@@ -1,13 +1,26 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 import { ProfileData } from '../../types/portfolio';
 import { Save, RefreshCw, User, Image, MapPin, GraduationCap, Sparkles } from 'lucide-react';
+import { DebouncedInput, DebouncedTextarea } from './DebouncedInput';
 
 import { GoogleDriveWarning } from './GoogleDriveWarning';
 
 export const AboutEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
   const profile = portfolioData.profile;
+  const { translateToEnglish, isTranslating } = useGeminiTranslate();
+
+  const handleAutoTranslate = async (field: 'professionalField' | 'shortIntro' | 'education' | 'careerInterest' | 'location') => {
+    const indoText = profile[field]?.id;
+    if (!indoText) return;
+
+    const translated = await translateToEnglish(indoText);
+    if (translated) {
+      handleBilingualChange(field, 'en', translated);
+    }
+  };
 
   const handleChange = (field: keyof ProfileData, value: any) => {
     const updated = {
@@ -58,10 +71,10 @@ export const AboutEditor: React.FC = () => {
             <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
               Nama Lengkap
             </label>
-            <input
+            <DebouncedInput
               type="text"
               value={profile.fullName}
-              onChange={(e) => handleChange('fullName', e.target.value)}
+              onDebouncedChange={(val) => handleChange('fullName', val)}
               className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-sm text-[#2D292B] focus:outline-none focus:border-[#D99AAF]"
             />
           </div>
@@ -70,10 +83,10 @@ export const AboutEditor: React.FC = () => {
             <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
               URL Foto Portrait
             </label>
-            <input
+            <DebouncedInput
               type="text"
               value={profile.portraitUrl}
-              onChange={(e) => handleChange('portraitUrl', e.target.value)}
+              onDebouncedChange={(val) => handleChange('portraitUrl', val)}
               className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-sm text-[#2D292B] focus:outline-none focus:border-[#D99AAF]"
             />
             <GoogleDriveWarning />
@@ -82,18 +95,28 @@ export const AboutEditor: React.FC = () => {
 
         {/* Professional Field Bilingual */}
         <div className="space-y-3 pt-4 border-t border-[#F3C6D3]/30">
-          <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-            Bidang Keahlian / Professional Field
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
+              Bidang Keahlian / Professional Field
+            </label>
+            <button
+              onClick={() => handleAutoTranslate('professionalField')}
+              disabled={isTranslating || !profile.professionalField.id}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50"
+            >
+              <Sparkles className={`w-3 h-3 ${isTranslating ? 'animate-pulse' : ''}`} />
+              {isTranslating ? 'Translating...' : 'Translate'}
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">
                 Bahasa Indonesia (ID)
               </span>
-              <input
+              <DebouncedInput
                 type="text"
                 value={profile.professionalField.id}
-                onChange={(e) => handleBilingualChange('professionalField', 'id', e.target.value)}
+                onDebouncedChange={(val) => handleBilingualChange('professionalField', 'id', val)}
                 className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
             </div>
@@ -101,10 +124,10 @@ export const AboutEditor: React.FC = () => {
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">
                 English (ENG)
               </span>
-              <input
+              <DebouncedInput
                 type="text"
                 value={profile.professionalField.en}
-                onChange={(e) => handleBilingualChange('professionalField', 'en', e.target.value)}
+                onDebouncedChange={(val) => handleBilingualChange('professionalField', 'en', val)}
                 className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
             </div>
@@ -113,18 +136,28 @@ export const AboutEditor: React.FC = () => {
 
         {/* Short Intro Bilingual */}
         <div className="space-y-3 pt-4 border-t border-[#F3C6D3]/30">
-          <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-            Pengantar Singkat / Introduction
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
+              Pengantar Singkat / Introduction
+            </label>
+            <button
+              onClick={() => handleAutoTranslate('shortIntro')}
+              disabled={isTranslating || !profile.shortIntro.id}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50"
+            >
+              <Sparkles className={`w-3 h-3 ${isTranslating ? 'animate-pulse' : ''}`} />
+              {isTranslating ? 'Translating...' : 'Translate'}
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">
                 Bahasa Indonesia (ID)
               </span>
-              <textarea
+              <DebouncedTextarea
                 rows={3}
                 value={profile.shortIntro.id}
-                onChange={(e) => handleBilingualChange('shortIntro', 'id', e.target.value)}
+                onDebouncedChange={(val) => handleBilingualChange('shortIntro', 'id', val)}
                 className="w-full p-3 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
             </div>
@@ -132,10 +165,10 @@ export const AboutEditor: React.FC = () => {
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">
                 English (ENG)
               </span>
-              <textarea
+              <DebouncedTextarea
                 rows={3}
                 value={profile.shortIntro.en}
-                onChange={(e) => handleBilingualChange('shortIntro', 'en', e.target.value)}
+                onDebouncedChange={(val) => handleBilingualChange('shortIntro', 'en', val)}
                 className="w-full p-3 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
             </div>
@@ -144,61 +177,91 @@ export const AboutEditor: React.FC = () => {
 
         {/* Education, Career Interest & Location */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-[#F3C6D3]/30">
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-              Pendidikan (ID / ENG)
-            </label>
-            <input
+          <div className="space-y-2 relative">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
+                Pendidikan (ID / ENG)
+              </label>
+              <button
+                onClick={() => handleAutoTranslate('education')}
+                disabled={isTranslating || !profile.education.id}
+                title="Translate to English"
+                className="p-1.5 rounded-full bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50"
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${isTranslating ? 'animate-pulse' : ''}`} />
+              </button>
+            </div>
+            <DebouncedInput
               type="text"
               value={profile.education.id}
-              onChange={(e) => handleBilingualChange('education', 'id', e.target.value)}
+              onDebouncedChange={(val) => handleBilingualChange('education', 'id', val)}
               placeholder="Indonesian"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs mb-2"
             />
-            <input
+            <DebouncedInput
               type="text"
               value={profile.education.en}
-              onChange={(e) => handleBilingualChange('education', 'en', e.target.value)}
+              onDebouncedChange={(val) => handleBilingualChange('education', 'en', val)}
               placeholder="English"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-              Minat Karir (ID / ENG)
-            </label>
-            <input
+          <div className="space-y-2 relative">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
+                Minat Karir (ID / ENG)
+              </label>
+              <button
+                onClick={() => handleAutoTranslate('careerInterest')}
+                disabled={isTranslating || !profile.careerInterest.id}
+                title="Translate to English"
+                className="p-1.5 rounded-full bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50"
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${isTranslating ? 'animate-pulse' : ''}`} />
+              </button>
+            </div>
+            <DebouncedInput
               type="text"
               value={profile.careerInterest.id}
-              onChange={(e) => handleBilingualChange('careerInterest', 'id', e.target.value)}
+              onDebouncedChange={(val) => handleBilingualChange('careerInterest', 'id', val)}
               placeholder="Indonesian"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs mb-2"
             />
-            <input
+            <DebouncedInput
               type="text"
               value={profile.careerInterest.en}
-              onChange={(e) => handleBilingualChange('careerInterest', 'en', e.target.value)}
+              onDebouncedChange={(val) => handleBilingualChange('careerInterest', 'en', val)}
               placeholder="English"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-              Lokasi Domisili (ID / ENG)
-            </label>
-            <input
+          <div className="space-y-2 relative">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
+                Lokasi Domisili (ID / ENG)
+              </label>
+              <button
+                onClick={() => handleAutoTranslate('location')}
+                disabled={isTranslating || !profile.location?.id}
+                title="Translate to English"
+                className="p-1.5 rounded-full bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50"
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${isTranslating ? 'animate-pulse' : ''}`} />
+              </button>
+            </div>
+            <DebouncedInput
               type="text"
               value={profile.location?.id || ''}
-              onChange={(e) => handleBilingualChange('location', 'id', e.target.value)}
+              onDebouncedChange={(val) => handleBilingualChange('location', 'id', val)}
               placeholder="Indonesian"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs mb-2"
             />
-            <input
+            <DebouncedInput
               type="text"
               value={profile.location?.en || ''}
-              onChange={(e) => handleBilingualChange('location', 'en', e.target.value)}
+              onDebouncedChange={(val) => handleBilingualChange('location', 'en', val)}
               placeholder="English"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs"
             />

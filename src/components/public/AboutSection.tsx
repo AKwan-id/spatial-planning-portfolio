@@ -43,9 +43,7 @@ export const AboutSection: React.FC = () => {
                 {/* Professional Field */}
                 <div className="pt-1">
                   <div className="text-base sm:text-xl font-serif font-medium text-[#2D292B] border-l-2 border-[#8B3A52] pl-3.5 py-0.5 headline-shadow">
-                    {language === 'id'
-                      ? 'Perencanaan Tata Ruang dan Pertanahan'
-                      : 'Spatial Planning and Land Administration'}
+                    {t(profile.professionalField)}
                   </div>
                 </div>
 

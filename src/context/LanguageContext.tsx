@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, startTransition } from 'react';
 import { Language, LocalizedText, PortfolioData } from '../types/portfolio';
 import { portfolioRepository } from '../services/portfolioRepository';
 import { initialPortfolioData } from '../data/initialPortfolioData';
@@ -19,6 +19,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [language, setLanguage] = useState<Language>('id');
   const [portfolioData, setPortfolioData] = useState<PortfolioData>(initialPortfolioData);
   const [isLoading, setIsLoading] = useState(true); // Hydration state
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const initializeData = async () => {
@@ -29,15 +30,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     };
     initializeData();
 
-    const handleSync = (e: Event) => {
-      const customEvent = e as CustomEvent<PortfolioData>;
-      if (customEvent.detail) {
-        setPortfolioData(customEvent.detail);
-      }
-    };
-
-    window.addEventListener('portfolioDataUpdated', handleSync);
-    return () => window.removeEventListener('portfolioDataUpdated', handleSync);
+    // Removed cross-window redundant handleSync to prevent double-renders on same tab during typing
   }, []);
 
   const t = (textObj: LocalizedText | undefined | null, fallback: string = ''): string => {
@@ -45,11 +38,20 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     return textObj[language] || textObj['en'] || textObj['id'] || fallback;
   };
 
-  const updateData = async (newData: PortfolioData) => {
-    // Optimistic UI update
+  const updateData = (newData: PortfolioData) => {
+    // Instant optimistic UI update for global context (inputs are now locally buffered)
     setPortfolioData(newData);
-    // Background save
-    await portfolioRepository.savePortfolioDataAsync(newData);
+
+    // Clear the existing timeout if user types quickly again
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Background save debounced by 800ms to prevent database thrashing and cursor jumping
+    saveTimeoutRef.current = setTimeout(async () => {
+      await portfolioRepository.savePortfolioDataAsync(newData);
+      saveTimeoutRef.current = null;
+    }, 800);
   };
 
   const resetData = () => {
