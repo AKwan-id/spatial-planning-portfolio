@@ -30,7 +30,17 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     };
     initializeData();
 
-    // Removed cross-window redundant handleSync to prevent double-renders on same tab during typing
+    // BroadcastChannel for cross-tab synchronization
+    const channel = new BroadcastChannel('portfolio_sync');
+    channel.onmessage = (event) => {
+      if (event.data && event.data.type === 'SYNC_DATA') {
+        setPortfolioData(event.data.payload);
+      }
+    };
+
+    return () => {
+      channel.close();
+    };
   }, []);
 
   const t = (textObj: LocalizedText | undefined | null, fallback: string = ''): string => {
@@ -41,6 +51,11 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const updateData = (newData: PortfolioData) => {
     // Instant optimistic UI update for global context (inputs are now locally buffered)
     setPortfolioData(newData);
+
+    // Broadcast change to other open tabs
+    const channel = new BroadcastChannel('portfolio_sync');
+    channel.postMessage({ type: 'SYNC_DATA', payload: newData });
+    channel.close();
 
     // Clear the existing timeout if user types quickly again
     if (saveTimeoutRef.current) {
