@@ -26,7 +26,7 @@ export default async function handler(req: Request) {
 
         rateLimitMap.set(clientIp, userRate);
 
-        if (userRate.count > 10) { // Max 10 messages per minute
+        if (userRate.count > 30) { // Max 30 messages per minute
             return new Response(JSON.stringify({ error: 'Terlalu banyak pesan. Mohon tunggu sesaat.' }), { status: 429 });
         }
 

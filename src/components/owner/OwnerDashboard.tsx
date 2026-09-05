@@ -81,6 +81,38 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Fitur Keamanan: Auto-logout setelah 1 jam tanpa interaksi apa-apa
+  useEffect(() => {
+    let timeoutId: number | NodeJS.Timeout;
+
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      if (session && isAdmin) {
+        timeoutId = setTimeout(() => {
+          authService.signOut();
+        }, 3600000); // 1 Jam = 3.600.000 ms
+      }
+    };
+
+    if (session && isAdmin) {
+      window.addEventListener('mousemove', resetTimer);
+      window.addEventListener('mousedown', resetTimer);
+      window.addEventListener('keypress', resetTimer);
+      window.addEventListener('scroll', resetTimer);
+      window.addEventListener('touchstart', resetTimer);
+      resetTimer();
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('mousedown', resetTimer);
+      window.removeEventListener('keypress', resetTimer);
+      window.removeEventListener('scroll', resetTimer);
+      window.removeEventListener('touchstart', resetTimer);
+    };
+  }, [session, isAdmin]);
+
   const handleExport = () => {
     const jsonStr = portfolioRepository.exportAsJson(portfolioData);
     const blob = new Blob([jsonStr], { type: 'application/json' });
