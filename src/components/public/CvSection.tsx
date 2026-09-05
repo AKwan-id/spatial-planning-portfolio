@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { FileText, Download, Eye, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { SparklingText } from './SparklingText';
@@ -32,7 +32,7 @@ export const CvSection: React.FC<CvSectionProps> = ({ onViewCv }) => {
               <FileText className="w-3.5 h-3.5" />
               <span>{language === 'id' ? 'DOKUMEN RESMI' : 'RESUME'}</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B]">
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B] bg-white/70 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-2xl border border-white/50 shadow-sm inline-block leading-tight sm:leading-tight">
               <SparklingText>
                 Curriculum Vitae
               </SparklingText>

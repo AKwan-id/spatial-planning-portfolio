@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { ExperienceType } from '../../types/portfolio';
 import { Briefcase, Calendar, MapPin, Award, CheckCircle2 } from 'lucide-react';
@@ -42,7 +42,7 @@ export const ExperienceSection: React.FC = () => {
               <Briefcase className="w-3.5 h-3.5" />
               <span>{language === 'id' ? 'REKAM JEJAK' : 'REKORD'}</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B]">
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B] bg-white/70 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-2xl border border-white/50 shadow-sm inline-block leading-tight sm:leading-tight">
               <SparklingText>
                 {language === 'id' ? 'Pengalaman & Rekam Jejak' : 'Professional Experience'}
               </SparklingText>

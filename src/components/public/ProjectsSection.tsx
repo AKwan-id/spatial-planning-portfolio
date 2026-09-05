@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { ProjectCategoryType, ProjectItem, SelectedWorkItem } from '../../types/portfolio';
 import { FolderGit2, Map, Calendar, ArrowUpRight, Layers } from 'lucide-react';
@@ -54,7 +54,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
               <FolderGit2 className="w-3.5 h-3.5" />
               <span>{language === 'id' ? 'PORTOFOLIO LENGKAP' : 'GALLERY'}</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B]">
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B] bg-white/70 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-2xl border border-white/50 shadow-sm inline-block leading-tight sm:leading-tight">
               <SparklingText>
                 {language === 'id' ? 'Galeri Proyek Spasial' : 'Spatial Projects Gallery'}
               </SparklingText>

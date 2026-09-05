@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { SkillCategoryType, SkillItem } from '../../types/portfolio';
 import { Cpu, Search, Check, Sparkles, Filter, ChevronDown, ChevronUp } from 'lucide-react';
@@ -50,7 +50,7 @@ export const SkillsSection: React.FC = () => {
               <Cpu className="w-3.5 h-3.5" />
               <span>{language === 'id' ? 'KOMPETENSI' : 'COMPETENCIES'}</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B]">
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B] bg-white/70 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-2xl border border-white/50 shadow-sm inline-block leading-tight sm:leading-tight">
               <SparklingText>
                 {language === 'id' ? 'Keahlian & Kompetensi' : 'Skills & Expertise'}
               </SparklingText>
