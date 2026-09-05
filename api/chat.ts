@@ -31,7 +31,7 @@ export default async function handler(req: Request) {
         }
 
         // Proxy securely to Google's REST API for SSE Streaming
-        const GEMINI_MODEL = 'gemini-1.5-flash';
+        const GEMINI_MODEL = 'gemini-1.5-flash-latest';
         const isStream = req.headers.get('accept') === 'text/event-stream';
 
         // We append the key to URL securely server-side
@@ -55,7 +55,7 @@ export default async function handler(req: Request) {
         if (!googleRes.ok) {
             const text = await googleRes.text();
             console.error('Google API Error:', text);
-            return new Response(JSON.stringify({ error: 'upstream_error' }), { status: 502 });
+            return new Response(JSON.stringify({ error: 'upstream_error', details: text }), { status: 502 });
         }
 
         if (isStream) {

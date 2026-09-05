@@ -1,0 +1,20 @@
+{
+    "systemInstruction": {
+        "parts": {
+            "text": "Anda adalah Asisten portofolio. Jawablah singkat 'Halo juga!' jika disapa."
+        }
+    },
+    "contents": [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "Halo"
+                }
+            ]
+        }
+    ],
+    "generationConfig": {
+        "temperature": 0.3
+    }
+}
