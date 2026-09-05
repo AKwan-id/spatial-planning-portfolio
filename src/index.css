@@ -68,11 +68,11 @@
 
 @keyframes text-pulse {
   0% {
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 0 0px rgba(217, 154, 175, 0);
   }
 
   100% {
-    text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 15px rgba(255, 255, 255, 0.9), 0 0 6px rgba(255, 255, 255, 1);
+    text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 0 16px rgba(234, 163, 184, 0.55);
   }
 }
 
@@ -129,4 +129,4 @@
   outline: 2px solid #8B3A52;
   outline-offset: 2px;
 }
-.text-glow-white { text-shadow: 0 0 25px rgba(255, 255, 255, 0.9), 0 0 12px rgba(255, 255, 255, 0.9), 0 0 6px rgba(255, 255, 255, 1); }
+.text-glow-white { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 25px rgba(255, 255, 255, 0.8)); }
