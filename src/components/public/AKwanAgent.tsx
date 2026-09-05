@@ -44,6 +44,16 @@ export const AKwanAgent: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
 
+    // XSS Protection utility
+    const escapeHtml = (text: string) => {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Check if we are in owner mode
@@ -272,7 +282,7 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
                                             : 'bg-white border border-[#EAA3B8]/40 text-[#2D292B] rounded-tl-sm'
                                             }`}
                                     >
-                                        <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }} />
+                                        <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: escapeHtml(msg.text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }} />
                                     </div>
                                 </div>
                             ))}
