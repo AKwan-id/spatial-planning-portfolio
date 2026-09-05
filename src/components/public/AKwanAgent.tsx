@@ -160,9 +160,12 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
 
             const response = await fetch(STREAM_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/event-stream'
+                },
                 body: JSON.stringify({
-                    system_instruction: { parts: { text: systemPrompt } },
+                    systemInstruction: { parts: { text: systemPrompt } },
                     contents: geminiHistory,
                     generationConfig: { temperature: 0.3 }
                 })
