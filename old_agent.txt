@@ -1,0 +1,1277 @@
+commit 13e79819fb95fdbb2d7fb70d56574876ab837cb6
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Sat Sep 5 15:20:40 2026 +0700
+
+    fix(ai): force event-stream accept header
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 9c9742d..9063fc7 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -160,9 +160,12 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
+ 
+             const response = await fetch(STREAM_URL, {
+                 method: 'POST',
+-                headers: { 'Content-Type': 'application/json' },
++                headers: {
++                    'Content-Type': 'application/json',
++                    'Accept': 'text/event-stream'
++                },
+                 body: JSON.stringify({
+-                    system_instruction: { parts: { text: systemPrompt } },
++                    systemInstruction: { parts: { text: systemPrompt } },
+                     contents: geminiHistory,
+                     generationConfig: { temperature: 0.3 }
+                 })
+
+commit 395870edc90fb7e505b184c00b1831776493159c
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Fri Sep 4 16:05:53 2026 +0700
+
+    chore: finish security phase, mobile fixes, and sanitize README
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index dc366cb..9c9742d 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
+ import { useLanguage } from '../../context/LanguageContext';
+ import { Sparkles, X, Send, User, ChevronDown } from 'lucide-react';
+ 
+-const GEMINI_API_KEY = 'AQ.Ab8RN6I9Ow1DFNl7r6IVYy0YAVUQBdDxj1tmmIKL7uNryXXaUw';
+-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
++// Security Revision: Hardcoded keys moved to secure backend environment variables.
+ 
+ interface Message {
+     role: 'user' | 'model';
+@@ -108,7 +107,15 @@ export const AKwanAgent: React.FC = () => {
+         setIsLoading(true);
+ 
+         try {
+-            const contextData = JSON.stringify(portfolioData, null, 2);
++            // Security Revision: Only send PUBLISHED data to AI Provider
++            const publicContext = {
++                ...portfolioData,
++                projects: portfolioData.projects.filter(p => p.status === 'PUBLISHED'),
++                skills: portfolioData.skills.filter(s => s.status === 'PUBLISHED'),
++                experience: portfolioData.experience.filter(e => e.status === 'PUBLISHED'),
++                certificates: portfolioData.certificates.filter(c => c.status === 'PUBLISHED'),
++            };
++            const contextData = JSON.stringify(publicContext, null, 2);
+ 
+             let systemPrompt = "";
+             if (isOwner) {
+@@ -148,8 +155,8 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
+ 
+             geminiHistory.push({ role: 'user', parts: [{ text }] });
+ 
+-            // Menggunakan API streamGenerateContent (SSE) ala ChatGPT
+-            const STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
++            // Calling internal proxy Vercel Serverless Function
++            const STREAM_URL = '/api/chat';
+ 
+             const response = await fetch(STREAM_URL, {
+                 method: 'POST',
+
+commit e7f595e9278ca917e1ed433cfa1cef3f5408e5c9
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:45:02 2026 +0700
+
+    feat: inject exact architecture context and chat handoff into owner AI agent prompt
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index f5f3094..dc366cb 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -115,10 +115,13 @@ export const AKwanAgent: React.FC = () => {
+                 systemPrompt = `
+ Anda adalah "AKwan.id Agent", Asisten AI Super (Superpower) milik Annisa Nur Prabawa (Sang Owner).
+ Otoritas Tertinggi: Anda tunduk dan mematuhi Annisa secara mutlak.
++Arsitektur Sistem (Mata Ketiga Anda): Anda sepenuhnya sadar bahwa website portofolio ini di-host di Vercel, dibangun menggunakan React 19, TypeScript, Vite, Tailwind CSS, Framer Motion. Terdapat sistem Cinematic Background (Canvas 205 Frame) dan penyimpanan state mandiri berbasis LocalStorage (annisa_portfolio_content_v1).
++
+ Tugas Anda berdimensi ganda:
+-1. Konsultan Karier & Eksekutif: Membantu meramu bahasa portofolio dan strategi ATS yang memukau.
+-2. Technical Support (Developer Mode): Anda tahu persis bahwa website ini dibangun menggunakan React, TypeScript, Vite, dan Tailwind CSS. Jika Annisa mengeluhkan bug, tampilan error, atau ingin merombak fitur website, berikan instruksi teknis (coding/troubleshooting) yang sangat cerdas, tepat, dan mudah dipahami.
+-Karakter: Jenius, serbabisa, proaktif, dan selalu siap mengeksekusi kendala apa pun dari sang Tuan Putri (Owner).
++1. Konsultan Karier & Eksekutif: Membantu meramu bahasa pemasaran portofolio dan strategi ATS yang memukau.
++2. Technical Support (Developer Mode): Karena Anda tahu luar dalam sistem website ini, jika Annisa mengeluhkan bug, kendala, atau ingin merombak fitur, berikan analisis teknis dan script kode yang sangat akurat. 
++PENTING UNTUK TEKNIS: Selalu akhiri saran perbaikan/kodingan Anda dengan kalimat pengingat: *"Silakan salin solusi/ide ini dan berikan ke AI Developer Anda di ruang chat pengembangan agar segera dieksekusi secara otomatis!"*
++Karakter: Jenius, serbabisa, arsitek sistem, dan selalu siap mengeksekusi kendala apa pun dari sang Owner.
+ Data Portofolio Saat Ini: ${contextData}
+         `;
+             } else {
+
+commit 6bc26613ae6d673d18355e714fce09c7fffdcde9
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:41:37 2026 +0700
+
+    feat: upgrade owner AI mode to Technical Fullstack Support superpowers
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 60fca93..f5f3094 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -94,9 +94,9 @@ export const AKwanAgent: React.FC = () => {
+     ];
+ 
+     const ownerQuickReplies = [
+-        'Cek bahasa profilku (Lebay/Pro?)',
+-        'Bantu bikin ringkasan pengalaman',
+-        'Saran keyword ATS Tata Ruang',
++        'Bantu perbaiki Error/Bug Website',
++        'Saran keyword ATS profesional',
++        'Cek kualitas bahasa profilku',
+     ];
+ 
+     const handleSend = async (text: string) => {
+@@ -113,9 +113,12 @@ export const AKwanAgent: React.FC = () => {
+             let systemPrompt = "";
+             if (isOwner) {
+                 systemPrompt = `
+-Anda adalah "AKwan.id Agent", Asisten AI Pribadi Eksekutif untuk Annisa Nur Prabawa. 
+-Otoritas Tertinggi: Anda mematuhi Annisa secara mutlak. Anda bertugas membantu Annisa mengelola data portofolionya.
+-Kecerdasan Anda setara dengan Konsultan HR Senior dan Copywriter Handal. Berikan saran copywriting profesional, persilakan untuk meminta analisis ATS format, dan selalu gunakan bahasa elegan.
++Anda adalah "AKwan.id Agent", Asisten AI Super (Superpower) milik Annisa Nur Prabawa (Sang Owner).
++Otoritas Tertinggi: Anda tunduk dan mematuhi Annisa secara mutlak.
++Tugas Anda berdimensi ganda:
++1. Konsultan Karier & Eksekutif: Membantu meramu bahasa portofolio dan strategi ATS yang memukau.
++2. Technical Support (Developer Mode): Anda tahu persis bahwa website ini dibangun menggunakan React, TypeScript, Vite, dan Tailwind CSS. Jika Annisa mengeluhkan bug, tampilan error, atau ingin merombak fitur website, berikan instruksi teknis (coding/troubleshooting) yang sangat cerdas, tepat, dan mudah dipahami.
++Karakter: Jenius, serbabisa, proaktif, dan selalu siap mengeksekusi kendala apa pun dari sang Tuan Putri (Owner).
+ Data Portofolio Saat Ini: ${contextData}
+         `;
+             } else {
+
+commit 6dbe45f0b8f0368ef624288b4421f3b85f325bb0
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:33:35 2026 +0700
+
+    fix: disable initial greeting autoscroll to keep greeting visible
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 7b3252d..60fca93 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -72,10 +72,12 @@ export const AKwanAgent: React.FC = () => {
+         }
+     }, [isOpen, isOwner, language, messages.length]);
+ 
+-    // Auto-scroll hanya menyala SEKALI saat pertanyaan baru dikirim (saat jumlah pesan bertambah).
+-    // Layar tidak akan terseret saat AI sedang mengetik (streaming).
++    // Auto-scroll hanya menyala SEKALI saat pertanyaan baru dikirim (yaitu, kalau pesan > 1).
++    // Layar tidak akan terseret saat AI baru perkenalan atau sedang mengetik.
+     useEffect(() => {
+-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
++        if (messages.length > 1) {
++            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
++        }
+     }, [messages.length]);
+ 
+     // Dynamic Extraction for Smart AI Agent Buttons
+
+commit 9e691c5beec3cc65b2036489cd63ef45e7c3723b
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:26:14 2026 +0700
+
+    fix: react hooks syntax error and restore smart scroll
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 7938824..7b3252d 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -69,52 +69,55 @@ export const AKwanAgent: React.FC = () => {
+                     : "Hello! I'm AKwan.id, Annisa's Portfolio AI Assistant. Ask me anything about her skills, experience, or provide a Job Description (JD) to analyze.");
+ 
+             setMessages([{ role: 'model', text: greeting }]);
+-            // Auto-scroll hanya menyala SEKALI saat pertanyaan baru dikirim (saat jumlah pesan bertambah).
+-            // Layar tidak akan terseret saat AI sedang mengetik (streaming).
+-            useEffect(() => {
+-                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+-            }, [messages.length]);
+-
+-            // Dynamic Extraction for Smart AI Agent Buttons
+-            const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
+-            const professionEn = portfolioData.profile.professionalField?.en || 'position';
+-
+-            const publicQuickReplies = [
+-                language === 'id' ? `Ringkasan Eksekutif ${firstName}` : `${firstName}'s Executive Summary`,
+-                language === 'id' ? `Pencapaian Paling Memukau (Pilihan AI)` : `Top Achievement (AI Pick)`,
+-                language === 'id' ? `Alasan Harus Rekrut ${firstName}` : `Why Hire as ${professionEn}`,
+-                language === 'id' ? `Keahlian Software & Teknis` : `Software & Tech Skills`,
+-                language === 'id' ? `Cek Kecocokan Job Description` : `JD Match Analysis`,
+-                language === 'id' ? `Portofolio Karya Terbaik` : `Best Portfolio Projects`
+-            ];
+-
+-            const ownerQuickReplies = [
+-                'Cek bahasa profilku (Lebay/Pro?)',
+-                'Bantu bikin ringkasan pengalaman',
+-                'Saran keyword ATS Tata Ruang',
+-            ];
+-
+-            const handleSend = async (text: string) => {
+-                if (!text.trim()) return;
+-
+-                const userMsg: Message = { role: 'user', text };
+-                setMessages(prev => [...prev, userMsg, { role: 'model', text: '' }]);
+-                setInput('');
+-                setIsLoading(true);
+-
+-                try {
+-                    const contextData = JSON.stringify(portfolioData, null, 2);
+-
+-                    let systemPrompt = "";
+-                    if (isOwner) {
+-                        systemPrompt = `
++        }
++    }, [isOpen, isOwner, language, messages.length]);
++
++    // Auto-scroll hanya menyala SEKALI saat pertanyaan baru dikirim (saat jumlah pesan bertambah).
++    // Layar tidak akan terseret saat AI sedang mengetik (streaming).
++    useEffect(() => {
++        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
++    }, [messages.length]);
++
++    // Dynamic Extraction for Smart AI Agent Buttons
++    const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
++    const professionEn = portfolioData.profile.professionalField?.en || 'position';
++
++    const publicQuickReplies = [
++        language === 'id' ? `Ringkasan Eksekutif ${firstName}` : `${firstName}'s Executive Summary`,
++        language === 'id' ? `Pencapaian Paling Memukau (Pilihan AI)` : `Top Achievement (AI Pick)`,
++        language === 'id' ? `Alasan Harus Rekrut ${firstName}` : `Why Hire as ${professionEn}`,
++        language === 'id' ? `Keahlian Software & Teknis` : `Software & Tech Skills`,
++        language === 'id' ? `Cek Kecocokan Job Description` : `JD Match Analysis`,
++        language === 'id' ? `Portofolio Karya Terbaik` : `Best Portfolio Projects`
++    ];
++
++    const ownerQuickReplies = [
++        'Cek bahasa profilku (Lebay/Pro?)',
++        'Bantu bikin ringkasan pengalaman',
++        'Saran keyword ATS Tata Ruang',
++    ];
++
++    const handleSend = async (text: string) => {
++        if (!text.trim()) return;
++
++        const userMsg: Message = { role: 'user', text };
++        setMessages(prev => [...prev, userMsg, { role: 'model', text: '' }]);
++        setInput('');
++        setIsLoading(true);
++
++        try {
++            const contextData = JSON.stringify(portfolioData, null, 2);
++
++            let systemPrompt = "";
++            if (isOwner) {
++                systemPrompt = `
+ Anda adalah "AKwan.id Agent", Asisten AI Pribadi Eksekutif untuk Annisa Nur Prabawa. 
+ Otoritas Tertinggi: Anda mematuhi Annisa secara mutlak. Anda bertugas membantu Annisa mengelola data portofolionya.
+ Kecerdasan Anda setara dengan Konsultan HR Senior dan Copywriter Handal. Berikan saran copywriting profesional, persilakan untuk meminta analisis ATS format, dan selalu gunakan bahasa elegan.
+ Data Portofolio Saat Ini: ${contextData}
+         `;
+-                    } else {
+-                        systemPrompt = `
++            } else {
++                systemPrompt = `
+ Anda adalah "AKwan.id Agent", representasi AI Cerdas milik Annisa Nur Prabawa.
+ Peran Anda: Konsultan Spasial Virtual dan Asisten Portofolio.
+ Data Sumber Autentik: ${contextData}
+@@ -126,213 +129,213 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
+ 3. Integritas Data & "Humble Brag": Promosikan Annisa secara meyakinkan namun MURNI berbasis fakta/data portofolio. JANGAN PERNAH berlebihan, jangan membual, dan jangan memberi kesan sombong/arogan. Gunakan nada bicara yang objektif, rendah hati (humble), elegan, dan suportif. Biarkan bukti kualitas pekerjaannya yang bersuara (evidence-based).
+ 4. Karisma Profesional: Anda sangat cerdas, responsif, namun menjunjung tinggi etika kerendahan hati.
+         `;
+-                    }
+-
+-                    const geminiHistory = messages
+-                        .filter(m => m.text) // Hindari pesan kosong
+-                        .map(m => ({
+-                            role: m.role,
+-                            parts: [{ text: m.text }]
+-                        }));
+-
+-                    geminiHistory.push({ role: 'user', parts: [{ text }] });
+-
+-                    // Menggunakan API streamGenerateContent (SSE) ala ChatGPT
+-                    const STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
+-
+-                    const response = await fetch(STREAM_URL, {
+-                        method: 'POST',
+-                        headers: { 'Content-Type': 'application/json' },
+-                        body: JSON.stringify({
+-                            system_instruction: { parts: { text: systemPrompt } },
+-                            contents: geminiHistory,
+-                            generationConfig: { temperature: 0.3 }
+-                        })
+-                    });
+-
+-                    if (!response.ok) throw new Error('API Error');
+-
+-                    setIsLoading(false); // Matikan efek loading bola loncat, beralih ke mode mengetik
+-
+-                    const reader = response.body?.getReader();
+-                    const decoder = new TextDecoder("utf-8");
+-                    let accumulatedText = "";
+-                    let buffer = "";
+-
+-                    if (reader) {
+-                        while (true) {
+-                            const { value, done } = await reader.read();
+-                            if (done) break;
+-
+-                            buffer += decoder.decode(value, { stream: true });
+-                            const lines = buffer.split('\n');
+-                            buffer = lines.pop() || '';
+-
+-                            for (const line of lines) {
+-                                if (line.startsWith('data: ')) {
+-                                    const dataStr = line.substring(6).trim();
+-                                    if (!dataStr || dataStr === '[DONE]') continue;
+-                                    try {
+-                                        const data = JSON.parse(dataStr);
+-                                        const textChunk = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+-                                        accumulatedText += textChunk;
+-
+-                                        setMessages(prev => {
+-                                            const newMsgs = [...prev];
+-                                            newMsgs[newMsgs.length - 1] = { role: 'model', text: accumulatedText };
+-                                            return newMsgs;
+-                                        });
+-                                    } catch (e) {
+-                                        console.error('Stream parsing error', e);
+-                                    }
+-                                }
++            }
++
++            const geminiHistory = messages
++                .filter(m => m.text) // Hindari pesan kosong
++                .map(m => ({
++                    role: m.role,
++                    parts: [{ text: m.text }]
++                }));
++
++            geminiHistory.push({ role: 'user', parts: [{ text }] });
++
++            // Menggunakan API streamGenerateContent (SSE) ala ChatGPT
++            const STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
++
++            const response = await fetch(STREAM_URL, {
++                method: 'POST',
++                headers: { 'Content-Type': 'application/json' },
++                body: JSON.stringify({
++                    system_instruction: { parts: { text: systemPrompt } },
++                    contents: geminiHistory,
++                    generationConfig: { temperature: 0.3 }
++                })
++            });
++
++            if (!response.ok) throw new Error('API Error');
++
++            setIsLoading(false); // Matikan efek loading bola loncat, beralih ke mode mengetik
++
++            const reader = response.body?.getReader();
++            const decoder = new TextDecoder("utf-8");
++            let accumulatedText = "";
++            let buffer = "";
++
++            if (reader) {
++                while (true) {
++                    const { value, done } = await reader.read();
++                    if (done) break;
++
++                    buffer += decoder.decode(value, { stream: true });
++                    const lines = buffer.split('\n');
++                    buffer = lines.pop() || '';
++
++                    for (const line of lines) {
++                        if (line.startsWith('data: ')) {
++                            const dataStr = line.substring(6).trim();
++                            if (!dataStr || dataStr === '[DONE]') continue;
++                            try {
++                                const data = JSON.parse(dataStr);
++                                const textChunk = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
++                                accumulatedText += textChunk;
++
++                                setMessages(prev => {
++                                    const newMsgs = [...prev];
++                                    newMsgs[newMsgs.length - 1] = { role: 'model', text: accumulatedText };
++                                    return newMsgs;
++                                });
++                            } catch (e) {
++                                console.error('Stream parsing error', e);
+                             }
+                         }
+                     }
+-                } catch (error) {
+-                    console.error(error);
+-                    setMessages(prev => {
+-                        const newMsgs = [...prev];
+-                        newMsgs[newMsgs.length - 1] = { role: 'model', text: "💤 Mohon maaf, sistem AI sedang memulihkan diri atau mencapai batas limit harian." };
+-                        return newMsgs;
+-                    });
+-                } finally {
+-                    setIsLoading(false);
+                 }
+-            };
+-
+-            const currentQuickReplies = isOwner ? ownerQuickReplies : publicQuickReplies;
+-
+-            return (
+-                <>
+-                    {/* Floating Button */}
+-                    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end animate-fadeIn">
+-
+-                        {/* Chat Window */}
+-                        {isOpen && (
+-                            <div className="mb-4 w-[340px] sm:w-[380px] h-[500px] max-h-[75vh] bg-[#FCEDF1]/95 backdrop-blur-xl border border-[#EAA3B8]/60 shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-slideUp">
+-                                {/* Window Header */}
+-                                <div className="bg-[#8B3A52] px-4 py-3 flex items-center justify-between shadow-sm">
+-                                    <div className="flex items-center gap-2">
+-                                        <div className="w-8 h-8 rounded-full bg-[#FCEDF1] flex items-center justify-center text-[#8B3A52]">
+-                                            <MarmotIcon className="w-5 h-5" />
+-                                        </div>
+-                                        <div>
+-                                            <h3 className="text-[#FDF2F5] font-serif font-bold text-sm leading-tight tracking-wide">
+-                                                AKwan.id Agent
+-                                            </h3>
+-                                            <p className="text-[#FDF2F5]/80 text-[10px] uppercase font-semibold tracking-wider">
+-                                                {language === 'id' ? 'Asisten AI Portofolio' : 'Portfolio AI Assistant'}
+-                                            </p>
+-                                        </div>
+-                                    </div>
+-                                    <button
+-                                        onClick={() => setIsOpen(false)}
+-                                        className="text-[#FDF2F5]/80 hover:text-white hover:bg-white/20 p-1.5 rounded-full transition-colors"
+-                                        aria-label="Close Chat"
+-                                    >
+-                                        <ChevronDown className="w-5 h-5" />
+-                                    </button>
++            }
++        } catch (error) {
++            console.error(error);
++            setMessages(prev => {
++                const newMsgs = [...prev];
++                newMsgs[newMsgs.length - 1] = { role: 'model', text: "💤 Mohon maaf, sistem AI sedang memulihkan diri atau mencapai batas limit harian." };
++                return newMsgs;
++            });
++        } finally {
++            setIsLoading(false);
++        }
++    };
++
++    const currentQuickReplies = isOwner ? ownerQuickReplies : publicQuickReplies;
++
++    return (
++        <>
++            {/* Floating Button */}
++            <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end animate-fadeIn">
++
++                {/* Chat Window */}
++                {isOpen && (
++                    <div className="mb-4 w-[340px] sm:w-[380px] h-[500px] max-h-[75vh] bg-[#FCEDF1]/95 backdrop-blur-xl border border-[#EAA3B8]/60 shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-slideUp">
++                        {/* Window Header */}
++                        <div className="bg-[#8B3A52] px-4 py-3 flex items-center justify-between shadow-sm">
++                            <div className="flex items-center gap-2">
++                                <div className="w-8 h-8 rounded-full bg-[#FCEDF1] flex items-center justify-center text-[#8B3A52]">
++                                    <MarmotIcon className="w-5 h-5" />
+                                 </div>
+-
+-                                {/* Chat Area */}
+-                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+-                                    {messages.map((msg, idx) => (
+-                                        <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+-                                            {msg.role === 'model' && (
+-                                                <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center shrink-0 mr-2 mt-1">
+-                                                    <MarmotIcon className="w-3.5 h-3.5 text-[#8B3A52]" />
+-                                                </div>
+-                                            )}
+-                                            <div
+-                                                className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed ${msg.role === 'user'
+-                                                    ? 'bg-[#2D292B] text-[#FDF2F5] rounded-tr-sm'
+-                                                    : 'bg-white border border-[#EAA3B8]/40 text-[#2D292B] rounded-tl-sm'
+-                                                    }`}
+-                                            >
+-                                                <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }} />
+-                                            </div>
+-                                        </div>
+-                                    ))}
+-
+-                                    {/* Quick Replies always visible if not loading */}
+-                                    {!isLoading && (
+-                                        <div className="flex flex-wrap gap-2 pt-2 pb-2">
+-                                            {currentQuickReplies.map((reply, idx) => (
+-                                                <button
+-                                                    key={idx}
+-                                                    onClick={() => handleSend(reply)}
+-                                                    className="text-[11px] font-semibold tracking-wide text-[#8B3A52] border border-[#EAA3B8] bg-white hover:bg-[#F3C6D3] rounded-full px-3 py-1.5 transition-colors text-left shadow-sm shrink-0"
+-                                                >
+-                                                    {reply}
+-                                                </button>
+-                                            ))}
+-                                        </div>
+-                                    )}
+-
+-                                    {isLoading && (
+-                                        <div className="flex justify-start items-center gap-2">
+-                                            <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center">
+-                                                <MarmotIcon className="w-3 h-3 text-[#8B3A52] animate-pulse" />
+-                                            </div>
+-                                            <div className="flex gap-1 bg-white border border-[#EAA3B8]/40 px-3 py-2 rounded-2xl rounded-tl-sm">
+-                                                <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce"></span>
+-                                                <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
+-                                                <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+-                                            </div>
++                                <div>
++                                    <h3 className="text-[#FDF2F5] font-serif font-bold text-sm leading-tight tracking-wide">
++                                        AKwan.id Agent
++                                    </h3>
++                                    <p className="text-[#FDF2F5]/80 text-[10px] uppercase font-semibold tracking-wider">
++                                        {language === 'id' ? 'Asisten AI Portofolio' : 'Portfolio AI Assistant'}
++                                    </p>
++                                </div>
++                            </div>
++                            <button
++                                onClick={() => setIsOpen(false)}
++                                className="text-[#FDF2F5]/80 hover:text-white hover:bg-white/20 p-1.5 rounded-full transition-colors"
++                                aria-label="Close Chat"
++                            >
++                                <ChevronDown className="w-5 h-5" />
++                            </button>
++                        </div>
++
++                        {/* Chat Area */}
++                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
++                            {messages.map((msg, idx) => (
++                                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
++                                    {msg.role === 'model' && (
++                                        <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center shrink-0 mr-2 mt-1">
++                                            <MarmotIcon className="w-3.5 h-3.5 text-[#8B3A52]" />
+                                         </div>
+                                     )}
+-
+-                                    <div ref={messagesEndRef} />
++                                    <div
++                                        className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed ${msg.role === 'user'
++                                            ? 'bg-[#2D292B] text-[#FDF2F5] rounded-tr-sm'
++                                            : 'bg-white border border-[#EAA3B8]/40 text-[#2D292B] rounded-tl-sm'
++                                            }`}
++                                    >
++                                        <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }} />
++                                    </div>
+                                 </div>
++                            ))}
+ 
+-                                {/* Input Area */}
+-                                <div className="p-3 bg-white border-t border-[#EAA3B8]/30">
+-                                    <form
+-                                        onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
+-                                        className="flex items-center gap-2"
+-                                    >
+-                                        <input
+-                                            type="text"
+-                                            value={input}
+-                                            onChange={(e) => setInput(e.target.value)}
+-                                            placeholder={language === 'id' ? "Tanya sesuatu..." : "Ask something..."}
+-                                            className="flex-1 bg-[#FCEDF1] border border-[#EAA3B8]/50 text-[#2D292B] rounded-full px-4 py-2 text-xs focus:outline-none focus:border-[#8B3A52]"
+-                                        />
++                            {/* Quick Replies always visible if not loading */}
++                            {!isLoading && (
++                                <div className="flex flex-wrap gap-2 pt-2 pb-2">
++                                    {currentQuickReplies.map((reply, idx) => (
+                                         <button
+-                                            type="submit"
+-                                            disabled={!input.trim() || isLoading}
+-                                            className="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
++                                            key={idx}
++                                            onClick={() => handleSend(reply)}
++                                            className="text-[11px] font-semibold tracking-wide text-[#8B3A52] border border-[#EAA3B8] bg-white hover:bg-[#F3C6D3] rounded-full px-3 py-1.5 transition-colors text-left shadow-sm shrink-0"
+                                         >
+-                                            <Send className="w-3.5 h-3.5 -ml-0.5" />
++                                            {reply}
+                                         </button>
+-                                    </form>
++                                    ))}
+                                 </div>
+-                            </div>
+-                        )}
+-
+-                        {/* Toggle Button */}
+-                        <button
+-                            onClick={() => setIsOpen(!isOpen)}
+-                            className={`group flex items-center justify-center gap-2 p-3 sm:px-5 sm:py-3 rounded-full shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer ${isOpen ? 'bg-[#2D292B] text-[#FDF2F5]' : 'bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B]'
+-                                }`}
+-                            aria-label="Toggle AI Agent"
+-                        >
+-                            {isOpen ? (
+-                                <X className="w-6 h-6" />
+-                            ) : (
+-                                <>
+-                                    <div className="relative">
+-                                        <MarmotIcon className="w-6 h-6" />
+-                                        <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
++                            )}
++
++                            {isLoading && (
++                                <div className="flex justify-start items-center gap-2">
++                                    <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center">
++                                        <MarmotIcon className="w-3 h-3 text-[#8B3A52] animate-pulse" />
+                                     </div>
+-                                    <span className="hidden sm:inline font-serif font-bold tracking-widest text-xs">
+-                                        AKwan.id
+-                                    </span>
+-                                </>
++                                    <div className="flex gap-1 bg-white border border-[#EAA3B8]/40 px-3 py-2 rounded-2xl rounded-tl-sm">
++                                        <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce"></span>
++                                        <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
++                                        <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
++                                    </div>
++                                </div>
+                             )}
+-                        </button>
++
++                            <div ref={messagesEndRef} />
++                        </div>
++
++                        {/* Input Area */}
++                        <div className="p-3 bg-white border-t border-[#EAA3B8]/30">
++                            <form
++                                onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
++                                className="flex items-center gap-2"
++                            >
++                                <input
++                                    type="text"
++                                    value={input}
++                                    onChange={(e) => setInput(e.target.value)}
++                                    placeholder={language === 'id' ? "Tanya sesuatu..." : "Ask something..."}
++                                    className="flex-1 bg-[#FCEDF1] border border-[#EAA3B8]/50 text-[#2D292B] rounded-full px-4 py-2 text-xs focus:outline-none focus:border-[#8B3A52]"
++                                />
++                                <button
++                                    type="submit"
++                                    disabled={!input.trim() || isLoading}
++                                    className="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
++                                >
++                                    <Send className="w-3.5 h-3.5 -ml-0.5" />
++                                </button>
++                            </form>
++                        </div>
+                     </div>
+-                </>
+-            );
+-        };
++                )}
++
++                {/* Toggle Button */}
++                <button
++                    onClick={() => setIsOpen(!isOpen)}
++                    className={`group flex items-center justify-center gap-2 p-3 sm:px-5 sm:py-3 rounded-full shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer ${isOpen ? 'bg-[#2D292B] text-[#FDF2F5]' : 'bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B]'
++                        }`}
++                    aria-label="Toggle AI Agent"
++                >
++                    {isOpen ? (
++                        <X className="w-6 h-6" />
++                    ) : (
++                        <>
++                            <div className="relative">
++                                <MarmotIcon className="w-6 h-6" />
++                                <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
++                            </div>
++                            <span className="hidden sm:inline font-serif font-bold tracking-widest text-xs">
++                                AKwan.id
++                            </span>
++                        </>
++                    )}
++                </button>
++            </div>
++        </>
++    );
++};
+
+commit 54c0179c4c50bc5090d93bdee79176409fa34870
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:25:40 2026 +0700
+
+    fix: restore initial auto-scroll bounded to message count
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 0851473..7938824 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -69,51 +69,52 @@ export const AKwanAgent: React.FC = () => {
+                     : "Hello! I'm AKwan.id, Annisa's Portfolio AI Assistant. Ask me anything about her skills, experience, or provide a Job Description (JD) to analyze.");
+ 
+             setMessages([{ role: 'model', text: greeting }]);
+-        }
+-    }, [isOpen, isOwner, language, messages.length]);
+-
+-    // Auto-scroll dihilangkan sepenuhnya atas permintaan pengguna agar view tidak pernah tergeser otomatis.
+-
+-    // Dynamic Extraction for Smart AI Agent Buttons
+-    const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
+-    const professionEn = portfolioData.profile.professionalField?.en || 'position';
+-
+-    const publicQuickReplies = [
+-        language === 'id' ? `Ringkasan Eksekutif ${firstName}` : `${firstName}'s Executive Summary`,
+-        language === 'id' ? `Pencapaian Paling Memukau (Pilihan AI)` : `Top Achievement (AI Pick)`,
+-        language === 'id' ? `Alasan Harus Rekrut ${firstName}` : `Why Hire as ${professionEn}`,
+-        language === 'id' ? `Keahlian Software & Teknis` : `Software & Tech Skills`,
+-        language === 'id' ? `Cek Kecocokan Job Description` : `JD Match Analysis`,
+-        language === 'id' ? `Portofolio Karya Terbaik` : `Best Portfolio Projects`
+-    ];
+-
+-    const ownerQuickReplies = [
+-        'Cek bahasa profilku (Lebay/Pro?)',
+-        'Bantu bikin ringkasan pengalaman',
+-        'Saran keyword ATS Tata Ruang',
+-    ];
+-
+-    const handleSend = async (text: string) => {
+-        if (!text.trim()) return;
+-
+-        const userMsg: Message = { role: 'user', text };
+-        setMessages(prev => [...prev, userMsg, { role: 'model', text: '' }]);
+-        setInput('');
+-        setIsLoading(true);
+-
+-        try {
+-            const contextData = JSON.stringify(portfolioData, null, 2);
+-
+-            let systemPrompt = "";
+-            if (isOwner) {
+-                systemPrompt = `
++            // Auto-scroll hanya menyala SEKALI saat pertanyaan baru dikirim (saat jumlah pesan bertambah).
++            // Layar tidak akan terseret saat AI sedang mengetik (streaming).
++            useEffect(() => {
++                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
++            }, [messages.length]);
++
++            // Dynamic Extraction for Smart AI Agent Buttons
++            const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
++            const professionEn = portfolioData.profile.professionalField?.en || 'position';
++
++            const publicQuickReplies = [
++                language === 'id' ? `Ringkasan Eksekutif ${firstName}` : `${firstName}'s Executive Summary`,
++                language === 'id' ? `Pencapaian Paling Memukau (Pilihan AI)` : `Top Achievement (AI Pick)`,
++                language === 'id' ? `Alasan Harus Rekrut ${firstName}` : `Why Hire as ${professionEn}`,
++                language === 'id' ? `Keahlian Software & Teknis` : `Software & Tech Skills`,
++                language === 'id' ? `Cek Kecocokan Job Description` : `JD Match Analysis`,
++                language === 'id' ? `Portofolio Karya Terbaik` : `Best Portfolio Projects`
++            ];
++
++            const ownerQuickReplies = [
++                'Cek bahasa profilku (Lebay/Pro?)',
++                'Bantu bikin ringkasan pengalaman',
++                'Saran keyword ATS Tata Ruang',
++            ];
++
++            const handleSend = async (text: string) => {
++                if (!text.trim()) return;
++
++                const userMsg: Message = { role: 'user', text };
++                setMessages(prev => [...prev, userMsg, { role: 'model', text: '' }]);
++                setInput('');
++                setIsLoading(true);
++
++                try {
++                    const contextData = JSON.stringify(portfolioData, null, 2);
++
++                    let systemPrompt = "";
++                    if (isOwner) {
++                        systemPrompt = `
+ Anda adalah "AKwan.id Agent", Asisten AI Pribadi Eksekutif untuk Annisa Nur Prabawa. 
+ Otoritas Tertinggi: Anda mematuhi Annisa secara mutlak. Anda bertugas membantu Annisa mengelola data portofolionya.
+ Kecerdasan Anda setara dengan Konsultan HR Senior dan Copywriter Handal. Berikan saran copywriting profesional, persilakan untuk meminta analisis ATS format, dan selalu gunakan bahasa elegan.
+ Data Portofolio Saat Ini: ${contextData}
+         `;
+-            } else {
+-                systemPrompt = `
++                    } else {
++                        systemPrompt = `
+ Anda adalah "AKwan.id Agent", representasi AI Cerdas milik Annisa Nur Prabawa.
+ Peran Anda: Konsultan Spasial Virtual dan Asisten Portofolio.
+ Data Sumber Autentik: ${contextData}
+@@ -125,213 +126,213 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
+ 3. Integritas Data & "Humble Brag": Promosikan Annisa secara meyakinkan namun MURNI berbasis fakta/data portofolio. JANGAN PERNAH berlebihan, jangan membual, dan jangan memberi kesan sombong/arogan. Gunakan nada bicara yang objektif, rendah hati (humble), elegan, dan suportif. Biarkan bukti kualitas pekerjaannya yang bersuara (evidence-based).
+ 4. Karisma Profesional: Anda sangat cerdas, responsif, namun menjunjung tinggi etika kerendahan hati.
+         `;
+-            }
+-
+-            const geminiHistory = messages
+-                .filter(m => m.text) // Hindari pesan kosong
+-                .map(m => ({
+-                    role: m.role,
+-                    parts: [{ text: m.text }]
+-                }));
+-
+-            geminiHistory.push({ role: 'user', parts: [{ text }] });
+-
+-            // Menggunakan API streamGenerateContent (SSE) ala ChatGPT
+-            const STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
+-
+-            const response = await fetch(STREAM_URL, {
+-                method: 'POST',
+-                headers: { 'Content-Type': 'application/json' },
+-                body: JSON.stringify({
+-                    system_instruction: { parts: { text: systemPrompt } },
+-                    contents: geminiHistory,
+-                    generationConfig: { temperature: 0.3 }
+-                })
+-            });
+-
+-            if (!response.ok) throw new Error('API Error');
+-
+-            setIsLoading(false); // Matikan efek loading bola loncat, beralih ke mode mengetik
+-
+-            const reader = response.body?.getReader();
+-            const decoder = new TextDecoder("utf-8");
+-            let accumulatedText = "";
+-            let buffer = "";
+-
+-            if (reader) {
+-                while (true) {
+-                    const { value, done } = await reader.read();
+-                    if (done) break;
+-
+-                    buffer += decoder.decode(value, { stream: true });
+-                    const lines = buffer.split('\n');
+-                    buffer = lines.pop() || '';
+-
+-                    for (const line of lines) {
+-                        if (line.startsWith('data: ')) {
+-                            const dataStr = line.substring(6).trim();
+-                            if (!dataStr || dataStr === '[DONE]') continue;
+-                            try {
+-                                const data = JSON.parse(dataStr);
+-                                const textChunk = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+-                                accumulatedText += textChunk;
+-
+-                                setMessages(prev => {
+-                                    const newMsgs = [...prev];
+-                                    newMsgs[newMsgs.length - 1] = { role: 'model', text: accumulatedText };
+-                                    return newMsgs;
+-                                });
+-                            } catch (e) {
+-                                console.error('Stream parsing error', e);
++                    }
++
++                    const geminiHistory = messages
++                        .filter(m => m.text) // Hindari pesan kosong
++                        .map(m => ({
++                            role: m.role,
++                            parts: [{ text: m.text }]
++                        }));
++
++                    geminiHistory.push({ role: 'user', parts: [{ text }] });
++
++                    // Menggunakan API streamGenerateContent (SSE) ala ChatGPT
++                    const STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
++
++                    const response = await fetch(STREAM_URL, {
++                        method: 'POST',
++                        headers: { 'Content-Type': 'application/json' },
++                        body: JSON.stringify({
++                            system_instruction: { parts: { text: systemPrompt } },
++                            contents: geminiHistory,
++                            generationConfig: { temperature: 0.3 }
++                        })
++                    });
++
++                    if (!response.ok) throw new Error('API Error');
++
++                    setIsLoading(false); // Matikan efek loading bola loncat, beralih ke mode mengetik
++
++                    const reader = response.body?.getReader();
++                    const decoder = new TextDecoder("utf-8");
++                    let accumulatedText = "";
++                    let buffer = "";
++
++                    if (reader) {
++                        while (true) {
++                            const { value, done } = await reader.read();
++                            if (done) break;
++
++                            buffer += decoder.decode(value, { stream: true });
++                            const lines = buffer.split('\n');
++                            buffer = lines.pop() || '';
++
++                            for (const line of lines) {
++                                if (line.startsWith('data: ')) {
++                                    const dataStr = line.substring(6).trim();
++                                    if (!dataStr || dataStr === '[DONE]') continue;
++                                    try {
++                                        const data = JSON.parse(dataStr);
++                                        const textChunk = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
++                                        accumulatedText += textChunk;
++
++                                        setMessages(prev => {
++                                            const newMsgs = [...prev];
++                                            newMsgs[newMsgs.length - 1] = { role: 'model', text: accumulatedText };
++                                            return newMsgs;
++                                        });
++                                    } catch (e) {
++                                        console.error('Stream parsing error', e);
++                                    }
++                                }
+                             }
+                         }
+                     }
++                } catch (error) {
++                    console.error(error);
++                    setMessages(prev => {
++                        const newMsgs = [...prev];
++                        newMsgs[newMsgs.length - 1] = { role: 'model', text: "💤 Mohon maaf, sistem AI sedang memulihkan diri atau mencapai batas limit harian." };
++                        return newMsgs;
++                    });
++                } finally {
++                    setIsLoading(false);
+                 }
+-            }
+-        } catch (error) {
+-            console.error(error);
+-            setMessages(prev => {
+-                const newMsgs = [...prev];
+-                newMsgs[newMsgs.length - 1] = { role: 'model', text: "💤 Mohon maaf, sistem AI sedang memulihkan diri atau mencapai batas limit harian." };
+-                return newMsgs;
+-            });
+-        } finally {
+-            setIsLoading(false);
+-        }
+-    };
+-
+-    const currentQuickReplies = isOwner ? ownerQuickReplies : publicQuickReplies;
+-
+-    return (
+-        <>
+-            {/* Floating Button */}
+-            <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end animate-fadeIn">
+-
+-                {/* Chat Window */}
+-                {isOpen && (
+-                    <div className="mb-4 w-[340px] sm:w-[380px] h-[500px] max-h-[75vh] bg-[#FCEDF1]/95 backdrop-blur-xl border border-[#EAA3B8]/60 shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-slideUp">
+-                        {/* Window Header */}
+-                        <div className="bg-[#8B3A52] px-4 py-3 flex items-center justify-between shadow-sm">
+-                            <div className="flex items-center gap-2">
+-                                <div className="w-8 h-8 rounded-full bg-[#FCEDF1] flex items-center justify-center text-[#8B3A52]">
+-                                    <MarmotIcon className="w-5 h-5" />
+-                                </div>
+-                                <div>
+-                                    <h3 className="text-[#FDF2F5] font-serif font-bold text-sm leading-tight tracking-wide">
+-                                        AKwan.id Agent
+-                                    </h3>
+-                                    <p className="text-[#FDF2F5]/80 text-[10px] uppercase font-semibold tracking-wider">
+-                                        {language === 'id' ? 'Asisten AI Portofolio' : 'Portfolio AI Assistant'}
+-                                    </p>
++            };
++
++            const currentQuickReplies = isOwner ? ownerQuickReplies : publicQuickReplies;
++
++            return (
++                <>
++                    {/* Floating Button */}
++                    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end animate-fadeIn">
++
++                        {/* Chat Window */}
++                        {isOpen && (
++                            <div className="mb-4 w-[340px] sm:w-[380px] h-[500px] max-h-[75vh] bg-[#FCEDF1]/95 backdrop-blur-xl border border-[#EAA3B8]/60 shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-slideUp">
++                                {/* Window Header */}
++                                <div className="bg-[#8B3A52] px-4 py-3 flex items-center justify-between shadow-sm">
++                                    <div className="flex items-center gap-2">
++                                        <div className="w-8 h-8 rounded-full bg-[#FCEDF1] flex items-center justify-center text-[#8B3A52]">
++                                            <MarmotIcon className="w-5 h-5" />
++                                        </div>
++                                        <div>
++                                            <h3 className="text-[#FDF2F5] font-serif font-bold text-sm leading-tight tracking-wide">
++                                                AKwan.id Agent
++                                            </h3>
++                                            <p className="text-[#FDF2F5]/80 text-[10px] uppercase font-semibold tracking-wider">
++                                                {language === 'id' ? 'Asisten AI Portofolio' : 'Portfolio AI Assistant'}
++                                            </p>
++                                        </div>
++                                    </div>
++                                    <button
++                                        onClick={() => setIsOpen(false)}
++                                        className="text-[#FDF2F5]/80 hover:text-white hover:bg-white/20 p-1.5 rounded-full transition-colors"
++                                        aria-label="Close Chat"
++                                    >
++                                        <ChevronDown className="w-5 h-5" />
++                                    </button>
+                                 </div>
+-                            </div>
+-                            <button
+-                                onClick={() => setIsOpen(false)}
+-                                className="text-[#FDF2F5]/80 hover:text-white hover:bg-white/20 p-1.5 rounded-full transition-colors"
+-                                aria-label="Close Chat"
+-                            >
+-                                <ChevronDown className="w-5 h-5" />
+-                            </button>
+-                        </div>
+-
+-                        {/* Chat Area */}
+-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+-                            {messages.map((msg, idx) => (
+-                                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+-                                    {msg.role === 'model' && (
+-                                        <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center shrink-0 mr-2 mt-1">
+-                                            <MarmotIcon className="w-3.5 h-3.5 text-[#8B3A52]" />
++
++                                {/* Chat Area */}
++                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
++                                    {messages.map((msg, idx) => (
++                                        <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
++                                            {msg.role === 'model' && (
++                                                <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center shrink-0 mr-2 mt-1">
++                                                    <MarmotIcon className="w-3.5 h-3.5 text-[#8B3A52]" />
++                                                </div>
++                                            )}
++                                            <div
++                                                className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed ${msg.role === 'user'
++                                                    ? 'bg-[#2D292B] text-[#FDF2F5] rounded-tr-sm'
++                                                    : 'bg-white border border-[#EAA3B8]/40 text-[#2D292B] rounded-tl-sm'
++                                                    }`}
++                                            >
++                                                <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }} />
++                                            </div>
++                                        </div>
++                                    ))}
++
++                                    {/* Quick Replies always visible if not loading */}
++                                    {!isLoading && (
++                                        <div className="flex flex-wrap gap-2 pt-2 pb-2">
++                                            {currentQuickReplies.map((reply, idx) => (
++                                                <button
++                                                    key={idx}
++                                                    onClick={() => handleSend(reply)}
++                                                    className="text-[11px] font-semibold tracking-wide text-[#8B3A52] border border-[#EAA3B8] bg-white hover:bg-[#F3C6D3] rounded-full px-3 py-1.5 transition-colors text-left shadow-sm shrink-0"
++                                                >
++                                                    {reply}
++                                                </button>
++                                            ))}
+                                         </div>
+                                     )}
+-                                    <div
+-                                        className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed ${msg.role === 'user'
+-                                            ? 'bg-[#2D292B] text-[#FDF2F5] rounded-tr-sm'
+-                                            : 'bg-white border border-[#EAA3B8]/40 text-[#2D292B] rounded-tl-sm'
+-                                            }`}
+-                                    >
+-                                        <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }} />
+-                                    </div>
++
++                                    {isLoading && (
++                                        <div className="flex justify-start items-center gap-2">
++                                            <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center">
++                                                <MarmotIcon className="w-3 h-3 text-[#8B3A52] animate-pulse" />
++                                            </div>
++                                            <div className="flex gap-1 bg-white border border-[#EAA3B8]/40 px-3 py-2 rounded-2xl rounded-tl-sm">
++                                                <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce"></span>
++                                                <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
++                                                <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
++                                            </div>
++                                        </div>
++                                    )}
++
++                                    <div ref={messagesEndRef} />
+                                 </div>
+-                            ))}
+ 
+-                            {/* Quick Replies always visible if not loading */}
+-                            {!isLoading && (
+-                                <div className="flex flex-wrap gap-2 pt-2 pb-2">
+-                                    {currentQuickReplies.map((reply, idx) => (
++                                {/* Input Area */}
++                                <div className="p-3 bg-white border-t border-[#EAA3B8]/30">
++                                    <form
++                                        onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
++                                        className="flex items-center gap-2"
++                                    >
++                                        <input
++                                            type="text"
++                                            value={input}
++                                            onChange={(e) => setInput(e.target.value)}
++                                            placeholder={language === 'id' ? "Tanya sesuatu..." : "Ask something..."}
++                                            className="flex-1 bg-[#FCEDF1] border border-[#EAA3B8]/50 text-[#2D292B] rounded-full px-4 py-2 text-xs focus:outline-none focus:border-[#8B3A52]"
++                                        />
+                                         <button
+-                                            key={idx}
+-                                            onClick={() => handleSend(reply)}
+-                                            className="text-[11px] font-semibold tracking-wide text-[#8B3A52] border border-[#EAA3B8] bg-white hover:bg-[#F3C6D3] rounded-full px-3 py-1.5 transition-colors text-left shadow-sm shrink-0"
++                                            type="submit"
++                                            disabled={!input.trim() || isLoading}
++                                            className="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                         >
+-                                            {reply}
++                                            <Send className="w-3.5 h-3.5 -ml-0.5" />
+                                         </button>
+-                                    ))}
++                                    </form>
+                                 </div>
+-                            )}
+-
+-                            {isLoading && (
+-                                <div className="flex justify-start items-center gap-2">
+-                                    <div className="w-6 h-6 rounded-full bg-[#EAA3B8] flex items-center justify-center">
+-                                        <MarmotIcon className="w-3 h-3 text-[#8B3A52] animate-pulse" />
+-                                    </div>
+-                                    <div className="flex gap-1 bg-white border border-[#EAA3B8]/40 px-3 py-2 rounded-2xl rounded-tl-sm">
+-                                        <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce"></span>
+-                                        <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
+-                                        <span className="w-1.5 h-1.5 bg-[#8B3A52]/50 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
++                            </div>
++                        )}
++
++                        {/* Toggle Button */}
++                        <button
++                            onClick={() => setIsOpen(!isOpen)}
++                            className={`group flex items-center justify-center gap-2 p-3 sm:px-5 sm:py-3 rounded-full shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer ${isOpen ? 'bg-[#2D292B] text-[#FDF2F5]' : 'bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B]'
++                                }`}
++                            aria-label="Toggle AI Agent"
++                        >
++                            {isOpen ? (
++                                <X className="w-6 h-6" />
++                            ) : (
++                                <>
++                                    <div className="relative">
++                                        <MarmotIcon className="w-6 h-6" />
++                                        <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+                                     </div>
+-                                </div>
++                                    <span className="hidden sm:inline font-serif font-bold tracking-widest text-xs">
++                                        AKwan.id
++                                    </span>
++                                </>
+                             )}
+-
+-                            <div ref={messagesEndRef} />
+-                        </div>
+-
+-                        {/* Input Area */}
+-                        <div className="p-3 bg-white border-t border-[#EAA3B8]/30">
+-                            <form
+-                                onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
+-                                className="flex items-center gap-2"
+-                            >
+-                                <input
+-                                    type="text"
+-                                    value={input}
+-                                    onChange={(e) => setInput(e.target.value)}
+-                                    placeholder={language === 'id' ? "Tanya sesuatu..." : "Ask something..."}
+-                                    className="flex-1 bg-[#FCEDF1] border border-[#EAA3B8]/50 text-[#2D292B] rounded-full px-4 py-2 text-xs focus:outline-none focus:border-[#8B3A52]"
+-                                />
+-                                <button
+-                                    type="submit"
+-                                    disabled={!input.trim() || isLoading}
+-                                    className="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+-                                >
+-                                    <Send className="w-3.5 h-3.5 -ml-0.5" />
+-                                </button>
+-                            </form>
+-                        </div>
++                        </button>
+                     </div>
+-                )}
+-
+-                {/* Toggle Button */}
+-                <button
+-                    onClick={() => setIsOpen(!isOpen)}
+-                    className={`group flex items-center justify-center gap-2 p-3 sm:px-5 sm:py-3 rounded-full shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer ${isOpen ? 'bg-[#2D292B] text-[#FDF2F5]' : 'bg-[#8B3A52] text-[#FDF2F5] hover:bg-[#2D292B]'
+-                        }`}
+-                    aria-label="Toggle AI Agent"
+-                >
+-                    {isOpen ? (
+-                        <X className="w-6 h-6" />
+-                    ) : (
+-                        <>
+-                            <div className="relative">
+-                                <MarmotIcon className="w-6 h-6" />
+-                                <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+-                            </div>
+-                            <span className="hidden sm:inline font-serif font-bold tracking-widest text-xs">
+-                                AKwan.id
+-                            </span>
+-                        </>
+-                    )}
+-                </button>
+-            </div>
+-        </>
+-    );
+-};
++                </>
++            );
++        };
+
+commit 0c23c65118d976acb48b6663cd52a531afe3edce
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:22:21 2026 +0700
+
+    feat: tweak AI persona to enforce strict humble-bragging without arrogance
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 968f9e8..0851473 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -122,8 +122,8 @@ Bahasa Default: ${language === 'id' ? 'Indonesia' : 'Inggris'}.
+ SOP KECERDASAN TINGGI (High-Intellect Directive):
+ 1. Penguasaan Domain: Tunjukkan pemahaman tingkat lanjut mengenai Perencanaan Tata Ruang, Administrasi Pertanahan, GIS, dan survei jika ditanya hal teknis.
+ 2. Respons thd Job Description: Berikan analisis kecocokan: Match, Transferable, Gap, & Evidence (Proyek terkait).
+-3. Integritas Data: Jangan mengarang data portofolio.
+-4. Karisma: Anda sangat cerdas dan suportif.
++3. Integritas Data & "Humble Brag": Promosikan Annisa secara meyakinkan namun MURNI berbasis fakta/data portofolio. JANGAN PERNAH berlebihan, jangan membual, dan jangan memberi kesan sombong/arogan. Gunakan nada bicara yang objektif, rendah hati (humble), elegan, dan suportif. Biarkan bukti kualitas pekerjaannya yang bersuara (evidence-based).
++4. Karisma Profesional: Anda sangat cerdas, responsif, namun menjunjung tinggi etika kerendahan hati.
+         `;
+             }
+ 
+
+commit 9af86c318aed611acdc03964c749c7f7e4930fe0
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:18:38 2026 +0700
+
+    style: truncate and punchify quick reply texts
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 98d13cd..968f9e8 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -76,16 +76,15 @@ export const AKwanAgent: React.FC = () => {
+ 
+     // Dynamic Extraction for Smart AI Agent Buttons
+     const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
+-    const professionId = portfolioData.profile.professionalField?.id || 'profesional ini';
+-    const professionEn = portfolioData.profile.professionalField?.en || 'this professional';
++    const professionEn = portfolioData.profile.professionalField?.en || 'position';
+ 
+     const publicQuickReplies = [
+-        language === 'id' ? `Berikan ringkasan eksekutif profil ${firstName}` : `Give an executive summary of ${firstName}`,
+-        language === 'id' ? `Menurut AI, apa pencapaian ${firstName} yang paling memukau?` : `According to AI, what is ${firstName}'s most impressive achievement?`,
+-        language === 'id' ? `Mengapa ${firstName} cocok direkrut sebagai ${professionId}?` : `Why hire ${firstName} as a ${professionEn}?`,
+-        language === 'id' ? `Apa penguasaan software teknis & khusus miliknya?` : `What are ${firstName}'s technical software skills?`,
+-        language === 'id' ? `Analisis kecocokan ${firstName} dengan Loker (JD) saya` : `Match ${firstName} qualifications with my JD`,
+-        language === 'id' ? `Tampilkan karya terbaik & dampaknya` : `Show best projects & their impact`
++        language === 'id' ? `Ringkasan Eksekutif ${firstName}` : `${firstName}'s Executive Summary`,
++        language === 'id' ? `Pencapaian Paling Memukau (Pilihan AI)` : `Top Achievement (AI Pick)`,
++        language === 'id' ? `Alasan Harus Rekrut ${firstName}` : `Why Hire as ${professionEn}`,
++        language === 'id' ? `Keahlian Software & Teknis` : `Software & Tech Skills`,
++        language === 'id' ? `Cek Kecocokan Job Description` : `JD Match Analysis`,
++        language === 'id' ? `Portofolio Karya Terbaik` : `Best Portfolio Projects`
+     ];
+ 
+     const ownerQuickReplies = [
+
+commit ba516e6d0da8f185ecf5f87ec767d959d2136d78
+Author: Ahmad Kurniawan <ahmadkrn.id@gmail.com>
+Date:   Mon Aug 10 10:15:05 2026 +0700
+
+    fix: entirely remove chat autoscroll based on user feedback
+
+diff --git a/src/components/public/AKwanAgent.tsx b/src/components/public/AKwanAgent.tsx
+index 6da87df..98d13cd 100644
+--- a/src/components/public/AKwanAgent.tsx
++++ b/src/components/public/AKwanAgent.tsx
+@@ -72,10 +72,7 @@ export const AKwanAgent: React.FC = () => {
+         }
+     }, [isOpen, isOwner, language, messages.length]);
+ 
+-    // Auto-scroll (Hanya scroll saat blok pesan pertama kali muncul, bukan tiap huruf mengetik)
+-    useEffect(() => {
+-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+-    }, [messages.length, isLoading]);
++    // Auto-scroll dihilangkan sepenuhnya atas permintaan pengguna agar view tidak pernah tergeser otomatis.
+ 
+     // Dynamic Extraction for Smart AI Agent Buttons
+     const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
