@@ -54,6 +54,9 @@ export const AKwanAgent: React.FC = () => {
             .replace(/'/g, "&#039;");
     };
 
+    // Scroll tracking
+    const chatScrollRef = useRef<number>(0);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Check if we are in owner mode
