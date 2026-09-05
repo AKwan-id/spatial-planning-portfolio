@@ -52,7 +52,7 @@ export default async function handler(req: Request) {
 
         if (isStream) {
             const stream = await ai.models.generateContentStream({
-                model: 'gemini-3.6-flash',
+                model: 'gemini-1.5-flash',
                 contents: contents,
                 config: {
                     systemInstruction: body.systemInstruction?.parts?.text,
@@ -88,7 +88,7 @@ export default async function handler(req: Request) {
         }
 
         const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-1.5-flash',
             contents: contents,
             config: {
                 systemInstruction: body.systemInstruction?.parts?.text,
