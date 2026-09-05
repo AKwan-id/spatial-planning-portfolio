@@ -115,45 +115,6 @@ export const ContactSection: React.FC = () => {
                   </a>
                 );
               })()}
-
-              {/* Location Card */}
-              {vis.location !== false && t(contact.location) && (
-                <div className="p-4 rounded-2xl bg-[#FFF9F7]/10 hover:bg-[#FFF9F7]/20 border border-[#F3C6D3]/20 transition-all flex items-center justify-between group min-w-0">
-                  <div className="flex items-center gap-3 min-w-0 overflow-hidden pr-2">
-                    <div className="w-10 h-10 rounded-xl bg-[#D99AAF]/20 flex items-center justify-center text-[#F3C6D3] shrink-0">
-                      <MapPin className="w-5 h-5" />
-                    </div>
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#F3C6D3] block">
-                        {language === 'id' ? 'Lokasi' : 'Location'}
-                      </span>
-                      <span className="text-xs sm:text-sm font-semibold text-[#FFF9F7] block whitespace-nowrap overflow-hidden">
-                        {t(contact.location)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Availability Status Card */}
-              {t(contact.availabilityStatus) && (
-                <div className="p-4 rounded-2xl bg-[#FFF9F7]/10 hover:bg-[#FFF9F7]/20 border border-[#F3C6D3]/20 transition-all flex items-center justify-between group min-w-0">
-                  <div className="flex items-center gap-3 min-w-0 overflow-hidden pr-2">
-                    <div className="w-10 h-10 rounded-xl bg-[#D99AAF]/20 flex items-center justify-center text-[#F3C6D3] shrink-0">
-                      <Compass className="w-5 h-5" />
-                    </div>
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#F3C6D3] block">
-                        {language === 'id' ? 'Status Rekrutmen' : 'Availability'}
-                      </span>
-                      <span className="text-xs sm:text-sm font-semibold text-[#FFF9F7] block overflow-hidden line-clamp-2">
-                        {t(contact.availabilityStatus)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
             </div>
 
           </div>
