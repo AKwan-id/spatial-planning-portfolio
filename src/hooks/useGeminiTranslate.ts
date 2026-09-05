@@ -46,19 +46,23 @@ Return ONLY the translated text. Do not include any quotes, markdown formatting,
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let accumulatedText = '';
+            let buffer = '';
 
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
-                const chunk = decoder.decode(value);
-                const lines = chunk.split('\n').filter(line => line.trim() !== '');
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
 
                 for (const line of lines) {
-                    if (line === 'data: [DONE]') break;
-                    if (line.startsWith('data: ')) {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) continue;
+                    if (trimmedLine === 'data: [DONE]') break;
+                    if (trimmedLine.startsWith('data: ')) {
                         try {
-                            const rawData = line.replace('data: ', '');
+                            const rawData = trimmedLine.replace('data: ', '');
                             const data = JSON.parse(rawData);
                             const textPart = data.candidates?.[0]?.content?.parts?.[0]?.text;
                             if (textPart) {
