@@ -81,13 +81,19 @@ export const AKwanAgent: React.FC = () => {
         }
     }, [isOpen, isOwner, language, messages.length]);
 
-    // Auto-scroll ke bawah saat ada pesan baru, ATAU saat jendela obrolan dibuka kembali.
+    // Mengembalikan posisi baca (scroll) terakhir JIKA jendela baru dibuka
     useEffect(() => {
-        if (isOpen && messages.length > 1) {
-            // Gunakan scroll instan (auto) agar pengguna langsung melihat pesan terakhir
-            messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+        if (isOpen && chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatScrollRef.current;
         }
-    }, [messages.length, isOpen]);
+    }, [isOpen]);
+
+    // Auto-scroll ke bawah HANYA saat pesan baru benar-benar muncul / bertambah
+    useEffect(() => {
+        if (messages.length > 1) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages.length]);
 
     // Dynamic Extraction for Smart AI Agent Buttons
     const firstName = portfolioData.profile.fullName.split(' ')[0] || 'Kandidat';
@@ -268,7 +274,11 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
                         </div>
 
                         {/* Chat Area */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div
+                            ref={chatContainerRef}
+                            onScroll={(e) => { chatScrollRef.current = e.currentTarget.scrollTop; }}
+                            className="flex-1 overflow-y-auto p-4 space-y-4"
+                        >
                             {messages.map((msg, idx) => (
                                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     {msg.role === 'model' && (
