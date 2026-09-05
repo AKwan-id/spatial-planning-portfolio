@@ -73,7 +73,7 @@ npm run dev
 ## 👨‍💻 Pengembang Web
 
 **Ahmad Kurniawan**
-*Sistem portofolio interaktif ini dirancang, diprogram, dan didedikasikan khusus untuk profil karier:*
+*Autonomous AI-Powered Executive Portfolio ini dirancang, diprogram, dan didedikasikan khusus untuk profil karier:*
 **Annisa Nur Prabawa** (Perencana Tata Ruang | Analis GIS)
 - Tinjauan Publik: [https://annisa-portofolio-beta.vercel.app/](https://annisa-portofolio-beta.vercel.app/)
 
