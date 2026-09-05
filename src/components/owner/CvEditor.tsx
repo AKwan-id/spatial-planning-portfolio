@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { FileText, Save, Upload, Download, Eye } from 'lucide-react';
+import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
+import { FileText, Save, Upload, Download, Eye, Sparkles } from 'lucide-react';
+import { DebouncedInput, DebouncedTextarea } from './DebouncedInput';
 
 export const CvEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
   const cv = portfolioData.cv;
+  const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
+  const [activeField, setActiveField] = useState<string | null>(null);
+
+  const handleAutoTranslate = async (field: 'summary') => {
+    const indoText = cv[field]?.id;
+    if (!indoText) return;
+
+    setActiveField(field);
+    const translated = await translateToEnglish(indoText);
+    if (translated) {
+      handleBilingualChange(field, 'en', translated);
+    }
+    setActiveField(null);
+  };
 
   const handleBilingualChange = (field: 'summary', lang: 'id' | 'en', value: string) => {
     updateData({
@@ -72,10 +88,10 @@ export const CvEditor: React.FC = () => {
             Tautan / File PDF CV (Download Target)
           </label>
           <div className="flex flex-col sm:flex-row items-center gap-3">
-            <input
+            <DebouncedInput
               type="text"
               value={cv.fileUrl}
-              onChange={(e) => handleChange('fileUrl', e.target.value)}
+              onDebouncedChange={(val) => handleChange('fileUrl', val)}
               className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-xs font-mono text-[#2D292B]"
               placeholder="https://..."
             />
@@ -92,10 +108,10 @@ export const CvEditor: React.FC = () => {
           <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
             Tanggal Pembaruan Dokumen (Updated Date)
           </label>
-          <input
+          <DebouncedInput
             type="text"
             value={cv.updatedDate}
-            onChange={(e) => handleChange('updatedDate', e.target.value)}
+            onDebouncedChange={(val) => handleChange('updatedDate', val)}
             className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
             placeholder="Mei 2024 / May 2024"
           />
@@ -112,10 +128,10 @@ export const CvEditor: React.FC = () => {
             </div>
 
             <div className="space-y-3 flex-1 w-full">
-              <input
+              <DebouncedInput
                 type="text"
                 value={cv.previewImageUrl}
-                onChange={(e) => handleChange('previewImageUrl', e.target.value)}
+                onDebouncedChange={(val) => handleChange('previewImageUrl', val)}
                 className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
                 placeholder="URL Gambar Pratinjau..."
               />
@@ -130,18 +146,28 @@ export const CvEditor: React.FC = () => {
 
         {/* Summary Text Bilingual */}
         <div className="space-y-3 pt-4 border-t border-[#F3C6D3]/30">
-          <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-            Ringkasan Profil CV (Summary Text)
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
+              Ringkasan Profil CV (Summary Text)
+            </label>
+            <button
+              onClick={() => handleAutoTranslate('summary')}
+              disabled={isTranslating || !cv.summary.id}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50"
+            >
+              <Sparkles className={`w-3 h-3 ${isTranslating ? 'animate-pulse' : ''}`} />
+              {isTranslating ? 'Translating...' : 'Translate'}
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">
                 Bahasa Indonesia (ID)
               </span>
-              <textarea
+              <DebouncedTextarea
                 rows={4}
                 value={cv.summary.id}
-                onChange={(e) => handleBilingualChange('summary', 'id', e.target.value)}
+                onDebouncedChange={(val) => handleBilingualChange('summary', 'id', val)}
                 className="w-full p-3 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
             </div>
@@ -149,10 +175,10 @@ export const CvEditor: React.FC = () => {
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">
                 English (ENG)
               </span>
-              <textarea
+              <DebouncedTextarea
                 rows={4}
-                value={cv.summary.en}
-                onChange={(e) => handleBilingualChange('summary', 'en', e.target.value)}
+                value={activeField === 'summary' ? streamingText || cv.summary.en : cv.summary.en}
+                onDebouncedChange={(val) => handleBilingualChange('summary', 'en', val)}
                 className="w-full p-3 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
             </div>
@@ -162,3 +188,4 @@ export const CvEditor: React.FC = () => {
     </div>
   );
 };
+
