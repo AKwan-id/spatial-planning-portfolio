@@ -36,7 +36,7 @@ export const SelectedWorkSection: React.FC<SelectedWorkSectionProps> = ({ onSele
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#EAA3B8]/40 pb-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-[#8B3A52] uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FCEDF1]/90 backdrop-blur-md border border-[#EAA3B8]/60 shadow-sm text-[10px] sm:text-xs font-bold tracking-widest text-[#8B3A52] uppercase">
               <Layers className="w-3.5 h-3.5" />
               <span>{language === 'id' ? 'KARYA UTAMA' : 'HIGHLIGHTS'}</span>
             </div>
