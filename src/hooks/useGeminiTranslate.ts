@@ -2,12 +2,14 @@ import { useState } from 'react';
 
 export const useGeminiTranslate = () => {
     const [isTranslating, setIsTranslating] = useState(false);
+    const [streamingText, setStreamingText] = useState('');
     const [error, setError] = useState<string | null>(null);
 
     const translateToEnglish = async (textToTranslate: string): Promise<string | null> => {
         if (!textToTranslate.trim()) return null;
 
         setIsTranslating(true);
+        setStreamingText('');
         setError(null);
 
         try {
@@ -26,12 +28,12 @@ Return ONLY the translated text. Do not include any quotes, markdown formatting,
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Do NOT pass Accept: 'text/event-stream' so we get standard JSON back
+                    'Accept': 'text/event-stream'
                 },
                 body: JSON.stringify({
                     systemInstruction: { parts: { text: systemPrompt } },
                     contents: contents,
-                    generationConfig: { temperature: 0.1 } // Very low temp for deterministic translation
+                    generationConfig: { temperature: 0.1 }
                 })
             });
 
@@ -39,18 +41,47 @@ Return ONLY the translated text. Do not include any quotes, markdown formatting,
                 throw new Error('Failed to translate');
             }
 
-            const data = await response.json();
-            const translatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (!response.body) throw new Error('No streaming body found');
 
-            return translatedText.trim();
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let accumulatedText = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n').filter(line => line.trim() !== '');
+
+                for (const line of lines) {
+                    if (line === 'data: [DONE]') break;
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const rawData = line.replace('data: ', '');
+                            const data = JSON.parse(rawData);
+                            const textPart = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                            if (textPart) {
+                                accumulatedText += textPart;
+                                setStreamingText(accumulatedText);
+                            }
+                        } catch (e) {
+                            console.error('Error parsing SSE chunk:', e);
+                        }
+                    }
+                }
+            }
+
+            return accumulatedText.trim();
         } catch (err: any) {
             console.error('Translation error:', err);
             setError(err.message || 'Failed to translate. Please try again.');
             return null;
         } finally {
             setIsTranslating(false);
+            setStreamingText('');
         }
     };
 
-    return { translateToEnglish, isTranslating, error };
+    return { translateToEnglish, isTranslating, streamingText, error };
 };

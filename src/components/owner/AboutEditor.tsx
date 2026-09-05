@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 import { ProfileData } from '../../types/portfolio';
@@ -10,16 +10,19 @@ import { GoogleDriveWarning } from './GoogleDriveWarning';
 export const AboutEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
   const profile = portfolioData.profile;
-  const { translateToEnglish, isTranslating } = useGeminiTranslate();
+  const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
+  const [activeField, setActiveField] = useState<string | null>(null);
 
   const handleAutoTranslate = async (field: 'professionalField' | 'shortIntro' | 'education' | 'careerInterest' | 'location') => {
     const indoText = profile[field]?.id;
     if (!indoText) return;
 
+    setActiveField(field);
     const translated = await translateToEnglish(indoText);
     if (translated) {
       handleBilingualChange(field, 'en', translated);
     }
+    setActiveField(null);
   };
 
   const handleChange = (field: keyof ProfileData, value: any) => {
@@ -126,7 +129,7 @@ export const AboutEditor: React.FC = () => {
               </span>
               <DebouncedInput
                 type="text"
-                value={profile.professionalField.en}
+                value={activeField === 'professionalField' ? streamingText : profile.professionalField.en}
                 onDebouncedChange={(val) => handleBilingualChange('professionalField', 'en', val)}
                 className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
@@ -167,7 +170,7 @@ export const AboutEditor: React.FC = () => {
               </span>
               <DebouncedTextarea
                 rows={3}
-                value={profile.shortIntro.en}
+                value={activeField === 'shortIntro' ? streamingText : profile.shortIntro.en}
                 onDebouncedChange={(val) => handleBilingualChange('shortIntro', 'en', val)}
                 className="w-full p-3 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
@@ -200,7 +203,7 @@ export const AboutEditor: React.FC = () => {
             />
             <DebouncedInput
               type="text"
-              value={profile.education.en}
+              value={activeField === 'education' ? streamingText : profile.education.en}
               onDebouncedChange={(val) => handleBilingualChange('education', 'en', val)}
               placeholder="English"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs"
@@ -230,7 +233,7 @@ export const AboutEditor: React.FC = () => {
             />
             <DebouncedInput
               type="text"
-              value={profile.careerInterest.en}
+              value={activeField === 'careerInterest' ? streamingText : profile.careerInterest.en}
               onDebouncedChange={(val) => handleBilingualChange('careerInterest', 'en', val)}
               placeholder="English"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs"
@@ -260,7 +263,7 @@ export const AboutEditor: React.FC = () => {
             />
             <DebouncedInput
               type="text"
-              value={profile.location?.en || ''}
+              value={activeField === 'location' ? (streamingText || profile.location?.en || '') : (profile.location?.en || '')}
               onDebouncedChange={(val) => handleBilingualChange('location', 'en', val)}
               placeholder="English"
               className="w-full px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-xs"

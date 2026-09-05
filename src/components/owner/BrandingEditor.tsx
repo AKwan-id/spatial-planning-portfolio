@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 import { Sparkles, Eye, EyeOff } from 'lucide-react';
@@ -8,24 +8,29 @@ import { DebouncedInput } from './DebouncedInput';
 export const BrandingEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
   const siteSettings = portfolioData.siteSettings;
-  const { translateToEnglish, isTranslating } = useGeminiTranslate();
+  const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
+  const [activeField, setActiveField] = useState<string | null>(null);
 
   const handleTranslateLabel = async () => {
     const indoText = brandSettings.portfolioLabel.id;
     if (!indoText) return;
+    setActiveField('portfolioLabel');
     const translated = await translateToEnglish(indoText);
     if (translated) {
       handleLabelChange('en', translated);
     }
+    setActiveField(null);
   };
 
   const handleTranslateFooter = async () => {
     const indoText = siteSettings.footerText.id;
     if (!indoText) return;
+    setActiveField('footerText');
     const translated = await translateToEnglish(indoText);
     if (translated) {
       handleFooterChange('en', translated);
     }
+    setActiveField(null);
   };
 
   const brandSettings = siteSettings?.brandSettings || {
@@ -168,7 +173,7 @@ export const BrandingEditor: React.FC = () => {
               </span>
               <DebouncedInput
                 type="text"
-                value={brandSettings.portfolioLabel.en}
+                value={activeField === 'portfolioLabel' ? (streamingText || brandSettings.portfolioLabel.en || '') : brandSettings.portfolioLabel.en}
                 onDebouncedChange={(val) => handleLabelChange('en', val)}
                 className="w-full px-4 py-2 rounded-xl border border-[#F3C6D3] text-xs font-semibold text-[#2D292B]"
               />
@@ -227,7 +232,7 @@ export const BrandingEditor: React.FC = () => {
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">ENG</span>
               <DebouncedInput
                 type="text"
-                value={siteSettings.footerText.en}
+                value={activeField === 'footerText' ? (streamingText || siteSettings.footerText.en || '') : siteSettings.footerText.en}
                 onDebouncedChange={(val) => handleFooterChange('en', val)}
                 className="w-full px-4 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
               />
