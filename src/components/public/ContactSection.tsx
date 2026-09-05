@@ -25,10 +25,10 @@ export const ContactSection: React.FC = () => {
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#D99AAF]/15 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-3xl space-y-8">
-            <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#FFF9F7] leading-tight headline-shadow">
-              <SparklingText wrapperClass="inline-block text-[#FFF9F7]">
+            <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#FFF9F7] leading-tight">
+              
                 {language === 'id' ? 'Mari Terhubung & Berkolaborasi' : 'Let’s Connect & Collaborate'}
-              </SparklingText>
+              
             </h2>
 
             {/* Direct Contact Cards (Email, LinkedIn, Phone ONLY) */}
@@ -121,7 +121,7 @@ export const ContactSection: React.FC = () => {
         </div>
 
         {/* Minimal Footer with Dynamic Year */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-[#EAA3B8]/40 text-xs text-[#2D292B]/70 font-medium">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-[#EAA3B8]/40 text-xs text-[#2D292B]/70 font-medium text-glow-white">
           <div className="text-center sm:text-left">
             <span>© {new Date().getFullYear()} {siteSettings?.title || 'Annisa Nur Prabawa'}</span>
             {siteSettings?.footerText && (
