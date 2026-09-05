@@ -69,4 +69,12 @@ npm run dev
 ```
 
 ---
-*Built with logic, passion, and precision.*
+
+## 👨‍💻 Author
+
+**Annisa Nur Prabawa**
+Spatial Planner | GIS Analyst | Software Enthusiast
+- Live Demo: [https://annisa-portofolio-beta.vercel.app/](https://annisa-portofolio-beta.vercel.app/)
+
+## 📄 License
+This project is open-sourced under the MIT License feel free to learn from the code!
