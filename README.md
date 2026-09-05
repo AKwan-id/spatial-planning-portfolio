@@ -70,11 +70,16 @@ npm run dev
 
 ---
 
-## 👨‍💻 Penulis
+## 👨‍💻 Pengembang Web
 
-**Annisa Nur Prabawa**
-Perencana Tata Ruang | Analis GIS | Enthusiast Perangkat Lunak
+**Ahmad Kurniawan**
+*Website portofolio ini dirancang, diprogram, dan dipersembahkan khusus demi mengangkat profil karier profesional:*
+**Annisa Nur Prabawa** (Perencana Tata Ruang | Analis GIS)
 - Tinjauan Publik: [https://annisa-portofolio-beta.vercel.app/](https://annisa-portofolio-beta.vercel.app/)
 
-## 📄 Lisensi
-Proyek peracikan kode ini bebas pakai untuk dipelajari di area awam (*open-sourced*) mengikuti perizinan standar MIT License.
+## 📄 Hak Cipta & Lisensi
+
+**All Rights Reserved © 2026 Ahmad Kurniawan.**
+
+Halaman repositori kode ini dipublikasikan **HANYA** sebagai *showcase* / jendela pamer arsitektur pengembangan web pihak *developer*. 
+Proyek ini **Bukan** proyek publik (*Not Open Source*). Publik dilarang keras menyalin, membajak, menggunakan ulang struktur, maupun memperdagangkan kode pemrograman di dalam repositori ini tanpa restu langsung dari pihak pengembang (Ahmad Kurniawan).
