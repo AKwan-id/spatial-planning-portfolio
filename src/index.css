@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @layer base {
   :root {
@@ -27,7 +27,7 @@
 
 /* Custom utilities for editorial surfaces over Sakura Pink canvas */
 
-/* Primary surface — readable, clearly pink-tinted, allows cinematic depth */
+/* Primary surface â€” readable, clearly pink-tinted, allows cinematic depth */
 .glass-surface {
   background: rgba(252, 237, 241, 0.82);
   backdrop-filter: blur(14px);
@@ -35,7 +35,7 @@
   border: 1px solid rgba(217, 154, 175, 0.40);
 }
 
-/* Subtle surface — used for inner cards / low-emphasis blocks */
+/* Subtle surface â€” used for inner cards / low-emphasis blocks */
 .glass-surface-subtle {
   background: rgba(248, 228, 234, 0.68);
   backdrop-filter: blur(8px);
@@ -43,7 +43,7 @@
   border: 1px solid rgba(217, 154, 175, 0.30);
 }
 
-/* Dark contrasting surface — used in Contact section closing banner */
+/* Dark contrasting surface â€” used in Contact section closing banner */
 .glass-surface-dark {
   background: rgba(45, 41, 43, 0.92);
   backdrop-filter: blur(16px);
@@ -51,7 +51,7 @@
   border: 1px solid rgba(217, 154, 175, 0.20);
 }
 
-/* Headline text shadow — subtle depth for readability over cinematic */
+/* Headline text shadow â€” subtle depth for readability over cinematic */
 .headline-shadow {
   text-shadow: 0 1px 8px rgba(139, 58, 82, 0.08), 0 2px 16px rgba(45, 41, 43, 0.06);
 }
@@ -61,22 +61,22 @@
   text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 4px 20px rgba(139, 58, 82, 0.10);
 }
 
-/* ✨ Efek Berpijar (Glow Pulse) yang Halus & Profesional */
+/* âœ¨ Efek Berpijar (Glow Pulse) yang Halus & Profesional */
 .glow-pijar {
   animation: text-pulse 4s ease-in-out infinite alternate;
 }
 
 @keyframes text-pulse {
   0% {
-    text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 0 0px rgba(217, 154, 175, 0);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.8);
   }
 
   100% {
-    text-shadow: 0 1px 4px rgba(45, 41, 43, 0.10), 0 0 16px rgba(234, 163, 184, 0.55);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 15px rgba(255, 255, 255, 0.9), 0 0 6px rgba(255, 255, 255, 1);
   }
 }
 
-/* ✨ Bintang Animasi Dinamis (Kling Kling) */
+/* âœ¨ Bintang Animasi Dinamis (Kling Kling) */
 .animate-sparkle {
   animation: sparkle-anim 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
