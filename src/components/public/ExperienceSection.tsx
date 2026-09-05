@@ -42,7 +42,7 @@ export const ExperienceSection: React.FC = () => {
               <Briefcase className="w-3.5 h-3.5" />
               <span>{language === 'id' ? 'REKAM JEJAK' : 'REKORD'}</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B] drop-shadow-[0_0_12px_rgba(255,255,255,0.9)]">
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D292B] text-glow-white">
               <SparklingText>
                 {language === 'id' ? 'Pengalaman & Rekam Jejak' : 'Professional Experience'}
               </SparklingText>
