@@ -121,7 +121,7 @@ export const ContactSection: React.FC = () => {
         </div>
 
         {/* Minimal Footer with Dynamic Year */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-[#EAA3B8]/40 text-xs text-[#2D292B] font-bold text-glow-white tracking-wide">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-[#EAA3B8]/40 text-xs text-[#2D292B]/70 font-medium">
           <div className="text-center sm:text-left">
             <span>© {new Date().getFullYear()} {siteSettings?.title || 'Annisa Nur Prabawa'}</span>
             {siteSettings?.footerText && (
@@ -134,7 +134,7 @@ export const ContactSection: React.FC = () => {
 
           <button
             onClick={scrollToTop}
-            className="text-xs text-[#8B3A52] font-bold hover:text-[#2D292B] transition-colors cursor-pointer text-glow-white"
+            className="text-xs text-[#8B3A52] font-semibold hover:text-[#2D292B] transition-colors cursor-pointer"
           >
             {language === 'id' ? 'Kembali ke Atas ↑' : 'Back to Top ↑'}
           </button>
