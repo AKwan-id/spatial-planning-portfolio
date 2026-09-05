@@ -1,80 +1,80 @@
-# 🌍 Spatial Planning Portfolio & Intelligent AI Agent
+# 🌍 Portofolio Perencanaan Tata Ruang & Agen AI Cerdas
 
-An ultra-premium, interactive portfolio web application built specifically for Spatial Planners, GIS Analysts, and Urban Policy experts. This repository contains the source code for a highly dynamic frontend combined with a secure serverless backend.
+Aplikasi web portofolio interaktif ultra-premium yang dibangun khusus untuk Perencana Tata Ruang, Analis GIS, dan Ahli Kebijakan Perkotaan. Repositori ini berisi kode sumber untuk *frontend* yang sangat dinamis yang dipadukan dengan *backend serverless* yang aman.
 
-## ✨ Key Capabilities
+## ✨ Fitur Utama
 
-1. **Cinematic Hero Animations**
-   - High-performance, scroll-driven Canvas image sequence rendering for an immersive visual experience.
-   - Smooth staggered reveals across sections using Framer Motion.
+1. **Animasi Hero Sinematik**
+   - *Rendering* urutan gambar Canvas berbasis guliran (*scroll-driven*) berperforma tinggi untuk pengalaman visual yang memukau.
+   - Efek transisi halus antar berbagai bagian halaman menggunakan Framer Motion.
 
-2. **🤖 Secure Autonomous AI Assistant (Vercel Edge)**
-   - Powered by the official `@google/genai` SDK (Gemini Flash).
-   - Features **Server-Sent Events (SSE) Streaming** for real-time typewriter output.
-   - Implements **Enterprise-grade Security**: Includes strict Prompt Guardrails, 100% hidden server-side API Keys, and an Edge-level Sliding Window Rate Limiter (Anti-DDoS Token Exhaustion).
+2. **🤖 Asisten AI Otonom & Aman (Vercel Edge)**
+   - Didukung oleh SDK resmi `@google/genai` (Gemini Flash).
+   - Menghadirkan fitur **Server-Sent Events (SSE) Streaming** untuk efek ketikan respons secara *real-time*.
+   - Menerapkan **Keamanan Standar Perusahaan**: Mencakup batasan *Prompt Guardrails* yang ketat, Kunci API sisi server yang tersembunyi 100%, dan Pembatasan Akses Anti-DDoS (*Sliding Window Rate Limiter*).
 
-3. **Restricted Owner Dashboard (CMS)**
-   - A stealthy Administrator CMS accessible only via Google OAuth.
-   - Managed entirely by Supabase Database with strict Row Level Security (RLS) tracking to ensure only verified administrators can Create, Read (Drafts), Update, or Delete data.
-   - Intelligent Auto-Logout tracking user inactivity to prevent localized device hijacking.
+3. **Dasbor Pengelola Terbatas (CMS)**
+   - Sistem manajemen konten (CMS) mode siluman yang hanya dapat diakses melalui Google OAuth.
+   - Dikelola sepenuhnya oleh Database Supabase yang dilacak ketat dengan *Row Level Security* (RLS) untuk memastikan hanya administrator terverifikasi yang dapat Membuat, Membaca (Draf), Memperbarui, atau Menghapus data.
+   - Fitur *Auto-Logout* pintar yang melacak aktivitas masuk pengguna guna mencegah kemungkinan pembajakan di tingkat lokal.
 
-4. **Dynamic Context Feeding**
-   - The AI Agent reads its knowledge base directly from the real-time database inputs, eliminating the need to ever touch the code after deployment.
+4. **Konteks Data Spesifik Dinamis**
+   - Agen AI membaca seluruh datanya langsung dari input *database real-time*, menghapus keharusan Anda menyentuh kode pemrograman sama sekali setelah peluncuran awal.
 
-## 🛠 Tech Stack
-- **Frontend Core:** React 19, TypeScript, Vite
-- **Styling & Animation:** Tailwind CSS, Framer Motion
+## 🛠 Teknologi yang Digunakan
+- **Inti Frontend:** React 19, TypeScript, Vite
+- **Desain & Animasi:** Tailwind CSS, Framer Motion
 - **Backend & Proxy:** Vercel Edge Serverless Functions
-- **Database & Auth:** Supabase (PostgreSQL, OAuth 2.0)
+- **Database & Autentikasi:** Supabase (PostgreSQL, OAuth 2.0)
 
 ---
 
-## 🚀 Local Development Setup
+## 🚀 Panduan Instalasi Lokal
 
-> **⚠️ SECURITY WARNING:** This repository heavily obfuscates API keys and database endpoints. You **MUST** provide your own keys to run this locally. Do not commit your personal `.env` file or Database credentials to the public repository.
+> **⚠️ PERINGATAN KEAMANAN:** Repositori ini dengan tegas menutupi seluruh API Keys dan endpoint dari *database*. Anda **WAJIB** menyediakan kunci API milik Anda sendiri untuk menjalankan sistem ini secara lokal. Jangan pernah mengunggah rincian `.env` atau kredensial Database pribadi Anda ke dalam repositori publik ini.
 
-### 1. Prerequisites
-Ensure you have Node.js (v18+) and npm installed.
+### 1. Prasyarat
+Pastikan Anda telah menginstal Node.js (versi 18+) dan npm.
 
-### 2. Fork & Install
+### 2. Duplikasi (*Clone*) & Instalasi
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/spatial-planning-portfolio.git
+git clone https://github.com/USERNAME_GITHUB_ANDA/spatial-planning-portfolio.git
 cd spatial-planning-portfolio
 npm install
 ```
 
-### 3. Environment Variables
-Duplicate the `.env.example` file to create your local `.env`.
+### 3. Konfigurasi Sistem (Environment Variables)
+Buka dan salin dokumen bernama `.env.example` untuk meracik wujud asli kunci `.env` milik Anda sendiri.
 ```bash
 cp .env.example .env
 ```
-Fill in the blanks using your own platform keys:
-- `VITE_SUPABASE_URL`: Your Supabase Project URL.
-- `VITE_SUPABASE_ANON_KEY`: Your Supabase Public Anon Key.
-- `GEMINI_API_KEY`: Your personal Google AI Studio Key (DO NOT expose to frontend variables!).
+Isi bagian dalam datanya menggunakan kumpulan kunci yang Anda dapatkan di platform bersangkutan:
+- `VITE_SUPABASE_URL`: Bawaan URL proyek Supabase Anda.
+- `VITE_SUPABASE_ANON_KEY`: Kunci Publik (*Anon Key*) khusus Supabase.
+- `GEMINI_API_KEY`: Kunci akses khusus area Google AI Studio Anda (JANGAN sesekali memasukkannya di area peredaran variabel *frontend*!).
 
-### 4. Database Initialization (Supabase)
-To make the CMS work, you must create the following tables in your Supabase SQL Editor and enable RLS:
-- `admin_users` (Requires manual `email` insertion for the Owner Auth Bypass)
+### 4. Peluncuran Database (Supabase)
+Demi melancarkan jalannya Dasbor CMS, buatlah ragam tabel database berikut pada area *SQL Editor* Supabase dan wajibkan perlindungan RLS di dalamnya:
+- `admin_users` (Mensyaratkan pemasukan email Anda secara manual agar lolos uji sistem Auth)
 - `projects`
 - `skills`
 - `experience`
 - `certificates`
 
-*A sample `secure_rls.sql` script is included in the project root to help you lock down the Row Level Security policies instantly.*
+*Sebuah contoh dokumen eksekusi manual bernama `secure_rls.sql` sudah dilekatkan pada pangkal folder guna mempermudah Anda menutup paksa peredaran publik lewat RLS dalam waktu cepat.*
 
-### 5. Run the Server
+### 5. Hubungkan ke Server
 ```bash
 npm run dev
 ```
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Penulis
 
 **Annisa Nur Prabawa**
-Spatial Planner | GIS Analyst | Software Enthusiast
-- Live Demo: [https://annisa-portofolio-beta.vercel.app/](https://annisa-portofolio-beta.vercel.app/)
+Perencana Tata Ruang | Analis GIS | Enthusiast Perangkat Lunak
+- Tinjauan Publik: [https://annisa-portofolio-beta.vercel.app/](https://annisa-portofolio-beta.vercel.app/)
 
-## 📄 License
-This project is open-sourced under the MIT License feel free to learn from the code!
+## 📄 Lisensi
+Proyek peracikan kode ini bebas pakai untuk dipelajari di area awam (*open-sourced*) mengikuti perizinan standar MIT License.
