@@ -1,48 +1,72 @@
-# Spatial Planning Portfolio
+# 🌍 Spatial Planning Portfolio & Intelligent AI Agent
 
-Portofolio profesional interaktif untuk menyajikan profil, kompetensi, proyek, pengalaman, sertifikat, dan CV di bidang Perencanaan Tata Ruang dan Administrasi Pertanahan.
+An ultra-premium, interactive portfolio web application built specifically for Spatial Planners, GIS Analysts, and Urban Policy experts. This repository contains the source code for a highly dynamic frontend combined with a secure serverless backend.
 
-## Ringkasan Arsitektur
+## ✨ Key Capabilities
 
-Spatial Planning Portfolio merupakan *single-page application* modern berbasis React dan TypeScript. Aplikasi dibekali sistem CMS terintegrasi (Content Management System) yang dikelola melalui Dashboard Administrator khusus dengan autentikasi keamanan tingkat tinggi.
+1. **Cinematic Hero Animations**
+   - High-performance, scroll-driven Canvas image sequence rendering for an immersive visual experience.
+   - Smooth staggered reveals across sections using Framer Motion.
 
-### Teknologi Utama
-- **Frontend Layer:** React 19, TypeScript, Tailwind CSS v4, Lucide React
-- **Backend & Database:** Supabase POSTGRES (Data storage), Supabase Auth (Google OAuth)
-- **Security:** RLS (Row Level Security) Enforcement, Strict Admin Policies, Vercel Serverless Functions
-- **Deployment:** Vercel serverless platform
+2. **🤖 Secure Autonomous AI Assistant (Vercel Edge)**
+   - Powered by the official `@google/genai` SDK (Gemini Flash).
+   - Features **Server-Sent Events (SSE) Streaming** for real-time typewriter output.
+   - Implements **Enterprise-grade Security**: Includes strict Prompt Guardrails, 100% hidden server-side API Keys, and an Edge-level Sliding Window Rate Limiter (Anti-DDoS Token Exhaustion).
 
-## Fitur Utama
+3. **Restricted Owner Dashboard (CMS)**
+   - A stealthy Administrator CMS accessible only via Google OAuth.
+   - Managed entirely by Supabase Database with strict Row Level Security (RLS) tracking to ensure only verified administrators can Create, Read (Drafts), Update, or Delete data.
+   - Intelligent Auto-Logout tracking user inactivity to prevent localized device hijacking.
 
-- **Real-time CMS:** Modul pengelolaan *(CRUD)* langsung dari dalam *browser* (tersedia melalui `/owner`) dengan akses yang terenkripsi oleh otentikasi Google.
-- **Sistem Bilingual:** Dukungan bahasa aktif antara `ID` dan `ENG` yang terintegrasi di seluruh komponen portofolio, mempermudah akses tingkat global.
-- **Dynamic Theming:** Palet warna kustom (*Sakura Pink*) dengan latar animasi *Cinematic Canvas* berlapis yang merespons pergerakan `scroll` pengguna.
-- **Responsive Architecture:** Antarmuka responsif yang teroptimasi secara presisi baik untuk layar desktop ultra lebar maupun *mobile viewport*.
-- **Role-based Authentication:** Akses kontrol admin yang diotorisasi khusus dengan `admin_users` whitelist di Supabase Database.
+4. **Dynamic Context Feeding**
+   - The AI Agent reads its knowledge base directly from the real-time database inputs, eliminating the need to ever touch the code after deployment.
 
-## Panduan Setup Development
+## 🛠 Tech Stack
+- **Frontend Core:** React 19, TypeScript, Vite
+- **Styling & Animation:** Tailwind CSS, Framer Motion
+- **Backend & Proxy:** Vercel Edge Serverless Functions
+- **Database & Auth:** Supabase (PostgreSQL, OAuth 2.0)
 
-### 1. Kebutuhan Environment Variables
-Salin konfigurasi kunci berikut pada `.env` atau Vercel Environment Variables:
-```env
-VITE_SUPABASE_URL="https://[PROJECT-ID].supabase.co"
-VITE_SUPABASE_PUBLISHABLE_KEY="[SUPABASE-ANON-KEY]"
-GEMINI_API_KEY="[SERVER-SIDE-API-KEY]"
+---
+
+## 🚀 Local Development Setup
+
+> **⚠️ SECURITY WARNING:** This repository heavily obfuscates API keys and database endpoints. You **MUST** provide your own keys to run this locally. Do not commit your personal `.env` file or Database credentials to the public repository.
+
+### 1. Prerequisites
+Ensure you have Node.js (v18+) and npm installed.
+
+### 2. Fork & Install
+```bash
+git clone https://github.com/YOUR_GITHUB_USERNAME/spatial-planning-portfolio.git
+cd spatial-planning-portfolio
+npm install
 ```
 
-### 2. Pemasangan & Persiapan Database (Supabase)
-Jalankan skrip inisialisasi tabel SQL dari `SECURITY_SETUP.md` di Editor SQL Supabase untuk mengatur *Row Level Security* (RLS). Pastikan layanan *Google Auth Provider* aktif (Enabled).
-
-### 3. Instalasi Repository Lokal
+### 3. Environment Variables
+Duplicate the `.env.example` file to create your local `.env`.
 ```bash
-git clone https://github.com/AKwan-id/spatial-planning-portfolio.git
-cd spatial-planning-portfolio
-npm ci
+cp .env.example .env
+```
+Fill in the blanks using your own platform keys:
+- `VITE_SUPABASE_URL`: Your Supabase Project URL.
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase Public Anon Key.
+- `GEMINI_API_KEY`: Your personal Google AI Studio Key (DO NOT expose to frontend variables!).
+
+### 4. Database Initialization (Supabase)
+To make the CMS work, you must create the following tables in your Supabase SQL Editor and enable RLS:
+- `admin_users` (Requires manual `email` insertion for the Owner Auth Bypass)
+- `projects`
+- `skills`
+- `experience`
+- `certificates`
+
+*A sample `secure_rls.sql` script is included in the project root to help you lock down the Row Level Security policies instantly.*
+
+### 5. Run the Server
+```bash
 npm run dev
 ```
 
-## Mekanisme Ekspor & Impor Data
-Data aplikasi yang lama (berbasis `localStorage`) dapat diunggah / dipindahkan ke Supabase menggunakan modul **Export/Import JSON** pada ruang *Owner Dashboard*. Modul ini memastikan sinkronisasi yang berkesinambungan apabila administrator beralih platform atau melakukan migrasi *database*.
-
 ---
-*(C) Spatial Planning Portfolio*
+*Built with logic, passion, and precision.*
