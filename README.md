@@ -73,7 +73,7 @@ npm run dev
 ## 👨‍💻 Pengembang Web
 
 **Ahmad Kurniawan**
-*Website portofolio ini dirancang, diprogram, dan dipersembahkan khusus demi mengangkat profil karier profesional:*
+*Sistem portofolio interaktif ini dirancang, diprogram, dan didedikasikan khusus untuk profil karier:*
 **Annisa Nur Prabawa** (Perencana Tata Ruang | Analis GIS)
 - Tinjauan Publik: [https://annisa-portofolio-beta.vercel.app/](https://annisa-portofolio-beta.vercel.app/)
 
@@ -81,5 +81,4 @@ npm run dev
 
 **All Rights Reserved © 2026 Ahmad Kurniawan.**
 
-Halaman repositori kode ini dipublikasikan **HANYA** sebagai *showcase* / jendela pamer arsitektur pengembangan web pihak *developer*. 
-Proyek ini **Bukan** proyek publik (*Not Open Source*). Publik dilarang keras menyalin, membajak, menggunakan ulang struktur, maupun memperdagangkan kode pemrograman di dalam repositori ini tanpa restu langsung dari pihak pengembang (Ahmad Kurniawan).
+Kode sumber ini merupakan properti intelektual tertutup (*Closed Source*). Pengunjung dilarang keras untuk menyalin, mendistribusikan, memodifikasi, atau menggunakan basis kode program ini untuk keperluan pribadi maupun komersial dalam bentuk apa pun tanpa izin tertulis dari pihak pengembang.
