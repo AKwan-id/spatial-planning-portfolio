@@ -39,7 +39,7 @@ export const SkillsEditor: React.FC = () => {
       featured: false,
       order: skills.length + 1,
       visible: true,
-      status: 'PUBLISHED',
+      status: 'DRAFT',
       description: { id: 'Penjelasan penggunaan keahlian...', en: 'Explanation of competency application...' },
     };
 
@@ -203,11 +203,10 @@ export const SkillsEditor: React.FC = () => {
           return (
             <div
               key={skill.id}
-              className={`rounded-2xl border transition-all ${
-                isEditing
+              className={`rounded-2xl border transition-all ${isEditing
                   ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-4'
                   : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
-              }`}
+                }`}
             >
               {!isEditing ? (
                 <>
@@ -222,11 +221,10 @@ export const SkillsEditor: React.FC = () => {
                         </span>
                       )}
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                          skill.status === 'PUBLISHED' || !skill.status
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${skill.status === 'PUBLISHED' || !skill.status
                             ? 'bg-emerald-100 text-emerald-800'
                             : 'bg-amber-100 text-amber-800'
-                        }`}
+                          }`}
                       >
                         {skill.status || 'PUBLISHED'}
                       </span>

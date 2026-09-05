@@ -33,7 +33,7 @@ export const CertificatesEditor: React.FC = () => {
       credentialUrl: '#',
       order: certificates.length + 1,
       visible: true,
-      status: 'PUBLISHED',
+      status: 'DRAFT',
     };
 
     updateData({
@@ -144,8 +144,8 @@ export const CertificatesEditor: React.FC = () => {
             <div
               key={cert.id}
               className={`rounded-2xl border transition-all ${isEditing
-                  ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-6'
-                  : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
+                ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-6'
+                : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
                 }`}
             >
               {!isEditing ? (
@@ -162,8 +162,8 @@ export const CertificatesEditor: React.FC = () => {
                         </span>
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded ${cert.status === 'PUBLISHED' || !cert.status
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-amber-100 text-amber-800'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-amber-100 text-amber-800'
                             }`}
                         >
                           {cert.status || 'PUBLISHED'}
@@ -300,6 +300,19 @@ export const CertificatesEditor: React.FC = () => {
                         placeholder="https://..."
                         className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Status Publikasi</label>
+                      <select
+                        value={formData.status || 'PUBLISHED'}
+                        onChange={(e) => setFormData((p) => ({ ...p, status: e.target.value as PublicationStatus }))}
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs font-semibold text-[#2D292B] bg-white"
+                      >
+                        <option value="PUBLISHED">PUBLISHED (Tampil)</option>
+                        <option value="DRAFT">DRAFT (Sembunyi)</option>
+                        <option value="HIDDEN">HIDDEN (Arsip)</option>
+                      </select>
                     </div>
                   </div>
 

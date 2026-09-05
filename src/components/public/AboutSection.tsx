@@ -3,7 +3,6 @@ import { useLanguage } from '../../context/LanguageContext';
 import { ArrowDownRight, MapPin, GraduationCap, Compass, Sparkles } from 'lucide-react';
 import { SparklingText } from './SparklingText';
 
-
 export const AboutSection: React.FC = () => {
   const { language, portfolioData, t } = useLanguage();
   const { profile } = portfolioData;
@@ -12,6 +11,11 @@ export const AboutSection: React.FC = () => {
     const el = document.getElementById('selected-work');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const hasEducation = !!t(profile.education);
+  const hasCareer = !!t(profile.careerInterest);
+  const hasLocation = !!t(profile.location);
+  const hasAnyInfo = hasEducation || hasCareer || hasLocation;
 
   return (
     <section
@@ -41,50 +45,62 @@ export const AboutSection: React.FC = () => {
                 </div>
 
                 {/* Professional Field */}
-                <div className="pt-1">
-                  <div className="text-base sm:text-xl font-serif font-medium text-[#2D292B] border-l-2 border-[#8B3A52] pl-3.5 py-0.5 headline-shadow">
-                    {t(profile.professionalField)}
+                {t(profile.professionalField) && (
+                  <div className="pt-1">
+                    <div className="text-base sm:text-xl font-serif font-medium text-[#2D292B] border-l-2 border-[#8B3A52] pl-3.5 py-0.5 headline-shadow">
+                      {t(profile.professionalField)}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Short Introduction */}
-                <p className="text-base sm:text-lg text-[#2D292B]/85 leading-relaxed max-w-2xl font-normal pt-2">
-                  {t(profile.shortIntro)}
-                </p>
+                {t(profile.shortIntro) && (
+                  <p className="text-base sm:text-lg text-[#2D292B]/85 leading-relaxed max-w-2xl font-normal pt-2">
+                    {t(profile.shortIntro)}
+                  </p>
+                )}
               </div>
 
               {/* Lightweight Supporting Info (Education, Career Interest, Location) */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#EAA3B8]/40">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-[#8B3A52]">
-                    <GraduationCap className="w-3.5 h-3.5" />
-                    <span>{language === 'id' ? 'Pendidikan' : 'Education'}</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-[#2D292B]/80 font-medium">
-                    {t(profile.education)}
-                  </p>
-                </div>
+              {hasAnyInfo && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#EAA3B8]/40">
+                  {hasEducation && (
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-[#8B3A52]">
+                        <GraduationCap className="w-3.5 h-3.5" />
+                        <span>{language === 'id' ? 'Pendidikan' : 'Education'}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#2D292B]/80 font-medium">
+                        {t(profile.education)}
+                      </p>
+                    </div>
+                  )}
 
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-[#8B3A52]">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>{language === 'id' ? 'Minat Karir' : 'Career Focus'}</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-[#2D292B]/80 font-medium">
-                    {t(profile.careerInterest)}
-                  </p>
-                </div>
+                  {hasCareer && (
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-[#8B3A52]">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>{language === 'id' ? 'Minat Karir' : 'Career Focus'}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#2D292B]/80 font-medium">
+                        {t(profile.careerInterest)}
+                      </p>
+                    </div>
+                  )}
 
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-[#8B3A52]">
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span>{language === 'id' ? 'Lokasi' : 'Location'}</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-[#2D292B]/80 font-medium">
-                    {t(profile.location)}
-                  </p>
+                  {hasLocation && (
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-[#8B3A52]">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>{language === 'id' ? 'Lokasi' : 'Location'}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#2D292B]/80 font-medium">
+                        {t(profile.location)}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* CTA to Selected Work */}
               <div className="pt-2">
