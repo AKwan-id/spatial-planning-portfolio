@@ -263,11 +263,11 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
           <div className="p-1.5 sm:p-2 rounded-xl bg-[#D99AAF]/20 text-[#F3C6D3] hidden sm:block">
             <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div className="max-w-[130px] sm:max-w-none">
-            <h2 className="font-serif text-[11px] sm:text-xl font-bold tracking-tight leading-tight">
+          <div className="max-w-[155px] sm:max-w-none flex flex-col justify-center">
+            <h2 className="font-serif text-[11px] sm:text-xl font-bold tracking-tight leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
               {language === 'en' ? 'PORTFOLIO OWNER DASHBOARD' : 'DASHBOARD PEMILIK PORTOFOLIO'}
             </h2>
-            <p className="text-[11px] text-[#F3C6D3]/80 font-mono hidden sm:block mt-0.5">
+            <p className="text-[8.5px] sm:text-[11px] text-[#F3C6D3]/80 font-mono mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
               {language === 'en' ? 'Management Portal' : 'Portal Manajemen'} &bull; Annisa Nur Prabawa
             </p>
           </div>
@@ -275,12 +275,12 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
 
         <div className="flex items-start sm:items-center gap-2 sm:gap-3 shrink-0">
 
-          <div className="flex flex-col-reverse sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
+          <div className="flex flex-col-reverse sm:flex-row items-end sm:items-center gap-1.5 sm:gap-3">
             {/* Language Toggle */}
-            <div className="flex items-center bg-[#FFF9F7]/10 rounded-full p-0.5 text-[9px] sm:text-xs font-medium border border-[#F3C6D3]/20">
+            <div className="flex items-center bg-[#FFF9F7]/10 rounded-full p-[2px] text-[9px] sm:text-xs font-medium border border-[#F3C6D3]/20 w-[84px] sm:w-auto h-[26px] sm:h-auto">
               <button
                 onClick={() => setLanguage('id')}
-                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors cursor-pointer ${language === 'id'
+                className={`flex-1 sm:px-3 h-full rounded-full transition-colors cursor-pointer flex items-center justify-center ${language === 'id'
                   ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
                   : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
                   }`}
@@ -289,7 +289,7 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
               </button>
               <button
                 onClick={() => setLanguage('en')}
-                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors cursor-pointer ${language === 'en'
+                className={`flex-1 sm:px-3 h-full rounded-full transition-colors cursor-pointer flex items-center justify-center ${language === 'en'
                   ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
                   : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
                   }`}
@@ -301,10 +301,11 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
             {/* Public Review Button */}
             <button
               onClick={onClose}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#FFF9F7] text-[#2D292B] text-[9px] sm:text-xs font-semibold hover:bg-[#F3C6D3] transition-colors cursor-pointer shrink-0 shadow-sm"
+              className="flex items-center justify-center gap-1 sm:gap-1.5 sm:px-4 sm:py-2 rounded-full bg-[#FFF9F7] text-[#2D292B] text-[9px] sm:text-xs font-semibold hover:bg-[#F3C6D3] transition-colors cursor-pointer shrink-0 shadow-sm w-[84px] sm:w-auto h-[26px] sm:h-auto"
             >
               <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>{language === 'en' ? 'View Public Site' : 'Tinjau Tampilan Publik'}</span>
+              <span className="sm:hidden">{language === 'en' ? 'Public' : 'Publik'}</span>
+              <span className="hidden sm:inline">{language === 'en' ? 'View Public Site' : 'Tinjau Tampilan Publik'}</span>
             </button>
           </div>
 
