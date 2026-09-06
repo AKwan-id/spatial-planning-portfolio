@@ -61,30 +61,31 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
     return (
         <div className="w-full">
-            {label && <label className="block text-sm font-medium text-slate-300 mb-2">{label}</label>}
+            {label && <label className="block text-[10px] font-bold uppercase text-[#D99AAF] mb-1.5">{label}</label>}
 
             <div className="flex flex-col gap-3">
                 {currentFileUrl ? (
-                    <div className="relative group rounded-xl border border-slate-700 bg-slate-800/50 p-2 overflow-hidden flex items-center gap-4">
+                    <div className="relative group rounded-xl border border-[#F3C6D3] bg-[#F8F1F2] p-2 overflow-hidden flex items-center gap-4">
                         {isPDF ? (
-                            <div className="w-16 h-16 rounded bg-slate-700 flex items-center justify-center shrink-0">
+                            <div className="w-16 h-16 rounded-lg bg-white border border-[#F3C6D3] flex items-center justify-center shrink-0">
                                 <FileIcon className="text-rose-400 w-8 h-8" />
                             </div>
                         ) : (
-                            <div className="w-16 h-16 rounded bg-slate-700 overflow-hidden shrink-0">
-                                <img src={currentFileUrl} alt="uploaded preview" className="w-full h-full object-cover" />
+                            <div className="w-16 h-16 rounded-lg bg-white border border-[#F3C6D3] overflow-hidden shrink-0 flex items-center justify-center">
+                                {/* If the link is google drive, the img might break, which is expected until they upload. We just let it handle native alt. */}
+                                <img src={currentFileUrl} alt="Uploaded" className="w-full h-full object-cover text-[8px] text-center text-[#2D292B]/50" />
                             </div>
                         )}
 
-                        <div className="flex-1 truncate">
-                            <p className="text-sm text-slate-200 truncate">
-                                {isPDF ? "PDF Document" : "Image File"}
+                        <div className="flex-1 min-w-0 pr-2">
+                            <p className="text-xs font-bold text-[#2D292B] truncate">
+                                {isPDF ? "Dokumen PDF" : "File Gambar"}
                             </p>
                             <a
                                 href={currentFileUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-xs text-blue-400 hover:underline truncate block w-48"
+                                className="text-[10px] font-mono text-[#D99AAF] hover:underline truncate block w-full mt-0.5"
                             >
                                 {currentFileUrl}
                             </a>
@@ -94,8 +95,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                             <button
                                 type="button"
                                 onClick={onClear}
-                                className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors shrink-0 mr-2"
-                                title="Remove File"
+                                className="p-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-colors shrink-0 mr-1"
+                                title="Hapus File"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -112,25 +113,27 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                         disabled={isUploading || isLoading}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
                     />
-                    <div className={`p-4 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-colors ${isUploading ? 'border-blue-500/50 bg-blue-500/5' : 'border-slate-700 bg-slate-800/30 hover:bg-slate-800/80 hover:border-slate-600'
+                    <div className={`p-4 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-colors ${isUploading || isLoading
+                            ? 'border-[#D99AAF] bg-[#D99AAF]/10'
+                            : 'border-[#F3C6D3] bg-[#F8F1F2] hover:bg-[#F3C6D3]/40 hover:border-[#D99AAF]'
                         }`}>
                         {isUploading || isLoading ? (
                             <>
-                                <Loader className="w-6 h-6 animate-spin text-blue-400" />
-                                <span className="text-sm text-slate-400">Uploading to cloud...</span>
+                                <Loader className="w-6 h-6 animate-spin text-[#D99AAF]" />
+                                <span className="text-xs font-bold text-[#2D292B]/80">Mengunggah file ke cloud...</span>
                             </>
                         ) : (
                             <>
-                                <UploadCloud className="w-6 h-6 text-slate-400" />
-                                <span className="text-sm text-slate-300">Click or drag file to upload</span>
-                                <span className="text-xs text-slate-500">Max 5MB. {acceptedTypes.includes('pdf') ? 'Images or PDF' : 'Images only'}.</span>
+                                <UploadCloud className="w-6 h-6 text-[#D99AAF]" />
+                                <span className="text-xs font-bold text-[#2D292B]">Klik atau Drag & Drop file ke sini</span>
+                                <span className="text-[10px] font-medium text-[#2D292B]/60">Max 5MB. {acceptedTypes.includes('pdf') ? 'Gambar / PDF' : 'Gambar saja'}.</span>
                             </>
                         )}
                     </div>
                 </div>
 
                 {error && (
-                    <p className="text-xs text-red-500 font-medium bg-red-500/10 p-2 rounded">{error}</p>
+                    <p className="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 p-2 rounded-xl">{error}</p>
                 )}
             </div>
         </div>
