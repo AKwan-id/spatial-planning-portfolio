@@ -21,7 +21,7 @@ export const portfolioRepository = {
       const { data, error } = await supabase.from(table).select('content').eq('id', 1).single();
 
       if (error) {
-        if (error.code === 'PGRST116') return initialPortfolioData;
+        alert('Data Select Error (' + table + '): ' + error.code + ' - ' + error.message);
         console.error('Database fetch error:', error);
         alert('Fetch Error: ' + JSON.stringify(error));
         // Try fallback to public data if admin fetch failed unexpectedly
