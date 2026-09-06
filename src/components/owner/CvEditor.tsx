@@ -54,10 +54,12 @@ export const CvEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <FileText className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Official Document Management (CV)' : 'Manajemen Dokumen Resmi (CV)'}
+            {language === 'en' ? 'Manage CV Document' : 'Kelola Dokumen CV (Curriculum Vitae)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
-            {language === 'en' ? 'Manage the distribution of your curriculum vitae. Upload the latest publicly downloadable PDF file and provide a visual preview to facilitate recruiters.' : 'Kelola pembagian dokumen riwayat hidup Anda. Unggah berkas PDF terbaru yang dapat diunduh publik dan sediakan pratinjau visual untuk mempermudah rekruter.'}
+            {language === 'en'
+              ? 'Upload your latest curriculum vitae (CV) document in PDF format and set a preview image to make it easier for visitors to download.'
+              : 'Unggah berkas riwayat hidup (CV) terbaru Anda dalam format PDF dan atur pratilik gambar agar mudah diunduh publik.'}
           </p>
         </div>
       </div>

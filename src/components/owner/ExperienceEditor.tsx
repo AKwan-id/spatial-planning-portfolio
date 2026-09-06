@@ -148,10 +148,12 @@ export const ExperienceEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Briefcase className="w-6 h-6 text-[#D99AAF]" />
-            Kelola Rekam Jejak (Experience CRUD)
+            {language === 'en' ? 'Manage Experience (Experience CRUD)' : 'Kelola Pengalaman (Experience CRUD)'}
           </h3>
-          <p className="text-xs text-[#2D292B]/70 mt-1">
-            Tambah riwayat pekerjaan, magang, organisasi, kegiatan lapangan KKN, dan poin-poin capaian.
+          <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
+            {language === 'en'
+              ? 'Compile your chronological history of work experience, organization memberships, or internships along with your key achievements.'
+              : 'Susun urutan kronologis riwayat pekerjaan, keanggotaan organisasi, atau pengalaman magang beserta dengan poin-poin capaian utama Anda.'}
           </p>
         </div>
 

@@ -221,10 +221,10 @@ export const ProjectsEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <FolderGit2 className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Project Portfolio Management' : 'Manajemen Portofolio Proyek'}
+            {language === 'en' ? 'Manage Project Gallery (Projects CRUD)' : 'Kelola Galeri Proyek (Projects CRUD)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
-            {language === 'en' ? 'The central hub for managing your entire project catalog. Edit metadata, control publication statuses, and attribute categories for a professionally structured portfolio.' : 'Pusat tata kelola seluruh katalog proyek. Sunting metadata, kelola status publikasi proyek, serta atribusikan kategori untuk portofolio yang terstruktur profesional.'}
+            {language === 'en' ? 'Manage your entire specific portfolio. Add new projects, update details, and control their visibility and categories.' : 'Kelola seluruh portofolio spesifik Anda. Tambahkan proyek baru, perbarui rincian datanya, serta atur urutan dan kategorinya.'}
           </p>
         </div>
 

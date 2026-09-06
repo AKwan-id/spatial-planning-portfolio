@@ -71,10 +71,12 @@ export const ContactEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Mail className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Public Relations Settings (Contact)' : 'Pengaturan Hubungan Publik (Kontak)'}
+            {language === 'en' ? 'Manage Contact Info' : 'Kelola Informasi Kontak (Contact Info)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
-            {language === 'en' ? 'Control your professional accessibility information. Update your email address, LinkedIn profile visibility, recruitment availability metrics, and direct contact details.' : 'Kelola informasi aksesibilitas profesional Anda. Perbarui alamat email, visibilitas profil LinkedIn, metrik ketersediaan rekrutmen, dan kontak langsung.'}
+            {language === 'en'
+              ? 'Manage your professional contact details, recruitment availability information, and LinkedIn profile to accommodate external relations.'
+              : 'Kelola rincian kontak profesional Anda, informasi ketersediaan rekrutmen, serta alamat akun LinkedIn untuk mempermudah relasi eksternal.'}
           </p>
         </div>
       </div>
