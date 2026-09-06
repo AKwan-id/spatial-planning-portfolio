@@ -42,10 +42,7 @@ export const CertificateLightboxModal: React.FC<CertificateLightboxModalProps> =
               src={cert.imageUrl}
               alt={t(cert.title)}
               className="w-full h-full object-contain p-2"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800';
-              }}
+
             />
           </div>
 

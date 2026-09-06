@@ -16,7 +16,7 @@ export const CvPreviewModal: React.FC<CvPreviewModalProps> = ({ isOpen, onClose 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2D292B]/70 backdrop-blur-md animate-fadeIn">
       <div className="glass-surface max-w-3xl w-full rounded-3xl p-6 sm:p-8 border border-[#EAA3B8] shadow-2xl relative my-8 max-h-[92vh] flex flex-col">
-        
+
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[#EAA3B8]/40">
           <div className="flex items-center gap-2.5">
@@ -48,10 +48,7 @@ export const CvPreviewModal: React.FC<CvPreviewModalProps> = ({ isOpen, onClose 
               src={cv.previewImageUrl}
               alt="Curriculum Vitae Document Preview"
               className="w-full h-full object-contain p-2"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=800';
-              }}
+
             />
           </div>
 
