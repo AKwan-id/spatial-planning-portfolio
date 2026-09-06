@@ -59,10 +59,10 @@ export const AboutEditor: React.FC = () => {
       <div className="flex items-center justify-between border-b border-[#F3C6D3]/40 pb-4">
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B]">
-            {language === 'en' ? 'Manage "About Me" Profile' : 'Kelola Profil "About Me"'}
+            {language === 'en' ? 'Primary Profile Management (About Me)' : 'Manajemen Profil Utama (About Me)'}
           </h3>
-          <p className="text-xs text-[#2D292B]/70">
-            {language === 'en' ? 'Edit full name, portrait photo, professional field, and general introduction.' : 'Edit nama lengkap, foto portrait, bidang keahlian, dan pengantar umum.'}
+          <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
+            {language === 'en' ? 'Update your professional identity. Customize your official portrait, full name, field of expertise, and executive summary for the landing page.' : 'Perbarui identitas profesional Anda. Sesuaikan pasfoto resmi, nama lengkap, spesialisasi keahlian, dan ringkasan eksekutif untuk halaman depan.'}
           </p>
         </div>
       </div>

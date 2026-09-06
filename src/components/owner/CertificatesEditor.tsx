@@ -129,10 +129,10 @@ export const CertificatesEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Award className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Certificates & Credentials' : 'Kelola Sertifikat & Kredensial (Certificates CRUD)'}
+            {language === 'en' ? 'Credentials & Certification Management' : 'Manajemen Kredensial & Sertifikasi'}
           </h3>
-          <p className="text-xs text-[#2D292B]/70 mt-1">
-            {language === 'en' ? 'Upload certificate photos/files, set official verification links, and license types.' : 'Unggah foto/file sertifikat kompetensi, atur link verifikasi resmi, dan tipe lisensi.'}
+          <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
+            {language === 'en' ? 'Enhance professional credibility by attaching official certificates. Manage credential verification links and supporting documents for your licensed expertise.' : 'Tingkatkan kredibilitas profesional dengan melampirkan sertifikat resmi. Atur tautan verifikasi kredensial serta dokumen pendukung lisensi keahlian Anda.'}
           </p>
         </div>
 

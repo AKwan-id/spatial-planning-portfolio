@@ -159,10 +159,10 @@ export const SkillsEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Cpu className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Skills Taxonomy (CRUD)' : 'Kelola Taksonomi Keahlian (Skills CRUD)'}
+            {language === 'en' ? 'Competency & Skills Management' : 'Manajemen Kompetensi & Keahlian'}
           </h3>
-          <p className="text-xs text-[#2D292B]/70 mt-1">
-            {language === 'en' ? 'Add, edit, categorize, and mark priority skills (Featured).' : 'Tambah, sunting, kelompokkan dalam kategori, serta tandai keahlian prioritas (Featured).'}
+          <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
+            {language === 'en' ? 'Structure your skills taxonomy. Add, categorize, and manage your software proficiency levels and supporting technical competencies.' : 'Strukturkan taksonomi keahlian Anda. Tambahkan, kategorikan, dan kelola tingkat kemahiran perangkat lunak serta keterampilan teknis pendukung.'}
           </p>
         </div>
 

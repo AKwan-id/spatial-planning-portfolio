@@ -57,12 +57,12 @@ export const SelectedWorkEditor: React.FC<SelectedWorkEditorProps> = ({ onGoToPr
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Star className="w-6 h-6 text-[#D99AAF] fill-current" />
-            {language === 'en' ? 'Manage Selected Work Highlights' : 'Kelola Karya Utama (Selected Work Highlights)'}
+            {language === 'en' ? 'Selected Work Curation' : 'Kurasi Karya Pilihan (Selected Work)'}
           </h3>
-          <p className="text-xs text-[#2D292B]/70 mt-1">
+          <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'
-              ? <>Selected Work is a collection of projects marked as <strong className="text-[#2D292B]">Featured</strong> in the Project Gallery. Set the display order of recruiter-selected works here.</>
-              : <>Selected Work merupakan kumpulan proyek yang ditandai sebagai <strong className="text-[#2D292B]">Featured</strong> di Galeri Proyek. Atur urutan tampilan karya pilihan recruiter di sini.</>}
+              ? <>Strategically arrange your top-tier <strong className="text-[#2D292B]">Featured</strong> projects. This section is specifically designed to capture the attention of recruiters and audiences at first glance.</>
+              : <>Atur urutan taktis proyek-proyek unggulan yang ditandai sebagai <strong className="text-[#2D292B]">Featured</strong>. Bagian ini dirancang khusus untuk memikat perhatian audiens dan rekruter pada impresi pertama.</>}
           </p>
         </div>
 

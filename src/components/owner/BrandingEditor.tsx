@@ -100,12 +100,12 @@ export const BrandingEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Branding Identity (Navbar & Footer)' : 'Kelola Identitas Branding (Navbar & Footer Branding)'}
+            {language === 'en' ? 'Brand Identity Configuration' : 'Konfigurasi Identitas Merek'}
           </h3>
-          <p className="text-xs text-[#2D292B]/70 mt-1">
+          <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'
-              ? 'Configure the branding unit in the top left navigation (Sakura Logo + Initials + Portfolio Label) and the copyright text in the footer.'
-              : 'Atur unit branding di sudut kiri navigasi (Logo Sakura + Inisial + Label Portofolio) serta teks hak cipta pada footer.'}
+              ? 'Manage the visual presentation of your portfolio. Customize the representative logo, brand initials, primary navigation labels, and footer copyright attribution.'
+              : 'Kelola presentasi visual portofolio. Sesuaikan logo representatif, inisial merek, label navigasi utama, serta atribusi hak cipta pada bagian footer.'}
           </p>
         </div>
       </div>
