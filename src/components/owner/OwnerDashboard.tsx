@@ -170,16 +170,16 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
   };
 
   const tabs = [
-    { id: 'branding', label: '1. Brand & Logo', icon: Settings },
-    { id: 'about', label: '2. About Me', icon: User },
-    { id: 'selectedWork', label: '3. Selected Work', icon: Star },
-    { id: 'skills', label: '4. Skills', icon: Cpu },
-    { id: 'projects', label: '5. Projects', icon: FolderGit2 },
-    { id: 'experience', label: '6. Experience', icon: Briefcase },
-    { id: 'certificates', label: '7. Certificates', icon: Award },
-    { id: 'cv', label: '8. CV Document', icon: FileText },
-    { id: 'contact', label: '9. Contact Info', icon: Mail },
-    { id: 'backup', label: 'Backup / Export', icon: Settings },
+    { id: 'branding', label: language === 'en' ? '1. Brand & Logo' : '1. Brand & Logo', icon: Settings },
+    { id: 'about', label: language === 'en' ? '2. About Me' : '2. Tentang Saya', icon: User },
+    { id: 'selectedWork', label: language === 'en' ? '3. Selected Work' : '3. Karya Terpilih', icon: Star },
+    { id: 'skills', label: language === 'en' ? '4. Skills' : '4. Keahlian', icon: Cpu },
+    { id: 'projects', label: language === 'en' ? '5. Projects' : '5. Daftar Proyek', icon: FolderGit2 },
+    { id: 'experience', label: language === 'en' ? '6. Experience' : '6. Pengalaman', icon: Briefcase },
+    { id: 'certificates', label: language === 'en' ? '7. Certificates' : '7. Sertifikat', icon: Award },
+    { id: 'cv', label: language === 'en' ? '8. CV Document' : '8. Dokumen CV', icon: FileText },
+    { id: 'contact', label: language === 'en' ? '9. Contact Info' : '9. Info Kontak', icon: Mail },
+    { id: 'backup', label: language === 'en' ? 'Backup / Export' : 'Pencadangan', icon: Settings },
   ];
 
   if (authLoading) {
@@ -265,10 +265,10 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
           </div>
           <div>
             <h2 className="font-serif text-xl font-bold tracking-tight">
-              PORTFOLIO OWNER DASHBOARD
+              {language === 'en' ? 'PORTFOLIO OWNER DASHBOARD' : 'DASHBOARD PEMILIK PORTOFOLIO'}
             </h2>
             <p className="text-[11px] text-[#F3C6D3]/80 font-mono">
-              Management Portal &bull; Annisa Nur Prabawa
+              {language === 'en' ? 'Management Portal' : 'Portal Manajemen'} &bull; Annisa Nur Prabawa
             </p>
           </div>
         </div>
@@ -279,8 +279,8 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
             <button
               onClick={() => setLanguage('id')}
               className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer ${language === 'id'
-                  ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
-                  : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
+                ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
+                : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
                 }`}
             >
               ID
@@ -288,8 +288,8 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
             <button
               onClick={() => setLanguage('en')}
               className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer ${language === 'en'
-                  ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
-                  : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
+                ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
+                : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
                 }`}
             >
               ENG
@@ -301,7 +301,7 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
             className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FFF9F7] text-[#2D292B] text-xs font-semibold hover:bg-[#F3C6D3] transition-colors cursor-pointer"
           >
             <Eye className="w-4 h-4" />
-            <span>Tinjau Tampilan Publik</span>
+            <span>{language === 'en' ? 'View Public Site' : 'Tinjau Tampilan Publik'}</span>
           </button>
 
           <button
