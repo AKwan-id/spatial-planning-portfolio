@@ -17,9 +17,11 @@ import {
   Tag,
   Layers,
   FolderGit2,
-  Save
+  Save,
+  Sparkles
 } from 'lucide-react';
 import FileUploader from './FileUploader';
+import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const ProjectsEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -29,6 +31,33 @@ export const ProjectsEditor: React.FC = () => {
   const [formData, setFormData] = useState<Partial<ProjectItem>>({});
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState({ id: '', en: '' });
+
+  const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
+  const [activeField, setActiveField] = useState<string | null>(null);
+
+  const handleAutoTranslate = async (field: 'title' | 'description' | 'role' | 'category') => {
+    let textToTranslate = '';
+
+    if (field === 'category') {
+      textToTranslate = newCategoryName.id;
+    } else {
+      const fieldData = formData[field] as { id?: string; en?: string };
+      textToTranslate = fieldData?.id || '';
+    }
+
+    if (!textToTranslate) return;
+
+    setActiveField(field);
+    const translated = await translateToEnglish(textToTranslate);
+    if (translated) {
+      if (field === 'category') {
+        setNewCategoryName(p => ({ ...p, en: translated }));
+      } else {
+        setFormData(p => ({ ...p, [field]: { id: (p[field] as any)?.id || '', en: translated } }));
+      }
+    }
+    setActiveField(null);
+  };
 
   // Default Categories if not specified
   const categories: ProjectCategoryConfig[] = projectCategories || [
@@ -254,10 +283,18 @@ export const ProjectsEditor: React.FC = () => {
             <input
               type="text"
               placeholder="Category Name (ENG)"
-              value={newCategoryName.en}
+              value={activeField === 'category' ? streamingText : newCategoryName.en}
               onChange={(e) => setNewCategoryName((p) => ({ ...p, en: e.target.value }))}
               className="px-3 py-1.5 text-xs rounded-lg border border-[#F3C6D3] bg-[#FFF9F7]"
             />
+            <button
+              onClick={() => handleAutoTranslate('category')}
+              disabled={isTranslating || !newCategoryName.id}
+              className="px-2 py-1.5 rounded-lg bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] disabled:opacity-50 cursor-pointer flex items-center justify-center"
+              title="Auto Translate"
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${isTranslating && activeField === 'category' ? 'animate-pulse' : ''}`} />
+            </button>
             <button
               onClick={handleAddCategory}
               className="px-3 py-1.5 rounded-lg bg-[#D99AAF] text-[#FFF9F7] text-xs font-bold cursor-pointer hover:bg-[#2D292B]"
@@ -389,6 +426,19 @@ export const ProjectsEditor: React.FC = () => {
                   </div>
 
                   {/* Title ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Judul Proyek / Project Title
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('title')}
+                      disabled={isTranslating || !formData.title?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'title' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'title' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Judul (ID)</label>
@@ -405,7 +455,7 @@ export const ProjectsEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Title (ENG)</label>
                       <input
                         type="text"
-                        value={formData.title?.en || ''}
+                        value={activeField === 'title' ? streamingText : formData.title?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({ ...p, title: { id: p.title?.id || '', en: e.target.value } }))
                         }
@@ -466,6 +516,19 @@ export const ProjectsEditor: React.FC = () => {
                   </div>
 
                   {/* Descriptions ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Deskripsi Singkat / Short Description
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('description')}
+                      disabled={isTranslating || !formData.description?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'description' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'description' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Deskripsi Singkat (ID)</label>
@@ -485,7 +548,7 @@ export const ProjectsEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Short Description (ENG)</label>
                       <textarea
                         rows={3}
-                        value={formData.description?.en || ''}
+                        value={activeField === 'description' ? streamingText : formData.description?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
@@ -498,6 +561,19 @@ export const ProjectsEditor: React.FC = () => {
                   </div>
 
                   {/* Role ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Peran dalam Proyek / Role in Project
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('role')}
+                      disabled={isTranslating || !formData.role?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'role' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'role' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Peran dalam Proyek (ID)</label>
@@ -517,7 +593,7 @@ export const ProjectsEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Role in Project (ENG)</label>
                       <input
                         type="text"
-                        value={formData.role?.en || ''}
+                        value={activeField === 'role' ? streamingText : formData.role?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,

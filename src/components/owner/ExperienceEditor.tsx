@@ -10,8 +10,10 @@ import {
   Briefcase,
   Save,
   CheckCircle2,
-  X
+  X,
+  Sparkles
 } from 'lucide-react';
+import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const ExperienceEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -19,6 +21,32 @@ export const ExperienceEditor: React.FC = () => {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<ExperienceItem>>({});
+
+  const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
+  const [activeField, setActiveField] = useState<string | null>(null);
+
+  const handleAutoTranslate = async (field: 'role' | 'organization' | 'period' | 'description' | 'bullets') => {
+    let textToTranslate = '';
+    if (field === 'bullets') {
+      textToTranslate = (formData.bullets?.id || []).join('\n');
+    } else {
+      const fieldData = formData[field] as { id?: string; en?: string };
+      textToTranslate = fieldData?.id || '';
+    }
+
+    if (!textToTranslate) return;
+
+    setActiveField(field);
+    const translated = await translateToEnglish(textToTranslate);
+    if (translated) {
+      if (field === 'bullets') {
+        setFormData(p => ({ ...p, bullets: { id: p.bullets?.id || [], en: translated.split('\n').filter(Boolean) } }));
+      } else {
+        setFormData(p => ({ ...p, [field]: { id: (p[field] as any)?.id || '', en: translated } }));
+      }
+    }
+    setActiveField(null);
+  };
 
   const experienceTypes: { id: ExperienceType; label: { id: string; en: string } }[] = [
     { id: 'work', label: { id: 'KERJA', en: 'WORK' } },
@@ -228,6 +256,19 @@ export const ExperienceEditor: React.FC = () => {
                   </div>
 
                   {/* Role Title ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Peran & Posisi / Role & Position
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('role')}
+                      disabled={isTranslating || !formData.role?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'role' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'role' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Peran / Posisi (ID)</label>
@@ -247,7 +288,7 @@ export const ExperienceEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Role / Position (ENG)</label>
                       <input
                         type="text"
-                        value={formData.role?.en || ''}
+                        value={activeField === 'role' ? streamingText : formData.role?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
@@ -260,9 +301,12 @@ export const ExperienceEditor: React.FC = () => {
                   </div>
 
                   {/* Organization & Period */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[#F3C6D3]/30 pt-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Instansi / Perusahaan (ID)</label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Instansi (ID/ENG)</label>
+                        <button onClick={() => handleAutoTranslate('organization')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
+                      </div>
                       <input
                         type="text"
                         value={formData.organization?.id || ''}
@@ -277,7 +321,10 @@ export const ExperienceEditor: React.FC = () => {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Periode (ID/ENG)</label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Periode (ID/ENG)</label>
+                        <button onClick={() => handleAutoTranslate('period')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
+                      </div>
                       <input
                         type="text"
                         value={formData.period?.id || ''}
@@ -329,6 +376,19 @@ export const ExperienceEditor: React.FC = () => {
                   </div>
 
                   {/* Description ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Ringkasan Tugas / Summary
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('description')}
+                      disabled={isTranslating || !formData.description?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'description' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'description' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Ringkasan Tugas (ID)</label>
@@ -348,7 +408,7 @@ export const ExperienceEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Summary (ENG)</label>
                       <textarea
                         rows={2}
-                        value={formData.description?.en || ''}
+                        value={activeField === 'description' ? streamingText : formData.description?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
@@ -361,7 +421,20 @@ export const ExperienceEditor: React.FC = () => {
                   </div>
 
                   {/* Bullet Highlights ID & ENG */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#F3C6D3]/30 pt-4">
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Poin Capaian / Bullet Highlights
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('bullets')}
+                      disabled={isTranslating || !formData.bullets?.id?.length}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'bullets' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'bullets' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">
                         Poin Capaian ID (1 Poin Per Baris)
@@ -387,7 +460,7 @@ export const ExperienceEditor: React.FC = () => {
                       </label>
                       <textarea
                         rows={4}
-                        value={formData.bullets?.en?.join('\n') || ''}
+                        value={activeField === 'bullets' ? streamingText : formData.bullets?.en?.join('\n') || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,

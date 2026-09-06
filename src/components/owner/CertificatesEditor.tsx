@@ -11,9 +11,11 @@ import {
   Save,
   Upload,
   ExternalLink,
-  Eye
+  Eye,
+  Sparkles
 } from 'lucide-react';
 import FileUploader from './FileUploader';
+import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const CertificatesEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -21,6 +23,23 @@ export const CertificatesEditor: React.FC = () => {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<CertificateItem>>({});
+
+  const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
+  const [activeField, setActiveField] = useState<string | null>(null);
+
+  const handleAutoTranslate = async (field: 'title' | 'issuer') => {
+    const fieldData = formData[field] as { id?: string; en?: string };
+    const textToTranslate = fieldData?.id || '';
+
+    if (!textToTranslate) return;
+
+    setActiveField(field);
+    const translated = await translateToEnglish(textToTranslate);
+    if (translated) {
+      setFormData(p => ({ ...p, [field]: { id: (p[field] as any)?.id || '', en: translated } }));
+    }
+    setActiveField(null);
+  };
 
   const handleAddNew = () => {
     const newCert: CertificateItem = {
@@ -224,6 +243,19 @@ export const CertificatesEditor: React.FC = () => {
                   </div>
 
                   {/* Title ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Judul Sertifikat / Certificate Title
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('title')}
+                      disabled={isTranslating || !formData.title?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'title' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'title' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Judul Sertifikat (ID)</label>
@@ -243,7 +275,7 @@ export const CertificatesEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Certificate Title (ENG)</label>
                       <input
                         type="text"
-                        value={formData.title?.en || ''}
+                        value={activeField === 'title' ? streamingText : formData.title?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
@@ -256,9 +288,12 @@ export const CertificatesEditor: React.FC = () => {
                   </div>
 
                   {/* Issuer & Year */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[#F3C6D3]/30 pt-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Penerbit (Issuer ID)</label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Penerbit (Issuer ID)</label>
+                        <button onClick={() => handleAutoTranslate('issuer')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
+                      </div>
                       <input
                         type="text"
                         value={formData.issuer?.id || ''}

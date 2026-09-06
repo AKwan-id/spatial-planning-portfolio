@@ -44,7 +44,7 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
   const { portfolioData, updateData, resetData, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<
     'branding' | 'about' | 'selectedWork' | 'skills' | 'projects' | 'experience' | 'certificates' | 'cv' | 'contact' | 'backup'
-  >('about');
+  >('branding');
 
   const [importJson, setImportJson] = useState('');
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);

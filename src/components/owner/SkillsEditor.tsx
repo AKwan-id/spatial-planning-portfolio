@@ -11,8 +11,10 @@ import {
   Cpu,
   Save,
   Tag,
-  X
+  X,
+  Sparkles
 } from 'lucide-react';
+import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const SkillsEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -22,6 +24,33 @@ export const SkillsEditor: React.FC = () => {
   const [formData, setFormData] = useState<Partial<SkillItem>>({});
   const [showCatModal, setShowCatModal] = useState(false);
   const [newCat, setNewCat] = useState({ id: '', en: '' });
+
+  const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
+  const [activeField, setActiveField] = useState<string | null>(null);
+
+  const handleAutoTranslateDescription = async () => {
+    const textToTranslate = formData.description?.id;
+    if (!textToTranslate) return;
+    setActiveField('description');
+    const translated = await translateToEnglish(textToTranslate);
+    if (translated) {
+      setFormData((p) => ({
+        ...p,
+        description: { id: p.description?.id || '', en: translated },
+      }));
+    }
+    setActiveField(null);
+  };
+
+  const handleAutoTranslateCategory = async () => {
+    if (!newCat.id) return;
+    setActiveField('newCat');
+    const translated = await translateToEnglish(newCat.id);
+    if (translated) {
+      setNewCat((p) => ({ ...p, en: translated }));
+    }
+    setActiveField(null);
+  };
 
   const categories: SkillCategoryConfig[] = skillCategories || [
     { id: 'spatial_planning', label: { id: 'SPASIAL & PERENCANAAN', en: 'SPATIAL & PLANNING' } },
@@ -181,10 +210,18 @@ export const SkillsEditor: React.FC = () => {
             <input
               type="text"
               placeholder="Category Name (ENG)"
-              value={newCat.en}
+              value={activeField === 'newCat' ? streamingText : newCat.en}
               onChange={(e) => setNewCat((p) => ({ ...p, en: e.target.value }))}
               className="px-3 py-1.5 text-xs rounded-lg border border-[#F3C6D3] bg-[#FFF9F7]"
             />
+            <button
+              onClick={handleAutoTranslateCategory}
+              disabled={isTranslating || !newCat.id}
+              className="px-2 py-1.5 rounded-lg bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] disabled:opacity-50 cursor-pointer flex items-center justify-center"
+              title="Auto Translate"
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${isTranslating && activeField === 'newCat' ? 'animate-pulse' : ''}`} />
+            </button>
             <button
               onClick={handleAddCategory}
               className="px-3 py-1.5 rounded-lg bg-[#D99AAF] text-[#FFF9F7] text-xs font-bold cursor-pointer hover:bg-[#2D292B]"
@@ -204,8 +241,8 @@ export const SkillsEditor: React.FC = () => {
             <div
               key={skill.id}
               className={`rounded-2xl border transition-all ${isEditing
-                  ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-4'
-                  : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
+                ? 'bg-white border-[#D99AAF] shadow-md p-6 space-y-4'
+                : 'bg-white/80 border-[#F3C6D3] p-4 hover:border-[#D99AAF] flex flex-col md:flex-row md:items-center justify-between gap-4'
                 }`}
             >
               {!isEditing ? (
@@ -222,8 +259,8 @@ export const SkillsEditor: React.FC = () => {
                       )}
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded ${skill.status === 'PUBLISHED' || !skill.status
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-amber-100 text-amber-800'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-800'
                           }`}
                       >
                         {skill.status || 'PUBLISHED'}
@@ -338,8 +375,22 @@ export const SkillsEditor: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2 flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                        Keterangan Metodologi / Description
+                      </label>
+                      <button
+                        onClick={handleAutoTranslateDescription}
+                        disabled={isTranslating || !formData.description?.id}
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'description' ? 'animate-pulse' : ''}`} />
+                        {isTranslating && activeField === 'description' ? 'Translating...' : 'Translate'}
+                      </button>
+                    </div>
+
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Keterangan Metodologi (ID)</label>
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Keterangan (ID)</label>
                       <textarea
                         rows={2}
                         value={formData.description?.id || ''}
@@ -356,7 +407,7 @@ export const SkillsEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Description (ENG)</label>
                       <textarea
                         rows={2}
-                        value={formData.description?.en || ''}
+                        value={activeField === 'description' ? streamingText : (formData.description?.en || '')}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,

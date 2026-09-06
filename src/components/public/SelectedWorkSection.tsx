@@ -18,8 +18,8 @@ export const SelectedWorkSection: React.FC<SelectedWorkSectionProps> = ({ onSele
     .filter((p) => p.featured && p.visible !== false && p.status !== 'HIDDEN' && p.status !== 'DRAFT')
     .sort((a, b) => (a.featuredOrder ?? a.order) - (b.featuredOrder ?? b.order));
 
-  // Fallback to selectedWork array if no projects have featured flag set
-  const displayWorks = featuredProjects.length > 0 ? featuredProjects : selectedWork.filter(item => item.visible !== false);
+  // Strict adherence to featured projects only
+  const displayWorks = featuredProjects;
 
   if (displayWorks.length === 0) {
     return null;
