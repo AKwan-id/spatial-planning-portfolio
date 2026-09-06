@@ -41,7 +41,7 @@ interface OwnerDashboardProps {
 }
 
 export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
-  const { portfolioData, updateData, resetData, language } = useLanguage();
+  const { portfolioData, updateData, resetData, language, setLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState<
     'branding' | 'about' | 'selectedWork' | 'skills' | 'projects' | 'experience' | 'certificates' | 'cv' | 'contact' | 'backup'
   >('branding');
@@ -274,6 +274,28 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Language Toggle */}
+          <div className="flex items-center bg-[#FFF9F7]/10 rounded-full p-0.5 text-xs font-medium border border-[#F3C6D3]/20">
+            <button
+              onClick={() => setLanguage('id')}
+              className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer ${language === 'id'
+                  ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
+                  : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
+                }`}
+            >
+              ID
+            </button>
+            <button
+              onClick={() => setLanguage('en')}
+              className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer ${language === 'en'
+                  ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
+                  : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
+                }`}
+            >
+              ENG
+            </button>
+          </div>
+
           <button
             onClick={onClose}
             className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FFF9F7] text-[#2D292B] text-xs font-semibold hover:bg-[#F3C6D3] transition-colors cursor-pointer"
