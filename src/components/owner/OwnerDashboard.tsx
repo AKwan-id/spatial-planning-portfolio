@@ -258,57 +258,61 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
     <div className="fixed inset-0 z-50 bg-[#2D292B]/80 backdrop-blur-md flex flex-col animate-fadeIn">
 
       {/* Top Bar */}
-      <div className="bg-[#2D292B] text-[#FFF9F7] px-6 py-4 flex items-center justify-between border-b border-[#D99AAF]/30">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-[#D99AAF]/20 text-[#F3C6D3]">
-            <Settings className="w-5 h-5" />
+      <div className="bg-[#2D292B] text-[#FFF9F7] px-4 sm:px-6 py-3 sm:py-4 flex items-start sm:items-center justify-between border-b border-[#D99AAF]/30 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-0">
+          <div className="p-1.5 sm:p-2 rounded-xl bg-[#D99AAF]/20 text-[#F3C6D3] hidden sm:block">
+            <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <h2 className="font-serif text-xl font-bold tracking-tight">
+          <div className="max-w-[130px] sm:max-w-none">
+            <h2 className="font-serif text-[11px] sm:text-xl font-bold tracking-tight leading-tight">
               {language === 'en' ? 'PORTFOLIO OWNER DASHBOARD' : 'DASHBOARD PEMILIK PORTOFOLIO'}
             </h2>
-            <p className="text-[11px] text-[#F3C6D3]/80 font-mono">
+            <p className="text-[11px] text-[#F3C6D3]/80 font-mono hidden sm:block mt-0.5">
               {language === 'en' ? 'Management Portal' : 'Portal Manajemen'} &bull; Annisa Nur Prabawa
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Language Toggle */}
-          <div className="flex items-center bg-[#FFF9F7]/10 rounded-full p-0.5 text-xs font-medium border border-[#F3C6D3]/20">
+        <div className="flex items-start sm:items-center gap-2 sm:gap-3 shrink-0">
+
+          <div className="flex flex-col-reverse sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
+            {/* Language Toggle */}
+            <div className="flex items-center bg-[#FFF9F7]/10 rounded-full p-0.5 text-[9px] sm:text-xs font-medium border border-[#F3C6D3]/20">
+              <button
+                onClick={() => setLanguage('id')}
+                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors cursor-pointer ${language === 'id'
+                  ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
+                  : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
+                  }`}
+              >
+                ID
+              </button>
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors cursor-pointer ${language === 'en'
+                  ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
+                  : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
+                  }`}
+              >
+                ENG
+              </button>
+            </div>
+
+            {/* Public Review Button */}
             <button
-              onClick={() => setLanguage('id')}
-              className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer ${language === 'id'
-                ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
-                : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
-                }`}
+              onClick={onClose}
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#FFF9F7] text-[#2D292B] text-[9px] sm:text-xs font-semibold hover:bg-[#F3C6D3] transition-colors cursor-pointer shrink-0 shadow-sm"
             >
-              ID
-            </button>
-            <button
-              onClick={() => setLanguage('en')}
-              className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer ${language === 'en'
-                ? 'bg-[#FFF9F7] text-[#2D292B] font-bold shadow-xs'
-                : 'text-[#FFF9F7]/70 hover:text-[#FFF9F7]'
-                }`}
-            >
-              ENG
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>{language === 'en' ? 'View Public Site' : 'Tinjau Tampilan Publik'}</span>
             </button>
           </div>
 
           <button
             onClick={onClose}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FFF9F7] text-[#2D292B] text-xs font-semibold hover:bg-[#F3C6D3] transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-full bg-[#FFF9F7]/10 text-[#FFF9F7] hover:bg-[#FFF9F7]/20 transition-colors cursor-pointer shrink-0"
           >
-            <Eye className="w-4 h-4" />
-            <span>{language === 'en' ? 'View Public Site' : 'Tinjau Tampilan Publik'}</span>
-          </button>
-
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full bg-[#FFF9F7]/10 text-[#FFF9F7] hover:bg-[#FFF9F7]/20 transition-colors cursor-pointer"
-          >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
