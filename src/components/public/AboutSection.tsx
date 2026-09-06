@@ -123,11 +123,7 @@ export const AboutSection: React.FC = () => {
                   alt={t(profile.portraitAlt, 'Annisa Nur Prabawa Portrait')}
                   className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-700 filter contrast-[1.02]"
                   loading="eager"
-                  onError={(e) => {
-                    // Safe fallback if image fails to load
-                    const target = e.target as HTMLImageElement;
-                    target.src = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800';
-                  }}
+
                 />
 
                 {/* Subtle Editorial Frame Layer */}
