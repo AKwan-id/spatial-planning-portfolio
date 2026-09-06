@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { CertificateItem, PublicationStatus } from '../../types/portfolio';
-import { GoogleDriveWarning } from './GoogleDriveWarning';
 import {
   Plus,
   Trash2,
@@ -14,6 +13,7 @@ import {
   ExternalLink,
   Eye
 } from 'lucide-react';
+import FileUploader from './FileUploader';
 
 export const CertificatesEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -101,16 +101,7 @@ export const CertificatesEditor: React.FC = () => {
     });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, imageUrl: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+
 
   return (
     <div className="space-y-8 bg-[#FFF9F7] p-6 sm:p-8 rounded-2xl border border-[#F3C6D3]/60 shadow-xs">
@@ -292,13 +283,20 @@ export const CertificatesEditor: React.FC = () => {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Tautan Verifikasi Resmi</label>
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Tautan Verifikasi / Berkas PDF</label>
                       <input
                         type="text"
                         value={formData.credentialUrl || ''}
                         onChange={(e) => setFormData((p) => ({ ...p, credentialUrl: e.target.value }))}
                         placeholder="https://..."
-                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B] mb-2"
+                      />
+                      <FileUploader
+                        label=""
+                        currentFileUrl=""
+                        folderCategory="certificates"
+                        acceptedTypes="application/pdf"
+                        onUploadSuccess={(url) => setFormData((p) => ({ ...p, credentialUrl: url }))}
                       />
                     </div>
 
@@ -318,29 +316,14 @@ export const CertificatesEditor: React.FC = () => {
 
                   {/* Image Upload */}
                   <div className="space-y-2 border-t border-[#F3C6D3]/30 pt-4">
-                    <label className="text-xs font-bold uppercase text-[#2D292B] block">
-                      Gambar Sertifikat
-                    </label>
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="w-32 h-20 rounded-xl overflow-hidden bg-[#F8F1F2] border border-[#F3C6D3] shrink-0">
-                        <img src={formData.imageUrl} alt="" className="w-full h-full object-cover" />
-                      </div>
-                      <div className="space-y-2 flex-1 w-full">
-                        <input
-                          type="text"
-                          value={formData.imageUrl || ''}
-                          onChange={(e) => setFormData((p) => ({ ...p, imageUrl: e.target.value }))}
-                          placeholder="URL Foto Sertifikat..."
-                          className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
-                        />
-                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8F1F2] border border-[#F3C6D3] text-[#2D292B] text-xs font-semibold cursor-pointer hover:bg-[#D99AAF] hover:text-white transition-colors">
-                          <Upload className="w-3.5 h-3.5" />
-                          <span>Unggah Gambar Sertifikat</span>
-                          <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                        </label>
-                        <GoogleDriveWarning />
-                      </div>
-                    </div>
+                    <FileUploader
+                      label="Gambar Sertifikat / Bukti Fisik"
+                      currentFileUrl={formData.imageUrl}
+                      folderCategory="certificates"
+                      acceptedTypes="image/*"
+                      onUploadSuccess={(url) => setFormData((p) => ({ ...p, imageUrl: url }))}
+                      onClear={() => setFormData((p) => ({ ...p, imageUrl: '' }))}
+                    />
                   </div>
                 </div>
               )}

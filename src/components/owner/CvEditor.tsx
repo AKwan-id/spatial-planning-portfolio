@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
-import { FileText, Save, Upload, Download, Eye, Sparkles } from 'lucide-react';
+import { FileText, Save, Eye, Sparkles } from 'lucide-react';
 import { DebouncedInput, DebouncedTextarea } from './DebouncedInput';
+import FileUploader from './FileUploader';
 
 export const CvEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -45,27 +46,7 @@ export const CvEditor: React.FC = () => {
     });
   };
 
-  const handlePreviewUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleChange('previewImageUrl', reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handlePdfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleChange('fileUrl', reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   return (
     <div className="space-y-8 bg-[#FFF9F7] p-6 sm:p-8 rounded-2xl border border-[#F3C6D3]/60 shadow-xs">
@@ -84,23 +65,14 @@ export const CvEditor: React.FC = () => {
       <div className="space-y-6">
         {/* PDF File Link & Upload */}
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-            Tautan / File PDF CV (Download Target)
-          </label>
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <DebouncedInput
-              type="text"
-              value={cv.fileUrl}
-              onDebouncedChange={(val) => handleChange('fileUrl', val)}
-              className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-xs font-mono text-[#2D292B]"
-              placeholder="https://..."
-            />
-            <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2D292B] text-[#FFF9F7] text-xs font-semibold shrink-0 cursor-pointer hover:bg-[#D99AAF] transition-colors">
-              <Upload className="w-4 h-4" />
-              <span>Unggah File PDF Lokal</span>
-              <input type="file" accept="application/pdf" onChange={handlePdfUpload} className="hidden" />
-            </label>
-          </div>
+          <FileUploader
+            label="Tautan / File PDF CV (Download Target)"
+            currentFileUrl={cv.fileUrl}
+            folderCategory="cv"
+            acceptedTypes="application/pdf"
+            onUploadSuccess={(url) => handleChange('fileUrl', url)}
+            onClear={() => handleChange('fileUrl', '')}
+          />
         </div>
 
         {/* Updated Date */}
@@ -119,29 +91,14 @@ export const CvEditor: React.FC = () => {
 
         {/* Preview Image Upload & URL */}
         <div className="space-y-3 pt-4 border-t border-[#F3C6D3]/30">
-          <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-            Gambar Pratinjau Lembar CV (Preview Image)
-          </label>
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-36 h-48 rounded-xl overflow-hidden bg-white border border-[#F3C6D3] shadow-xs shrink-0">
-              <img src={cv.previewImageUrl} alt="CV Preview" className="w-full h-full object-cover" />
-            </div>
-
-            <div className="space-y-3 flex-1 w-full">
-              <DebouncedInput
-                type="text"
-                value={cv.previewImageUrl}
-                onDebouncedChange={(val) => handleChange('previewImageUrl', val)}
-                className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-xs text-[#2D292B]"
-                placeholder="URL Gambar Pratinjau..."
-              />
-              <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F8F1F2] border border-[#F3C6D3] text-[#2D292B] text-xs font-semibold cursor-pointer hover:bg-[#D99AAF] hover:text-white transition-colors">
-                <Upload className="w-4 h-4" />
-                <span>Unggah Foto Pratinjau CV</span>
-                <input type="file" accept="image/*" onChange={handlePreviewUpload} className="hidden" />
-              </label>
-            </div>
-          </div>
+          <FileUploader
+            label="Gambar Pratinjau Lembar CV (Preview Image)"
+            currentFileUrl={cv.previewImageUrl}
+            folderCategory="cv"
+            acceptedTypes="image/*"
+            onUploadSuccess={(url) => handleChange('previewImageUrl', url)}
+            onClear={() => handleChange('previewImageUrl', '')}
+          />
         </div>
 
         {/* Summary Text Bilingual */}

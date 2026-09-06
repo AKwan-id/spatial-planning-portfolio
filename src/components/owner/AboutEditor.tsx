@@ -4,8 +4,8 @@ import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 import { ProfileData } from '../../types/portfolio';
 import { Save, RefreshCw, User, Image, MapPin, GraduationCap, Sparkles } from 'lucide-react';
 import { DebouncedInput, DebouncedTextarea } from './DebouncedInput';
+import FileUploader from './FileUploader';
 
-import { GoogleDriveWarning } from './GoogleDriveWarning';
 
 export const AboutEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -83,16 +83,14 @@ export const AboutEditor: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-              URL Foto Portrait
-            </label>
-            <DebouncedInput
-              type="text"
-              value={profile.portraitUrl}
-              onDebouncedChange={(val) => handleChange('portraitUrl', val)}
-              className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F3C6D3] text-sm text-[#2D292B] focus:outline-none focus:border-[#D99AAF]"
+            <FileUploader
+              label="URL Foto Portrait"
+              currentFileUrl={profile.portraitUrl}
+              folderCategory="profile"
+              acceptedTypes="image/*"
+              onUploadSuccess={(url) => handleChange('portraitUrl', url)}
+              onClear={() => handleChange('portraitUrl', '')}
             />
-            <GoogleDriveWarning />
           </div>
         </div>
 

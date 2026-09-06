@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { ProjectItem, ProjectCategoryConfig, PublicationStatus } from '../../types/portfolio';
-import { GoogleDriveWarning } from './GoogleDriveWarning';
 import {
   Plus,
   Trash2,
@@ -20,6 +19,7 @@ import {
   FolderGit2,
   Save
 } from 'lucide-react';
+import FileUploader from './FileUploader';
 
 export const ProjectsEditor: React.FC = () => {
   const { portfolioData, updateData } = useLanguage();
@@ -149,31 +149,7 @@ export const ProjectsEditor: React.FC = () => {
     });
   };
 
-  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, coverImage: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handleAddGalleryImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const currentGallery = formData.imageGallery || [];
-        setFormData((prev) => ({
-          ...prev,
-          imageGallery: [...currentGallery, reader.result as string],
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleRemoveGalleryImage = (index: number) => {
     const currentGallery = formData.imageGallery || [];
@@ -574,42 +550,36 @@ export const ProjectsEditor: React.FC = () => {
 
                   {/* Cover Image Upload & Preview */}
                   <div className="space-y-2 border-t border-[#F3C6D3]/30 pt-4">
-                    <label className="text-xs font-bold uppercase text-[#2D292B] block">
-                      Foto Sampul Proyek (Cover Image)
-                    </label>
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="w-32 h-20 rounded-xl overflow-hidden bg-[#F8F1F2] border border-[#F3C6D3] shrink-0">
-                        <img src={formData.coverImage} alt="" className="w-full h-full object-cover" />
-                      </div>
-                      <div className="space-y-2 flex-1 w-full">
-                        <input
-                          type="text"
-                          value={formData.coverImage || ''}
-                          onChange={(e) => setFormData((p) => ({ ...p, coverImage: e.target.value }))}
-                          placeholder="URL Foto Sampul..."
-                          className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
-                        />
-                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8F1F2] border border-[#F3C6D3] text-[#2D292B] text-xs font-semibold cursor-pointer hover:bg-[#D99AAF] hover:text-white transition-colors">
-                          <Upload className="w-3.5 h-3.5" />
-                          <span>Unggah File Foto Lokal</span>
-                          <input type="file" accept="image/*" onChange={handleCoverUpload} className="hidden" />
-                        </label>
-                        <GoogleDriveWarning />
-                      </div>
-                    </div>
+                    <FileUploader
+                      label="Foto Sampul Proyek (Cover Image)"
+                      currentFileUrl={formData.coverImage}
+                      folderCategory="projects"
+                      acceptedTypes="image/*"
+                      onUploadSuccess={(url) => setFormData((p) => ({ ...p, coverImage: url }))}
+                      onClear={() => setFormData((p) => ({ ...p, coverImage: '' }))}
+                    />
                   </div>
 
                   {/* Gallery Management */}
                   <div className="space-y-3 border-t border-[#F3C6D3]/30 pt-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                       <label className="text-xs font-bold uppercase text-[#2D292B]">
-                        Galeri Media Proyek ({formData.imageGallery?.length || 0} Gambar)
+                        Galeri Media Proyek ({formData.imageGallery?.length || 0} Gambar / Dokumen)
                       </label>
-                      <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2D292B] text-[#FFF9F7] text-xs font-semibold cursor-pointer hover:bg-[#D99AAF] transition-colors">
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Tambah Gambar Galeri</span>
-                        <input type="file" accept="image/*" onChange={handleAddGalleryImage} className="hidden" />
-                      </label>
+                      <div className="w-full md:w-64">
+                        <FileUploader
+                          label=""
+                          folderCategory="projects"
+                          acceptedTypes="image/*,application/pdf"
+                          onUploadSuccess={(url) => {
+                            const currentGallery = formData.imageGallery || [];
+                            setFormData((prev) => ({
+                              ...prev,
+                              imageGallery: [...currentGallery, url],
+                            }));
+                          }}
+                        />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

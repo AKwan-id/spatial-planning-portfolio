@@ -20,3 +20,36 @@ CREATE POLICY "Allow admin full access projects" ON projects USING (auth.jwt() -
 CREATE POLICY "Allow admin full access skills" ON skills USING (auth.jwt() ->> 'email' IN (SELECT email FROM admin_users));
 CREATE POLICY "Allow admin full access experience" ON experience USING (auth.jwt() ->> 'email' IN (SELECT email FROM admin_users));
 CREATE POLICY "Allow admin full access certificates" ON certificates USING (auth.jwt() ->> 'email' IN (SELECT email FROM admin_users));
+
+-- 4. Storage Bucket Setup (portfolio-assets)
+-- Create bucket if it doesn't exist
+INSERT INTO storage.buckets (id, name, public, avif_autodetection, file_size_limit, allowed_mime_types)
+VALUES ('portfolio-assets', 'portfolio-assets', true, false, 5242880, ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'application/pdf'])
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage Policy: Public Can Read
+CREATE POLICY "Public Access" 
+ON storage.objects FOR SELECT 
+USING ( bucket_id = 'portfolio-assets' );
+
+-- Storage Policy: Only Admins can Upload/Update/Delete
+CREATE POLICY "Admin Upload Access" 
+ON storage.objects FOR INSERT 
+WITH CHECK ( 
+  bucket_id = 'portfolio-assets' 
+  AND auth.jwt() ->> 'email' IN (SELECT email FROM admin_users)
+);
+
+CREATE POLICY "Admin Update Access" 
+ON storage.objects FOR UPDATE 
+USING ( 
+  bucket_id = 'portfolio-assets' 
+  AND auth.jwt() ->> 'email' IN (SELECT email FROM admin_users)
+);
+
+CREATE POLICY "Admin Delete Access" 
+ON storage.objects FOR DELETE 
+USING ( 
+  bucket_id = 'portfolio-assets' 
+  AND auth.jwt() ->> 'email' IN (SELECT email FROM admin_users)
+);
