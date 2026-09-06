@@ -21,9 +21,9 @@ export const portfolioRepository = {
       const { data, error } = await supabase.from(table).select('content').eq('id', 1).single();
 
       if (error) {
-        // If row doesn't exist, fallback silently
         if (error.code === 'PGRST116') return initialPortfolioData;
         console.error('Database fetch error:', error);
+        alert('Fetch Error: ' + JSON.stringify(error));
         // Try fallback to public data if admin fetch failed unexpectedly
         if (session) {
           const fallback = await supabase.from('public_portfolio_data').select('content').eq('id', 1).single();
@@ -37,6 +37,7 @@ export const portfolioRepository = {
       }
     } catch (e) {
       console.error('Supabase fetch error:', e);
+      alert('Unknown Fetch Error: ' + (e as any).message);
     }
     return initialPortfolioData;
   },
@@ -68,6 +69,7 @@ export const portfolioRepository = {
       return true;
     } catch (e) {
       console.error('Failed to save to Supabase:', e);
+      alert('GAGAL MENYIMPAN KE DATABASE: ' + JSON.stringify(e));
       return false;
     }
   },
