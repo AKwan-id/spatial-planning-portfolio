@@ -8,7 +8,7 @@ import FileUploader from './FileUploader';
 
 
 export const AboutEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const profile = portfolioData.profile;
   const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
   const [activeField, setActiveField] = useState<string | null>(null);
@@ -59,10 +59,10 @@ export const AboutEditor: React.FC = () => {
       <div className="flex items-center justify-between border-b border-[#F3C6D3]/40 pb-4">
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B]">
-            Kelola Profil "About Me"
+            {language === 'en' ? 'Manage "About Me" Profile' : 'Kelola Profil "About Me"'}
           </h3>
           <p className="text-xs text-[#2D292B]/70">
-            Edit nama lengkap, foto portrait, bidang keahlian, dan pengantar umum.
+            {language === 'en' ? 'Edit full name, portrait photo, professional field, and general introduction.' : 'Edit nama lengkap, foto portrait, bidang keahlian, dan pengantar umum.'}
           </p>
         </div>
       </div>
@@ -72,7 +72,7 @@ export const AboutEditor: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-              Nama Lengkap
+              {language === 'en' ? 'Full Name' : 'Nama Lengkap'}
             </label>
             <DebouncedInput
               type="text"
@@ -84,7 +84,7 @@ export const AboutEditor: React.FC = () => {
 
           <div className="space-y-2">
             <FileUploader
-              label="URL Foto Portrait"
+              label={language === 'en' ? 'Portrait Photo URL' : 'URL Foto Portrait'}
               currentFileUrl={profile.portraitUrl}
               folderCategory="profile"
               acceptedTypes="image/*"
@@ -98,7 +98,7 @@ export const AboutEditor: React.FC = () => {
         <div className="space-y-3 pt-4 border-t border-[#F3C6D3]/30">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold uppercase tracking-wider text-[#2D292B]">
-              Bidang Keahlian / Professional Field
+              {language === 'en' ? 'Professional Field' : 'Bidang Keahlian / Professional Field'}
             </label>
             <button
               onClick={() => handleAutoTranslate('professionalField')}

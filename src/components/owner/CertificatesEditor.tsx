@@ -18,7 +18,7 @@ import FileUploader from './FileUploader';
 import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const CertificatesEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const { certificates } = portfolioData;
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -129,10 +129,10 @@ export const CertificatesEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Award className="w-6 h-6 text-[#D99AAF]" />
-            Kelola Sertifikat & Kredensial (Certificates CRUD)
+            {language === 'en' ? 'Manage Certificates & Credentials' : 'Kelola Sertifikat & Kredensial (Certificates CRUD)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1">
-            Unggah foto/file sertifikat kompetensi, atur link verifikasi resmi, dan tipe lisensi.
+            {language === 'en' ? 'Upload certificate photos/files, set official verification links, and license types.' : 'Unggah foto/file sertifikat kompetensi, atur link verifikasi resmi, dan tipe lisensi.'}
           </p>
         </div>
 
@@ -141,7 +141,7 @@ export const CertificatesEditor: React.FC = () => {
           className="px-4 py-2 rounded-xl bg-[#2D292B] text-[#FFF9F7] text-xs font-semibold hover:bg-[#D99AAF] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Sertifikat Baru</span>
+          <span>{language === 'en' ? 'Add Certificate' : 'Tambah Sertifikat Baru'}</span>
         </button>
       </div>
 

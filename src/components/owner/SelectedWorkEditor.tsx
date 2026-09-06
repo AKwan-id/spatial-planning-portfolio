@@ -7,7 +7,7 @@ interface SelectedWorkEditorProps {
 }
 
 export const SelectedWorkEditor: React.FC<SelectedWorkEditorProps> = ({ onGoToProjects }) => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const { projects } = portfolioData;
 
   const featuredProjects = projects
@@ -57,10 +57,12 @@ export const SelectedWorkEditor: React.FC<SelectedWorkEditorProps> = ({ onGoToPr
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Star className="w-6 h-6 text-[#D99AAF] fill-current" />
-            Kelola Karya Utama (Selected Work Highlights)
+            {language === 'en' ? 'Manage Selected Work Highlights' : 'Kelola Karya Utama (Selected Work Highlights)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1">
-            Selected Work merupakan kumpulan proyek yang ditandai sebagai <strong className="text-[#2D292B]">Featured</strong> di Galeri Proyek. Atur urutan tampilan karya pilihan recruiter di sini.
+            {language === 'en'
+              ? <>Selected Work is a collection of projects marked as <strong className="text-[#2D292B]">Featured</strong> in the Project Gallery. Set the display order of recruiter-selected works here.</>
+              : <>Selected Work merupakan kumpulan proyek yang ditandai sebagai <strong className="text-[#2D292B]">Featured</strong> di Galeri Proyek. Atur urutan tampilan karya pilihan recruiter di sini.</>}
           </p>
         </div>
 
@@ -69,7 +71,7 @@ export const SelectedWorkEditor: React.FC<SelectedWorkEditorProps> = ({ onGoToPr
           className="px-4 py-2 rounded-xl bg-[#2D292B] text-[#FFF9F7] text-xs font-semibold hover:bg-[#D99AAF] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs shrink-0"
         >
           <FolderGit2 className="w-4 h-4" />
-          <span>Buka Semua Proyek</span>
+          <span>{language === 'en' ? 'Open All Projects' : 'Buka Semua Proyek'}</span>
         </button>
       </div>
 

@@ -6,7 +6,7 @@ import { DebouncedInput, DebouncedTextarea } from './DebouncedInput';
 import FileUploader from './FileUploader';
 
 export const CvEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const cv = portfolioData.cv;
   const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
   const [activeField, setActiveField] = useState<string | null>(null);
@@ -54,10 +54,10 @@ export const CvEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <FileText className="w-6 h-6 text-[#D99AAF]" />
-            Kelola Dokumen CV (Curriculum Vitae)
+            {language === 'en' ? 'Manage CV Document' : 'Kelola Dokumen CV (Curriculum Vitae)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1">
-            Unggah file PDF CV terbaru, atur gambar pratinjau lembar CV, serta tanggal pembaruan.
+            {language === 'en' ? 'Upload the latest CV PDF, set a preview image, and update the date.' : 'Unggah file PDF CV terbaru, atur gambar pratinjau lembar CV, serta tanggal pembaruan.'}
           </p>
         </div>
       </div>

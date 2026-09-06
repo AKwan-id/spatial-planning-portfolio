@@ -6,7 +6,7 @@ import { SakuraIcon } from '../public/SakuraIcon';
 import { DebouncedInput } from './DebouncedInput';
 
 export const BrandingEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const siteSettings = portfolioData.siteSettings;
   const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
   const [activeField, setActiveField] = useState<string | null>(null);
@@ -100,10 +100,12 @@ export const BrandingEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-[#D99AAF]" />
-            Kelola Identitas Branding (Navbar & Footer Branding)
+            {language === 'en' ? 'Manage Branding Identity (Navbar & Footer)' : 'Kelola Identitas Branding (Navbar & Footer Branding)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1">
-            Atur unit branding di sudut kiri navigasi (Logo Sakura + Inisial + Label Portofolio) serta teks hak cipta pada footer.
+            {language === 'en'
+              ? 'Configure the branding unit in the top left navigation (Sakura Logo + Initials + Portfolio Label) and the copyright text in the footer.'
+              : 'Atur unit branding di sudut kiri navigasi (Logo Sakura + Inisial + Label Portofolio) serta teks hak cipta pada footer.'}
           </p>
         </div>
       </div>
@@ -111,7 +113,7 @@ export const BrandingEditor: React.FC = () => {
       {/* Live Branding Preview */}
       <div className="p-4 rounded-xl bg-white border border-[#F3C6D3] space-y-2">
         <span className="text-[10px] font-bold uppercase tracking-wider text-[#D99AAF]">
-          Pratinjau Navigasi Branding Utama (Public Live Unit)
+          {language === 'en' ? 'Main Branding Navigation Preview (Public Live Unit)' : 'Pratinjau Navigasi Branding Utama (Public Live Unit)'}
         </span>
         <div className="p-4 rounded-xl bg-[#FFF9F7] border border-[#F3C6D3]/40 flex items-center gap-2">
           {brandSettings.showIcon !== false && (
@@ -130,7 +132,7 @@ export const BrandingEditor: React.FC = () => {
         {/* Brand Text Input */}
         <div className="p-4 rounded-xl bg-white border border-[#F3C6D3] space-y-2">
           <label className="text-xs font-bold uppercase text-[#2D292B]">
-            Teks Inisial Brand (Default: ANP)
+            {language === 'en' ? 'Brand Initials Text (Default: ANP)' : 'Teks Inisial Brand (Default: ANP)'}
           </label>
           <DebouncedInput
             type="text"
@@ -144,7 +146,7 @@ export const BrandingEditor: React.FC = () => {
         <div className="p-4 rounded-xl bg-white border border-[#F3C6D3] space-y-3">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold uppercase text-[#2D292B]">
-              Label Sub-Branding (Bilingual: ID / ENG)
+              {language === 'en' ? 'Sub-Branding Label (Bilingual: ID / ENG)' : 'Label Sub-Branding (Bilingual: ID / ENG)'}
             </label>
             <button
               onClick={handleTranslateLabel}
@@ -158,7 +160,7 @@ export const BrandingEditor: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <span className="text-[10px] font-bold text-[#D99AAF] uppercase block mb-1">
-                Bahasa Indonesia (Default: PORTOFOLIO)
+                {language === 'en' ? 'Indonesian (Default: PORTOFOLIO)' : 'Bahasa Indonesia (Default: PORTOFOLIO)'}
               </span>
               <DebouncedInput
                 type="text"
@@ -185,10 +187,10 @@ export const BrandingEditor: React.FC = () => {
         <div className="p-4 rounded-xl bg-white border border-[#F3C6D3] flex items-center justify-between">
           <div>
             <h4 className="text-xs font-bold uppercase text-[#2D292B]">
-              Tampilkan Icon Sakura di Navigasi
+              {language === 'en' ? 'Show Sakura Logo on Navigation' : 'Tampilkan Icon Sakura di Navigasi'}
             </h4>
             <p className="text-[11px] text-[#2D292B]/70">
-              Ikon Sakura Pink berbentuk geometris minimalis untuk melengkapi visual identity.
+              {language === 'en' ? 'Minimalist geometric Sakura pink icon to complement the visual identity.' : 'Ikon Sakura Pink berbentuk geometris minimalis untuk melengkapi visual identity.'}
             </p>
           </div>
           <button
@@ -199,7 +201,7 @@ export const BrandingEditor: React.FC = () => {
               }`}
           >
             {brandSettings.showIcon !== false ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            <span>{brandSettings.showIcon !== false ? 'Tampil' : 'Sembunyi'}</span>
+            <span>{brandSettings.showIcon !== false ? (language === 'en' ? 'Show' : 'Tampil') : (language === 'en' ? 'Hide' : 'Sembunyi')}</span>
           </button>
         </div>
 
@@ -207,7 +209,7 @@ export const BrandingEditor: React.FC = () => {
         <div className="p-4 rounded-xl bg-white border border-[#F3C6D3] space-y-3">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold uppercase text-[#2D292B]">
-              Teks Bidang Keahlian di Footer (Footer Professional Subtitle)
+              {language === 'en' ? 'Footer Professional Subtitle (Bilingual)' : 'Teks Bidang Keahlian di Footer (Footer Professional Subtitle)'}
             </label>
             <button
               onClick={handleTranslateFooter}

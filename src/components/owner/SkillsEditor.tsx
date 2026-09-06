@@ -17,7 +17,7 @@ import {
 import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const SkillsEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const { skills, skillCategories } = portfolioData;
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -159,10 +159,10 @@ export const SkillsEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Cpu className="w-6 h-6 text-[#D99AAF]" />
-            Kelola Taksonomi Keahlian (Skills CRUD)
+            {language === 'en' ? 'Manage Skills Taxonomy (CRUD)' : 'Kelola Taksonomi Keahlian (Skills CRUD)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1">
-            Tambah, sunting, kelompokkan dalam kategori, serta tandai keahlian prioritas (Featured).
+            {language === 'en' ? 'Add, edit, categorize, and mark priority skills (Featured).' : 'Tambah, sunting, kelompokkan dalam kategori, serta tandai keahlian prioritas (Featured).'}
           </p>
         </div>
 
@@ -172,7 +172,7 @@ export const SkillsEditor: React.FC = () => {
             className="px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-[#2D292B] text-xs font-semibold hover:border-[#D99AAF] flex items-center gap-1.5 cursor-pointer"
           >
             <Tag className="w-3.5 h-3.5 text-[#D99AAF]" />
-            <span>Kategori Keahlian</span>
+            <span>{language === 'en' ? 'Skill Categories' : 'Kategori Keahlian'}</span>
           </button>
 
           <button
@@ -180,7 +180,7 @@ export const SkillsEditor: React.FC = () => {
             className="px-4 py-2 rounded-xl bg-[#2D292B] text-[#FFF9F7] text-xs font-semibold hover:bg-[#D99AAF] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>Tambah Keahlian</span>
+            <span>{language === 'en' ? 'Add Skill' : 'Tambah Keahlian'}</span>
           </button>
         </div>
       </div>

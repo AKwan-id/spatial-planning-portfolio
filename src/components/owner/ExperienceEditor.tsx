@@ -16,7 +16,7 @@ import {
 import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const ExperienceEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const { experience } = portfolioData;
 
   const [editingId, setEditingId] = useState<string | null>(null);

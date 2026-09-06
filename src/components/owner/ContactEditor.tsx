@@ -5,7 +5,7 @@ import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 import { DebouncedInput } from './DebouncedInput';
 
 export const ContactEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const contact = portfolioData.contact;
   const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
   const [activeField, setActiveField] = useState<string | null>(null);
@@ -71,10 +71,10 @@ export const ContactEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Mail className="w-6 h-6 text-[#D99AAF]" />
-            Kelola Informasi Kontak (Contact Info)
+            {language === 'en' ? 'Manage Contact Info' : 'Kelola Informasi Kontak (Contact Info)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1">
-            Sunting alamat email profesional, tautan LinkedIn, nomor telepon, serta status ketersediaan rekruitmen.
+            {language === 'en' ? 'Edit professional email, LinkedIn link, phone number, and recruitment availability status.' : 'Sunting alamat email profesional, tautan LinkedIn, nomor telepon, serta status ketersediaan rekruitmen.'}
           </p>
         </div>
       </div>

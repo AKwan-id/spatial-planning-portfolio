@@ -24,7 +24,7 @@ import FileUploader from './FileUploader';
 import { useGeminiTranslate } from '../../hooks/useGeminiTranslate';
 
 export const ProjectsEditor: React.FC = () => {
-  const { portfolioData, updateData } = useLanguage();
+  const { portfolioData, updateData, language } = useLanguage();
   const { projects, projectCategories } = portfolioData;
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -221,10 +221,10 @@ export const ProjectsEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <FolderGit2 className="w-6 h-6 text-[#D99AAF]" />
-            Kelola Galeri Proyek (Projects CRUD)
+            {language === 'en' ? 'Manage Project Gallery (CRUD)' : 'Kelola Galeri Proyek (Projects CRUD)'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1">
-            Tambah, sunting, atur urutan, publikasi (Draft/Published/Hidden), serta status Featured untuk Selected Work.
+            {language === 'en' ? 'Add, edit, reorder, publish (Draft/Published/Hidden), and set Featured status.' : 'Tambah, sunting, atur urutan, publikasi (Draft/Published/Hidden), serta status Featured untuk Selected Work.'}
           </p>
         </div>
 
@@ -234,7 +234,7 @@ export const ProjectsEditor: React.FC = () => {
             className="px-4 py-2 rounded-xl bg-white border border-[#F3C6D3] text-[#2D292B] text-xs font-semibold hover:border-[#D99AAF] flex items-center gap-1.5 cursor-pointer"
           >
             <Tag className="w-3.5 h-3.5 text-[#D99AAF]" />
-            <span>Kelola Kategori</span>
+            <span>{language === 'en' ? 'Manage Categories' : 'Kelola Kategori'}</span>
           </button>
 
           <button
@@ -242,7 +242,7 @@ export const ProjectsEditor: React.FC = () => {
             className="px-4 py-2 rounded-xl bg-[#2D292B] text-[#FFF9F7] text-xs font-semibold hover:bg-[#D99AAF] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>Tambah Proyek Baru</span>
+            <span>{language === 'en' ? 'Add New Project' : 'Tambah Proyek Baru'}</span>
           </button>
         </div>
       </div>
