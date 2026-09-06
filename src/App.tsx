@@ -60,7 +60,7 @@ export function PortfolioContent() {
       <div className="fixed inset-0 z-50 bg-[#2D292B] flex flex-col items-center justify-center pointer-events-none">
         <div className="w-12 h-12 border-2 border-[#D99AAF] border-t-transparent rounded-full animate-spin mb-4 shadow-sm" />
         <p className="text-[#FFF9F7] font-serif tracking-widest uppercase text-[10px] font-semibold animate-pulse">
-          SINKRONISASI BUKU KATALOG. . .
+          INITIALIZING PORTFOLIO. . .
         </p>
       </div>
     );
