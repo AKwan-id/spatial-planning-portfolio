@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LanguageProvider } from './context/LanguageContext';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Navbar } from './components/public/Navbar';
 import { AboutSection } from './components/public/AboutSection';
 import { SelectedWorkSection } from './components/public/SelectedWorkSection';
@@ -23,6 +23,8 @@ export function PortfolioContent() {
   const [selectedCertificate, setSelectedCertificate] = useState<CertificateItem | null>(null);
   const [isCvModalOpen, setIsCvModalOpen] = useState(false);
   const [isOwnerRoute, setIsOwnerRoute] = useState(false);
+
+  const { isLoading } = useLanguage();
 
   // Check URL pathname or hash for /owner or #owner access
   useEffect(() => {
@@ -51,6 +53,17 @@ export function PortfolioContent() {
 
   if (isOwnerRoute) {
     return <OwnerDashboard onClose={handleCloseOwnerDashboard} />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#2D292B] flex flex-col items-center justify-center pointer-events-none">
+        <div className="w-12 h-12 border-2 border-[#D99AAF] border-t-transparent rounded-full animate-spin mb-4 shadow-sm" />
+        <p className="text-[#FFF9F7] font-serif tracking-widest uppercase text-[10px] font-semibold animate-pulse">
+          SINKRONISASI BUKU KATALOG. . .
+        </p>
+      </div>
+    );
   }
 
   return (

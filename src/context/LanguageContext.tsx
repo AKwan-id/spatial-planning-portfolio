@@ -11,6 +11,7 @@ interface LanguageContextType {
   t: (textObj: LocalizedText | undefined | null, fallback?: string) => string;
   updateData: (newData: PortfolioData) => void;
   resetData: () => void;
+  isLoading: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -75,7 +76,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, portfolioData, setPortfolioData, t, updateData, resetData }}>
+    <LanguageContext.Provider value={{ language, setLanguage, portfolioData, setPortfolioData, t, updateData, resetData, isLoading }}>
       {children}
     </LanguageContext.Provider>
   );
