@@ -259,15 +259,15 @@ export const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ onClose }) => {
 
       {/* Top Bar */}
       <div className="bg-[#2D292B] text-[#FFF9F7] px-4 sm:px-6 py-3 sm:py-4 flex items-start sm:items-center justify-between border-b border-[#D99AAF]/30 gap-2">
-        <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-0">
+        <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-0 flex-1 min-w-0">
           <div className="p-1.5 sm:p-2 rounded-xl bg-[#D99AAF]/20 text-[#F3C6D3] hidden sm:block">
             <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div className="max-w-[155px] sm:max-w-none flex flex-col justify-center">
-            <h2 className="font-serif text-[11px] sm:text-xl font-bold tracking-tight leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+          <div className="flex-1 min-w-0 flex flex-col justify-center">
+            <h2 className="font-serif text-[13px] sm:text-xl font-bold tracking-tight leading-tight line-clamp-2 sm:line-clamp-none">
               {language === 'en' ? 'PORTFOLIO OWNER DASHBOARD' : 'DASHBOARD PEMILIK PORTOFOLIO'}
             </h2>
-            <p className="text-[8.5px] sm:text-[11px] text-[#F3C6D3]/80 font-mono mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+            <p className="text-[9px] sm:text-[11px] text-[#F3C6D3]/80 font-mono mt-0.5 line-clamp-1 sm:line-clamp-none">
               {language === 'en' ? 'Management Portal' : 'Portal Manajemen'} &bull; Annisa Nur Prabawa
             </p>
           </div>
