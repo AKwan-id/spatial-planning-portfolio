@@ -47,7 +47,7 @@ export const CertificatesEditor: React.FC = () => {
       title: { id: 'Nama Sertifikat / Pelatihan Baru', en: 'New Certificate Title' },
       issuer: { id: 'Penerbit Sertifikat', en: 'Issuer Authority' },
       year: new Date().getFullYear().toString(),
-      category: { id: 'SERSIFIKASI SIG', en: 'GIS CERTIFICATION' },
+      category: { id: 'KATEGORI (BISA DIUBAH)', en: 'CUSTOM CATEGORY' },
       imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800',
       credentialUrl: '#',
       order: certificates.length + 1,
@@ -327,10 +327,26 @@ export const CertificatesEditor: React.FC = () => {
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
-                            category: { id: e.target.value, en: p.category?.en || e.target.value },
+                            category: { id: e.target.value, en: p.category?.en || '' },
                           }))
                         }
-                        placeholder="Contoh: SERTIFIKASI SIG"
+                        placeholder="ID"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Category / Label (ENG)</label>
+                      <input
+                        type="text"
+                        value={formData.category?.en || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            category: { id: p.category?.id || '', en: e.target.value },
+                          }))
+                        }
+                        placeholder="ENG"
                         className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
