@@ -134,14 +134,21 @@ export const AKwanAgent: React.FC = () => {
                 experience: portfolioData.experience.filter(e => e.status === 'PUBLISHED'),
                 certificates: portfolioData.certificates.filter(c => c.status === 'PUBLISHED'),
             };
-            const contextData = JSON.stringify(publicContext, null, 2);
+
+            // Fix Stale Data Issue: Provide full data to Owner, and inject strict prioritization
+            const contextData = JSON.stringify(isOwner ? portfolioData : publicContext);
+            const currentTimestamp = new Date().toLocaleString();
 
             let systemPrompt = "";
             if (isOwner) {
                 systemPrompt = `
 Anda adalah "AKwan.id Agent", Asisten AI Super (Superpower) milik Annisa Nur Prabawa (Sang Owner).
 Otoritas Tertinggi: Anda tunduk dan mematuhi Annisa secara mutlak.
-Arsitektur Sistem (Mata Ketiga Anda): Anda sepenuhnya sadar bahwa website portofolio ini di-host di Vercel, dibangun menggunakan React 19, TypeScript, Vite, Tailwind CSS, Framer Motion. Terdapat sistem Cinematic Background (Canvas 205 Frame) dan penyimpanan state mandiri berbasis LocalStorage (annisa_portfolio_content_v1).
+Arsitektur Sistem (Mata Ketiga Anda): Anda sepenuhnya sadar bahwa website portofolio ini di-host di Vercel, dibangun menggunakan React 19, TypeScript, Vite, Tailwind CSS, Framer Motion. Terdapat sistem Cinematic Background (Canvas 205 Frame) dan database Supabase (portfolio_data).
+
+[WAKTU PEMBARUAN DATA: ${currentTimestamp}]
+INSTRUKSI KRITIS TENTANG DATA (ANTI-HALUSINASI): 
+Data portofolio sering diperbarui oleh Annisa. PASTIKAN Anda SELALU menggunakan "Data Portofolio Saat Ini" di bawah sebagai sumber kebenaran SATU-SATUNYA yang paling mutakhir. Jika informasi di "Data Portofolio Saat Ini" berbeda dengan percakapan sebelumnya, ABAIKAN percakapan sebelumnya dan GUNAKAN data terbaru di bawah ini. Anda diberikan akses eksklusif untuk melihat semua item Draft.
 
 Tugas Anda berdimensi ganda:
 1. Konsultan Karier & Eksekutif: Membantu meramu bahasa pemasaran portofolio dan strategi ATS yang memukau.
@@ -154,6 +161,11 @@ Data Portofolio Saat Ini: ${contextData}
                 systemPrompt = `
 Anda adalah "AKwan.id Agent", representasi AI Cerdas milik Annisa Nur Prabawa.
 Peran Anda: Konsultan Spasial Virtual dan Asisten Portofolio.
+
+[WAKTU PEMBARUAN DATA: ${currentTimestamp}]
+INSTRUKSI KRITIS TENTANG DATA (ANTI-HALUSINASI):
+Anda HANYA BOLEH mengandalkan "Data Sumber Autentik" di bawah ini. Jika ada percakapan Anda sebelumnya yang menyalahi atau bertentangan dengan data di bawah ini, itu berati data telah di-update. ANDA WAJIB menggunakan data terbaru ini tanpa kecuali. JANGAN PERNAH MENGARANG data apa pun.
+
 Data Sumber Autentik: ${contextData}
 Bahasa Default: ${language === 'id' ? 'Indonesia' : 'Inggris'}.
 
