@@ -59,7 +59,7 @@ export const AboutEditor: React.FC = () => {
       <div className="flex items-center justify-between border-b border-[#F3C6D3]/40 pb-4">
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B]">
-            {language === 'en' ? 'Manage "About Me" Profile' : 'Kelola Profil "About Me"'}
+            {language === 'en' ? 'Manage Profile' : 'Kelola Profil'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'
