@@ -289,25 +289,52 @@ export const CertificatesEditor: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Issuer, Year & Category */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[#F3C6D3]/30 pt-4">
+                  {/* Issuer & Year */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Penerbit / Issuer
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('issuer')}
+                      disabled={isTranslating || !formData.issuer?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'issuer' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'issuer' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Penerbit (Issuer ID)</label>
-                        <button onClick={() => handleAutoTranslate('issuer')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
-                      </div>
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Penerbit (ID)</label>
                       <input
                         type="text"
                         value={formData.issuer?.id || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
-                            issuer: { id: e.target.value, en: p.issuer?.en || e.target.value },
+                            issuer: { id: e.target.value, en: p.issuer?.en || '' },
                           }))
                         }
                         className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Issuer (ENG)</label>
+                      <input
+                        type="text"
+                        value={activeField === 'issuer' ? streamingText : formData.issuer?.en || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            issuer: { id: p.issuer?.id || '', en: e.target.value },
+                          }))
+                        }
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#F3C6D3]/30 pt-4">
 
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Tahun Terbit</label>

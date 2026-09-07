@@ -302,11 +302,12 @@ export const ExperienceEditor: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Organization, Period, Location */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[#F3C6D3]/30 pt-4">
+                  {/* Organization, Period, Location ID & ENG */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#F3C6D3]/30 pt-4">
+                    {/* Organization */}
                     <div className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Instansi (ID/ENG)</label>
+                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Instansi (ID)</label>
                         <button onClick={() => handleAutoTranslate('organization')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
                       </div>
                       <input
@@ -315,16 +316,31 @@ export const ExperienceEditor: React.FC = () => {
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
-                            organization: { id: e.target.value, en: p.organization?.en || e.target.value },
+                            organization: { id: e.target.value, en: p.organization?.en || '' },
                           }))
                         }
                         className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Organization (ENG)</label>
+                      <input
+                        type="text"
+                        value={activeField === 'organization' ? streamingText : formData.organization?.en || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            organization: { id: p.organization?.id || '', en: e.target.value },
+                          }))
+                        }
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B] mt-6"
+                      />
+                    </div>
 
+                    {/* Period */}
                     <div className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Periode (ID/ENG)</label>
+                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Periode (ID)</label>
                         <button onClick={() => handleAutoTranslate('period')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
                       </div>
                       <input
@@ -333,25 +349,55 @@ export const ExperienceEditor: React.FC = () => {
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
-                            period: { id: e.target.value, en: e.target.value },
+                            period: { id: e.target.value, en: p.period?.en || '' },
                           }))
                         }
                         className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
-
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Lokasi (ID/ENG)</label>
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Period (ENG)</label>
+                      <input
+                        type="text"
+                        value={activeField === 'period' ? streamingText : formData.period?.en || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            period: { id: p.period?.id || '', en: e.target.value },
+                          }))
+                        }
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B] mt-6"
+                      />
+                    </div>
+
+                    {/* Location */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Lokasi (ID)</label>
                       <input
                         type="text"
                         value={formData.location?.id || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
-                            location: { id: e.target.value, en: e.target.value },
+                            location: { id: e.target.value, en: p.location?.en || '' },
                           }))
                         }
                         placeholder="Contoh: Yogyakarta, Indonesia"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Location (ENG)</label>
+                      <input
+                        type="text"
+                        value={formData.location?.en || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            location: { id: p.location?.id || '', en: e.target.value },
+                          }))
+                        }
+                        placeholder="Ex: Yogyakarta, Indonesia"
                         className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
