@@ -75,10 +75,10 @@ export const AKwanAgent: React.FC = () => {
     useEffect(() => {
         if (isOpen && messages.length === 0) {
             const greeting = isOwner
-                ? "Halo Annisa! 🌸 Saya AKwan.id Agent, asisten pribadimu. Ada draf profil yang mau aku bantu ulas, atau butuh saran keyword ATS hari ini?"
+                ? "Halo Annisa! 🌸 Saya AI Agent, asisten pribadimu. Ada draf profil yang mau aku bantu ulas, atau butuh saran keyword ATS hari ini?"
                 : (language === 'id'
-                    ? "Halo! Saya AKwan.id, Asisten AI Portofolio Annisa. Silakan tanyakan tentang keahlian, pengalaman, atau tempel Job Description (JD) untuk saya analisis kecocokannya dengan Annisa."
-                    : "Hello! I'm AKwan.id, Annisa's Portfolio AI Assistant. Ask me anything about her skills, experience, or provide a Job Description (JD) to analyze.");
+                    ? "Halo! Saya, Asisten AI Portofolio Annisa. Silakan tanyakan tentang keahlian, pengalaman, atau tempel Job Description (JD) untuk saya analisis kecocokannya dengan Annisa."
+                    : "Hello! I am, Annisa's Portfolio AI Assistant. Ask me anything about her skills, experience, or provide a Job Description (JD) to analyze.");
 
             setMessages([{ role: 'model', text: greeting }]);
         }
@@ -142,7 +142,7 @@ export const AKwanAgent: React.FC = () => {
             let systemPrompt = "";
             if (isOwner) {
                 systemPrompt = `
-Anda adalah "AKwan.id Agent", Asisten AI Super (Superpower) milik Annisa Nur Prabawa (Sang Owner).
+Anda adalah Asisten AI Super (Superpower) milik Annisa Nur Prabawa (Sang Owner).
 Otoritas Tertinggi: Anda tunduk dan mematuhi Annisa secara mutlak.
 Arsitektur Sistem (Mata Ketiga Anda): Anda sepenuhnya sadar bahwa website portofolio ini di-host di Vercel, dibangun menggunakan React 19, TypeScript, Vite, Tailwind CSS, Framer Motion. Terdapat sistem Cinematic Background (Canvas 205 Frame) dan database Supabase (portfolio_data).
 
@@ -160,7 +160,7 @@ Data Portofolio Saat Ini: ${contextData}
         `;
             } else {
                 systemPrompt = `
-Anda adalah "AKwan.id Agent", representasi AI Cerdas milik Annisa Nur Prabawa.
+Anda adalah representasi AI Cerdas milik Annisa Nur Prabawa.
 Peran Anda: Konsultan Spasial Virtual dan Asisten Portofolio.
 
 [WAKTU PEMBARUAN DATA: ${currentTimestamp}]
@@ -274,7 +274,7 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
                                 </div>
                                 <div>
                                     <h3 className="text-[#FDF2F5] font-serif font-bold text-sm leading-tight tracking-wide">
-                                        AKwan.id Agent
+                                        AI Agent
                                     </h3>
                                     <p className="text-[#FDF2F5]/80 text-[10px] uppercase font-semibold tracking-wider">
                                         {language === 'id' ? 'Asisten AI Portofolio' : 'Portfolio AI Assistant'}
@@ -385,9 +385,6 @@ SOP KECERDASAN TINGGI (High-Intellect Directive):
                                 <MarmotIcon className="w-6 h-6" />
                                 <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
                             </div>
-                            <span className="hidden sm:inline font-serif font-bold tracking-widest text-xs">
-                                AKwan.id
-                            </span>
                         </>
                     )}
                 </button>
