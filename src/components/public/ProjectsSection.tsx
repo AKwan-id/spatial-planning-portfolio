@@ -99,6 +99,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
                       alt={t(project.title)}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
+                      style={{ imageRendering: 'high-quality', WebkitFontSmoothing: 'antialiased', transform: 'translateZ(0)' }}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1000';

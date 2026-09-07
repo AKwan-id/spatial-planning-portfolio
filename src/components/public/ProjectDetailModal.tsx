@@ -23,7 +23,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ item, on
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#2D292B]/60 backdrop-blur-md animate-fadeIn overflow-y-auto">
       <div className="glass-surface max-w-4xl w-full rounded-3xl p-6 sm:p-10 border border-[#EAA3B8] shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
-        
+
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -34,7 +34,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ item, on
         </button>
 
         <div className="space-y-8">
-          
+
           {/* Header Meta */}
           <div className="space-y-2 pr-10">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8B3A52]">
@@ -48,7 +48,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ item, on
                 </span>
               )}
             </div>
-            
+
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2D292B]">
               {t(item.title)}
             </h2>
@@ -67,6 +67,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ item, on
                 src={currentImg}
                 alt="Project Image"
                 className="w-full h-full object-cover object-center"
+                style={{ imageRendering: 'high-quality', WebkitFontSmoothing: 'antialiased', transform: 'translateZ(0)' }}
               />
 
               {/* Gallery Controls */}
@@ -95,11 +96,10 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ item, on
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`w-16 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                      activeImageIndex === idx ? 'border-[#8B3A52] scale-105' : 'border-transparent opacity-60'
-                    }`}
+                    className={`w-16 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${activeImageIndex === idx ? 'border-[#8B3A52] scale-105' : 'border-transparent opacity-60'
+                      }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img src={img} alt="" className="w-full h-full object-cover" style={{ imageRendering: 'high-quality' }} />
                   </button>
                 ))}
               </div>

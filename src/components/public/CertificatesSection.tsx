@@ -57,7 +57,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ onSele
                   alt={t(cert.title)}
                   className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
                   loading="lazy"
-
+                  style={{ imageRendering: 'high-quality', WebkitFontSmoothing: 'antialiased', transform: 'translateZ(0)' }}
                 />
                 <div className="absolute inset-0 bg-[#2D292B]/50 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center text-[#FDF2F5] gap-1.5 text-xs font-semibold">
                   <Eye className="w-4 h-4" />

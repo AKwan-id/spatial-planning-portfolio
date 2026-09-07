@@ -123,7 +123,7 @@ export const AboutSection: React.FC = () => {
                   alt={t(profile.portraitAlt, 'Annisa Nur Prabawa Portrait')}
                   className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-700 filter contrast-[1.02]"
                   loading="eager"
-
+                  style={{ imageRendering: 'high-quality', WebkitFontSmoothing: 'antialiased', transform: 'translateZ(0)' }}
                 />
 
                 {/* Subtle Editorial Frame Layer */}

@@ -49,8 +49,10 @@ export const CvSection: React.FC<CvSectionProps> = ({ onViewCv }) => {
               <div className="relative aspect-3/4 max-w-xs mx-auto rounded-2xl overflow-hidden bg-[#FDF2F5] border-2 border-[#EAA3B8] shadow-md group-hover:border-[#8B3A52] transition-all duration-300">
                 <img
                   src={cv.previewImageUrl}
-                  alt="CV Preview"
+                  alt={t(cv.title)}
                   className="w-full h-full object-cover object-top opacity-90 group-hover:scale-102 transition-transform duration-500"
+                  style={{ imageRendering: 'high-quality', WebkitFontSmoothing: 'antialiased', transform: 'translateZ(0)' }}
+                  loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=800';

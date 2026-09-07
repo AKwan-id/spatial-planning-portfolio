@@ -67,6 +67,7 @@ export const SelectedWorkSection: React.FC<SelectedWorkSectionProps> = ({ onSele
                         alt={t(item.title)}
                         className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-700"
                         loading="lazy"
+                        style={{ imageRendering: 'high-quality', WebkitFontSmoothing: 'antialiased', transform: 'translateZ(0)' }}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1000';

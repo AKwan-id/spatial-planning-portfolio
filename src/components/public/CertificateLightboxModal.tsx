@@ -42,7 +42,7 @@ export const CertificateLightboxModal: React.FC<CertificateLightboxModalProps> =
               src={cert.imageUrl}
               alt={t(cert.title)}
               className="w-full h-full object-contain p-2"
-
+              style={{ imageRendering: 'high-quality', WebkitFontSmoothing: 'antialiased', transform: 'translateZ(0)' }}
             />
           </div>
 
