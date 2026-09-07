@@ -302,14 +302,23 @@ export const ExperienceEditor: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Organization, Period, Location ID & ENG */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#F3C6D3]/30 pt-4">
-                    {/* Organization */}
+                  {/* Organization ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Instansi / Organization
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('organization')}
+                      disabled={isTranslating || !formData.organization?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'organization' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'organization' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Instansi (ID)</label>
-                        <button onClick={() => handleAutoTranslate('organization')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
-                      </div>
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Instansi (ID)</label>
                       <input
                         type="text"
                         value={formData.organization?.id || ''}
@@ -333,16 +342,28 @@ export const ExperienceEditor: React.FC = () => {
                             organization: { id: p.organization?.id || '', en: e.target.value },
                           }))
                         }
-                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B] mt-6"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
+                  </div>
 
-                    {/* Period */}
+                  {/* Period ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Periode / Period
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('period')}
+                      disabled={isTranslating || !formData.period?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'period' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'period' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Periode (ID)</label>
-                        <button onClick={() => handleAutoTranslate('period')} disabled={isTranslating} className="text-[#8B3A52] hover:bg-[#F3C6D3] p-1 rounded-md cursor-pointer"><Sparkles className="w-3 h-3" /></button>
-                      </div>
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Periode (ID)</label>
                       <input
                         type="text"
                         value={formData.period?.id || ''}
@@ -366,11 +387,18 @@ export const ExperienceEditor: React.FC = () => {
                             period: { id: p.period?.id || '', en: e.target.value },
                           }))
                         }
-                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B] mt-6"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
+                  </div>
 
-                    {/* Location */}
+                  {/* Location ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Lokasi / Location
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Lokasi (ID)</label>
                       <input

@@ -27,7 +27,7 @@ export const CertificatesEditor: React.FC = () => {
   const { translateToEnglish, isTranslating, streamingText } = useGeminiTranslate();
   const [activeField, setActiveField] = useState<string | null>(null);
 
-  const handleAutoTranslate = async (field: 'title' | 'issuer') => {
+  const handleAutoTranslate = async (field: 'title' | 'issuer' | 'category') => {
     const fieldData = formData[field] as { id?: string; en?: string };
     const textToTranslate = fieldData?.id || '';
 
@@ -334,8 +334,13 @@ export const CertificatesEditor: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#F3C6D3]/30 pt-4">
-
+                  {/* Tahun Terbit - Full Width isolated */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Tahun / Year
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Tahun Terbit</label>
                       <input
@@ -345,7 +350,23 @@ export const CertificatesEditor: React.FC = () => {
                         className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
                       />
                     </div>
+                  </div>
 
+                  {/* Kategori */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Kategori / Category
+                    </label>
+                    <button
+                      onClick={() => handleAutoTranslate('category')}
+                      disabled={isTranslating || !formData.category?.id}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FCEDF1] text-[#8B3A52] hover:bg-[#F3C6D3] transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className={`w-3 h-3 ${isTranslating && activeField === 'category' ? 'animate-pulse' : ''}`} />
+                      {isTranslating && activeField === 'category' ? 'Translating...' : 'Translate'}
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Kategori / Label (ID)</label>
                       <input
@@ -366,7 +387,7 @@ export const CertificatesEditor: React.FC = () => {
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Category / Label (ENG)</label>
                       <input
                         type="text"
-                        value={formData.category?.en || ''}
+                        value={activeField === 'category' ? streamingText : formData.category?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
