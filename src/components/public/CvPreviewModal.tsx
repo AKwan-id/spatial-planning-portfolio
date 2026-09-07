@@ -67,6 +67,11 @@ export const CvPreviewModal: React.FC<CvPreviewModalProps> = ({ isOpen, onClose 
               alt="Curriculum Vitae Document Preview"
               onClick={() => setIsZoomed(!isZoomed)}
               className={`p-2 transition-all duration-300 mx-auto ${isZoomed ? 'w-auto min-w-[600px] sm:min-w-[800px] cursor-zoom-out' : 'w-full h-auto cursor-zoom-in'}`}
+              style={{
+                imageRendering: 'high-quality',
+                WebkitFontSmoothing: 'antialiased',
+                transform: 'translateZ(0)'
+              }}
             />
           </div>
 
