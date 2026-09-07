@@ -289,7 +289,7 @@ export const CertificatesEditor: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Issuer & Year */}
+                  {/* Issuer, Year & Category */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[#F3C6D3]/30 pt-4">
                     <div className="space-y-1">
                       <div className="flex items-center justify-between">
@@ -319,6 +319,25 @@ export const CertificatesEditor: React.FC = () => {
                       />
                     </div>
 
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Kategori / Label (ID)</label>
+                      <input
+                        type="text"
+                        value={formData.category?.id || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            category: { id: e.target.value, en: p.category?.en || e.target.value },
+                          }))
+                        }
+                        placeholder="Contoh: SERTIFIKASI SIG"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Links & Status */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Tautan Verifikasi / Berkas PDF</label>
                       <input
