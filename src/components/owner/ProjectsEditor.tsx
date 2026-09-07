@@ -221,7 +221,7 @@ export const ProjectsEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <FolderGit2 className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Project Gallery (Projects CRUD)' : 'Kelola Galeri Proyek (Projects CRUD)'}
+            {language === 'en' ? 'Manage Project Gallery' : 'Kelola Galeri Proyek'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en' ? 'Manage your entire specific portfolio. Add new projects, update details, and control their visibility and categories.' : 'Kelola seluruh portofolio spesifik Anda. Tambahkan proyek baru, perbarui rincian datanya, serta atur urutan dan kategorinya.'}

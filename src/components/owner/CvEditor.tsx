@@ -54,7 +54,7 @@ export const CvEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <FileText className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage CV Document' : 'Kelola Dokumen CV (Curriculum Vitae)'}
+            {language === 'en' ? 'Manage CV Document' : 'Kelola Dokumen CV'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'

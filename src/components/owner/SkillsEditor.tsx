@@ -159,7 +159,7 @@ export const SkillsEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Cpu className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Skills Taxonomy (Skills CRUD)' : 'Kelola Taksonomi Keahlian (Skills CRUD)'}
+            {language === 'en' ? 'Manage Skills' : 'Kelola Taksonomi Keahlian'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'

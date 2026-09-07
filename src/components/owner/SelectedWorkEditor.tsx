@@ -57,7 +57,7 @@ export const SelectedWorkEditor: React.FC<SelectedWorkEditorProps> = ({ onGoToPr
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Star className="w-6 h-6 text-[#D99AAF] fill-current" />
-            {language === 'en' ? 'Manage Selected Work Highlights' : 'Kelola Karya Utama (Selected Work Highlights)'}
+            {language === 'en' ? 'Manage Selected Work Highlights' : 'Kelola Karya Utama'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'

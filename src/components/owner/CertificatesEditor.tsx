@@ -129,7 +129,7 @@ export const CertificatesEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Award className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Certificates & Credentials' : 'Kelola Sertifikat & Kredensial (Certificates CRUD)'}
+            {language === 'en' ? 'Manage Certificates & Credentials' : 'Kelola Sertifikat & Kredensial'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'

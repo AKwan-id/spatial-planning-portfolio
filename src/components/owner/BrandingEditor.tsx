@@ -100,7 +100,7 @@ export const BrandingEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Branding Identity (Navbar & Footer)' : 'Kelola Identitas Branding (Navbar & Footer Branding)'}
+            {language === 'en' ? 'Manage Branding Identity' : 'Kelola Identitas Branding'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'

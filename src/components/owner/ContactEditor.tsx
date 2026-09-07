@@ -63,7 +63,7 @@ export const ContactEditor: React.FC = () => {
         <div>
           <h3 className="font-serif text-2xl font-bold text-[#2D292B] flex items-center gap-2">
             <Mail className="w-6 h-6 text-[#D99AAF]" />
-            {language === 'en' ? 'Manage Contact Info' : 'Kelola Informasi Kontak (Contact Info)'}
+            {language === 'en' ? 'Manage Contact Info' : 'Kelola Informasi Kontak'}
           </h3>
           <p className="text-xs text-[#2D292B]/70 mt-1 leading-relaxed">
             {language === 'en'
