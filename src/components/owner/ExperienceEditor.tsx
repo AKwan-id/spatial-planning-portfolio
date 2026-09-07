@@ -302,7 +302,7 @@ export const ExperienceEditor: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Organization & Period */}
+                  {/* Organization, Period, Location */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[#F3C6D3]/30 pt-4">
                     <div className="space-y-1">
                       <div className="flex items-center justify-between">
@@ -340,6 +340,25 @@ export const ExperienceEditor: React.FC = () => {
                       />
                     </div>
 
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Lokasi (ID/ENG)</label>
+                      <input
+                        type="text"
+                        value={formData.location?.id || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            location: { id: e.target.value, en: e.target.value },
+                          }))
+                        }
+                        placeholder="Contoh: Yogyakarta, Indonesia"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Type & Status */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Tipe Pengalaman</label>
                       <select

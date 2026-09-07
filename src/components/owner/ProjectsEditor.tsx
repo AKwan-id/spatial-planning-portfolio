@@ -533,7 +533,7 @@ export const ProjectsEditor: React.FC = () => {
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Deskripsi Singkat (ID)</label>
                       <textarea
-                        rows={3}
+                        rows={2}
                         value={formData.description?.id || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
@@ -547,12 +547,49 @@ export const ProjectsEditor: React.FC = () => {
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Short Description (ENG)</label>
                       <textarea
-                        rows={3}
+                        rows={2}
                         value={activeField === 'description' ? streamingText : formData.description?.en || ''}
                         onChange={(e) =>
                           setFormData((p) => ({
                             ...p,
                             description: { id: p.description?.id || '', en: e.target.value },
+                          }))
+                        }
+                        className="w-full p-3 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Full Details ID & ENG */}
+                  <div className="flex flex-row items-center justify-between border-t border-[#F3C6D3]/30 pt-4 pb-1 mt-4 first:mt-0 first:border-0">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#2D292B]">
+                      Detail Lengkap Proyek / Full Project Details
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Detail Lengkap (ID)</label>
+                      <textarea
+                        rows={4}
+                        value={formData.fullDetails?.id || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            fullDetails: { id: e.target.value, en: p.fullDetails?.en || '' },
+                          }))
+                        }
+                        className="w-full p-3 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-[#D99AAF]">Full Details (ENG)</label>
+                      <textarea
+                        rows={4}
+                        value={formData.fullDetails?.en || ''}
+                        onChange={(e) =>
+                          setFormData((p) => ({
+                            ...p,
+                            fullDetails: { id: p.fullDetails?.id || '', en: e.target.value },
                           }))
                         }
                         className="w-full p-3 rounded-xl border border-[#F3C6D3] text-xs text-[#2D292B]"
